@@ -102,22 +102,22 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, passType
       isOpen={isOpen}
       onClose={onClose}
       title={`Get Your ${passType.charAt(0).toUpperCase() + passType.slice(1)} Pass!`}
-      maxWidth="lg"
+      maxWidth="md"
     >
-      <p className="text-text-secondary mb-8">Enter your details to personalize and purchase your pass.</p>
+      <p className="text-text-secondary mb-6 text-sm sm:text-base">Enter your details to personalize and purchase your pass.</p>
            
       {/* Trust Signals */}
-      <div className="mb-8 space-y-2 text-sm text-text-secondary">
+      <div className="mb-6 space-y-1 text-xs sm:text-sm text-text-secondary">
         <p>• Secure payment with Yoco</p>
         <p>• SSL encrypted and secure</p>
         <p>• 14-day money-back guarantee</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8 text-left">
+      <form onSubmit={handleSubmit} className="space-y-6 text-left">
         {/* Section 1: Your Details */}
         <div>
-          <h3 className="text-sm font-bold text-action-primary mb-4">1. YOUR DETAILS</h3>
-          <div className="space-y-4">
+          <h3 className="text-xs sm:text-sm font-bold text-action-primary mb-3">1. YOUR DETAILS</h3>
+          <div className="space-y-3">
             <FormInput
               type="text"
               value={name}
@@ -141,33 +141,20 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, passType
 
         {/* Section 2: Payment Method */}
         <div>
-          <h3 className="text-sm font-bold text-action-primary mb-3">2. SELECT PAYMENT METHOD</h3>
-          
-          {/* OR PAY BY CARD Separator */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex-1 h-px bg-border-subtle"></div>
-            <span className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Pay by Card</span>
-            <div className="flex-1 h-px bg-border-subtle"></div>
-          </div>
+          <h3 className="text-xs sm:text-sm font-bold text-action-primary mb-4">2. PROCEED TO PAYMENT</h3>
 
-          <div className="text-sm text-text-secondary mb-6">
-            You will be redirected to Yoco's secure payment page.
+          <div className="text-xs sm:text-sm text-text-secondary mb-6">
+            You will be redirected to Yoco's secure payment page to complete your purchase. We accept card, Apple Pay, and Google Pay.
           </div>
           
-          {passPrice.launchPricing && (
-            <div className="bg-urgency-high bg-opacity-10 border border-urgency-high rounded-lg p-3 mb-4">
-              <p className="text-sm text-urgency-high font-semibold">🎉 Launch Pricing: R{passPrice.price} (Limited time)</p>
-            </div>
-          )}
-          
-          <Button type="submit" variant="payment" className="w-full text-lg bg-brand-yellow !text-gray-900 font-bold" disabled={isLoading}>
-            {isLoading ? 'Redirecting to Payment...' : <>Pay R<span className="font-bold">{passPrice.price}</span> with Card</>}
+          <Button type="submit" variant="payment" size="lg" className="w-full" disabled={isLoading}>
+            {isLoading ? 'Redirecting to Payment...' : <>Proceed to Payment (R{passPrice.price})</>}
           </Button>
         </div>
       </form>
 
       {/* Footer Trust Info */}
-      <div className="mt-8 pt-6 border-t border-border-subtle text-xs text-text-secondary space-y-2">
+      <div className="mt-6 pt-4 border-t border-border-subtle text-xs text-text-secondary space-y-1">
         <p>Your payment is processed by Yoco, South Africa's leading payment processor.</p>
         <p>We never store your card details. Your data is encrypted and secure.</p>
       </div>

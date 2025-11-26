@@ -57,3 +57,11 @@ export interface FAQItem {
   question: string;
   answer: string;
 }
+
+export interface PassFeatures {
+  description: string;
+  feature1: string;
+  feature2: string;
+  feature3: string;
+  venueCount: number;
+}

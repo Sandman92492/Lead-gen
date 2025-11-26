@@ -17,7 +17,7 @@ const Button: React.FC<ButtonProps> = ({ children, className, variant = 'primary
   const variantStyles = {
     primary: "bg-action-primary text-white focus:ring-[var(--color-action-primary)]/30",
     secondary: "border-2 border-action-primary text-action-primary bg-transparent focus:ring-[var(--color-action-primary)]/30 hover:bg-action-primary/10",
-    payment: "bg-action-primary text-white focus:ring-[var(--color-action-primary)]/40 hover:opacity-90",
+    payment: "bg-brand-yellow text-gray-900 font-bold focus:ring-[var(--color-brand-yellow)]/40 hover:brightness-110",
     outline: "border-2 border-action-primary text-action-primary bg-transparent focus:ring-[var(--color-action-primary)]/30 hover:bg-action-primary/10",
     redeem: "bg-urgency-high text-white focus:ring-[var(--color-urgency-high)]/30",
   };

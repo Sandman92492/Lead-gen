@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from './Button.tsx';
-import { PassType } from '../types.ts';
-import { getPassPrice } from '../utils/pricing';
+import { PassType, PassFeatures } from '../types.ts';
+import { getPassPrice, getPassFeatures } from '../utils/pricing';
 
 interface PricingOptionsProps {
     onSelectPass?: (passType: PassType) => void;
@@ -10,14 +10,23 @@ interface PricingOptionsProps {
 const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass }) => {
     const [isTestPaymentLoading, setIsTestPaymentLoading] = useState(false);
     const [passPrice, setPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
+    const [features, setFeatures] = useState<PassFeatures>({
+        description: 'Discover and support Port Alfred\'s best local venues while enjoying great deals and authentic experiences.',
+        feature1: 'Discover 70+ local venues and businesses',
+        feature2: 'Support independent Port Alfred businesses',
+        feature3: 'Enjoy verified savings and great experiences',
+        venueCount: 70
+    });
 
-    // Load dynamic price on mount
+    // Load dynamic price and features on mount
     useEffect(() => {
-        const loadPrice = async () => {
+        const loadData = async () => {
             const price = await getPassPrice();
+            const passFeatures = await getPassFeatures();
             setPassPrice(price);
+            setFeatures(passFeatures);
         };
-        loadPrice();
+        loadData();
     }, []);
 
     const handleJoinWaitingList = () => {
@@ -38,8 +47,8 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass }) => {
                     <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">
                         Select Your Plan
                     </h2>
-                    <h1 className="text-4xl md:text-5xl font-display font-black text-text-primary mb-4 md:mb-6">Choose Your Pass</h1>
-                    <p className="text-lg md:text-xl text-text-secondary mb-8 md:mb-10">One town, two ways to unlock incredible savings.</p>
+                    <h1 className="text-4xl md:text-5xl font-display font-black text-text-primary mb-4 md:mb-6">Support Local Port Alfred</h1>
+                    <p className="text-lg md:text-xl text-text-secondary mb-8 md:mb-10">Get great deals while discovering and supporting the businesses that make our town thrive.</p>
                 </div>
 
                 <div className="max-w-4xl mx-auto">
@@ -64,20 +73,20 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass }) => {
                                 </div>
                             </div>
 
-                            <p className="text-text-secondary text-center mb-6">Unlock exclusive deals at premium Port Alfred venues. Valid from December 1st through January 31st.</p>
+                            <p className="text-text-secondary text-center mb-6">{features.description}</p>
 
                             <ul className="space-y-3 mb-8">
                                 <li className="flex items-start text-text-secondary">
                                     <span className="text-action-primary mr-3 font-bold">✓</span>
-                                    <span>Valid from December 1st to January 31st</span>
+                                    <span>{features.feature1}</span>
                                 </li>
                                 <li className="flex items-start text-text-secondary">
                                     <span className="text-action-primary mr-3 font-bold">✓</span>
-                                    <span>Access to all Port Alfred deals</span>
+                                    <span>{features.feature2}</span>
                                 </li>
                                 <li className="flex items-start text-text-secondary">
                                     <span className="text-action-primary mr-3 font-bold">✓</span>
-                                    <span>One redemption per venue</span>
+                                    <span>{features.feature3}</span>
                                 </li>
                             </ul>
 

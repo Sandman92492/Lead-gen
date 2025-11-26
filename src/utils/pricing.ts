@@ -1,5 +1,6 @@
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { PassFeatures } from '../types';
 
 /**
  * Get current pass price based on user count
@@ -41,3 +42,33 @@ export const incrementPassCount = async (): Promise<void> => {
     console.error('Error incrementing pass count:', error);
   }
 };
+
+/**
+ * Get pass features from Firestore config
+ * Returns default features if not found in database
+ */
+export const getPassFeatures = async (): Promise<PassFeatures> => {
+  try {
+    const configDoc = await getDoc(doc(db, 'config', 'passFeatures'));
+    if (configDoc.exists()) {
+      return configDoc.data() as PassFeatures;
+    }
+    // Return defaults if document doesn't exist
+    return getDefaultPassFeatures();
+  } catch (error) {
+    console.error('Error fetching pass features:', error);
+    // Return defaults on error
+    return getDefaultPassFeatures();
+  }
+};
+
+/**
+ * Get default pass features
+ */
+const getDefaultPassFeatures = (): PassFeatures => ({
+  description: 'Discover and support Port Alfred\'s best local venues while enjoying great deals and authentic experiences.',
+  feature1: 'Discover 70+ local venues and businesses',
+  feature2: 'Support independent Port Alfred businesses',
+  feature3: 'Enjoy verified savings and great experiences',
+  venueCount: 70
+});

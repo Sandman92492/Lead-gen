@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getPassPrice } from '../utils/pricing';
+import { getPassPrice, getPassFeatures } from '../utils/pricing';
+import { PassFeatures } from '../types';
 
 interface FreUserTeaserProps {
   userName?: string;
@@ -8,13 +9,22 @@ interface FreUserTeaserProps {
 
 const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }) => {
   const [passPrice, setPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
+  const [features, setFeatures] = useState<PassFeatures>({
+    description: 'Discover and support Port Alfred\'s best local venues while enjoying great deals and authentic experiences.',
+    feature1: 'Discover 70+ local venues and businesses',
+    feature2: 'Support independent Port Alfred businesses',
+    feature3: 'Enjoy verified savings and great experiences',
+    venueCount: 70
+  });
 
   useEffect(() => {
-    const loadPrice = async () => {
+    const loadData = async () => {
       const price = await getPassPrice();
+      const passFeatures = await getPassFeatures();
       setPassPrice(price);
+      setFeatures(passFeatures);
     };
-    loadPrice();
+    loadData();
   }, []);
 
   return (
@@ -47,10 +57,10 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
                 Unlock Your Holiday Pass
               </h2>
               <p className="text-lg text-white/90 mb-2">
-                Join 70+ locals saving big this December
+                Your key to premium Port Alfred deals
               </p>
               <p className="text-sm text-white/80 mb-6 md:mb-8">
-                Instant access to R2,000+ in verified savings across Port Alfred's best venues
+                Exclusive access to verified savings at your favorite local venues
               </p>
               
               {/* Price Display */}
@@ -62,8 +72,8 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
                   <span className="text-4xl font-display font-black text-white">R{passPrice.price}</span>
                   {passPrice.launchPricing && (
                     <>
-                      <span className="text-white/70 line-through">R299</span>
-                      <span className="text-value-highlight font-bold">67% OFF</span>
+                      <span className="text-white/70 line-through">R199</span>
+                      <span className="text-value-highlight font-bold">{Math.round(((199 - passPrice.price) / 199) * 100)}% OFF</span>
                     </>
                   )}
                 </div>
@@ -73,7 +83,7 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
                 onClick={onSelectPass}
                 className="w-full bg-white text-action-primary font-bold text-lg py-4 px-6 rounded-lg hover:bg-white/95 transition-all duration-300 shadow-lg"
               >
-                Get My Pass Now →
+                Get My Pass Now (R{passPrice.price}) →
               </button>
             </div>
           </div>
@@ -93,9 +103,9 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
               {[
-                { emoji: '🍽️', title: 'Food & Dining', desc: '2-for-1s, discounts & exclusive meals' },
-                { emoji: '🏄', title: 'Adventure', desc: 'Water sports, tours & outdoor activities' },
-                { emoji: '🛍️', title: 'Retail', desc: 'Shopping discounts at local favorites' },
+                { emoji: '🍽️', title: 'Local Dining', desc: 'Support family-run restaurants and cafes with great deals' },
+                { emoji: '🏄', title: 'Local Adventures', desc: 'Discover outdoor experiences run by local guides' },
+                { emoji: '🛍️', title: 'Local Retail', desc: 'Shop at unique local businesses you love' },
               ].map((category) => (
                 <div
                   key={category.title}
@@ -117,11 +127,11 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
               <h3 className="text-xl font-display font-black text-text-primary mb-6">Your Benefits:</h3>
               <ul className="space-y-4">
                 {[
-                  'Browse 70+ verified deals at local venues',
-                  'Instant digital pass delivered to your phone',
-                  'Easy one-tap redemptions in-store',
-                  'Real-time tracking of your savings',
-                  'Support from our team via WhatsApp',
+                  features.feature1,
+                  features.feature2,
+                  features.feature3,
+                  "Easy one-tap redemptions in-store",
+                  "Join a community that cares about local",
                 ].map((benefit, i) => (
                   <li key={i} className="flex items-start gap-4">
                     <span className="text-2xl flex-shrink-0">✓</span>
@@ -134,25 +144,7 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="bg-action-primary py-8 md:py-16">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-display font-black text-white mb-4">
-              Ready to Save?
-            </h2>
-            <p className="text-lg text-white/90 mb-6 md:mb-8">
-              Join the Port Alfred Holiday Pass community today
-            </p>
-            <button
-              onClick={onSelectPass}
-              className="inline-block bg-white text-action-primary font-bold text-lg py-4 px-12 rounded-lg hover:bg-white/95 transition-all duration-300 shadow-lg"
-            >
-              Get Pass - R{passPrice.price} →
-            </button>
-          </div>
-        </div>
-      </section>
+
     </main>
   );
 };

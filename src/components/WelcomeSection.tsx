@@ -19,10 +19,10 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({ variant = 'intro' }) =>
       body: 'Where the gentle Kowie River meets the endless Indian Ocean. We believe a holiday is more than just seeing the sights, it\'s the feeling of warm sand between your toes, the taste of salt on the air, and the stories you\'ll share for years. Your real holiday starts now.',
     },
     welcomeWithPass: {
-      tag: 'VIP Access',
-      heading: 'Exclusive Savings Unlocked',
-      body: 'You\'re now part of an exclusive community of savvy holidaymakers. Explore curated deals at premium venues and enjoy authentic Port Alfred experiences at unbeatable savings.',
-    },
+       tag: 'VIP Access',
+       heading: 'Discover Local. Save Big.',
+       body: 'You\'re now part of a community supporting Port Alfred\'s thriving local scene. Explore authentic venues, discover what makes our town special, and enjoy unbeatable savings while supporting the businesses that make Port Alfred great.',
+     },
   };
 
   const current = content[variant];

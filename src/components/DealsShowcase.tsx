@@ -28,10 +28,10 @@ const DealsShowcase: React.FC<DealsShowcaseProps> = ({ hasPass, redeemedDeals = 
           <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">
             Featured Deals
           </h2>
-          <p className="text-3xl md:text-4xl font-display font-black text-accent-primary mb-4 md:mb-6">The Heavy Hitters</p>
-          <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">
-            Get the best savings at Port Alfred's premier venues
-          </p>
+          <p className="text-3xl md:text-4xl font-display font-black text-accent-primary mb-4 md:mb-6">Discover & Save</p>
+           <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">
+             Explore Port Alfred's most loved local venues and support the businesses that make our town special
+           </p>
         </div>
 
         {isLoading && (
@@ -58,18 +58,18 @@ const DealsShowcase: React.FC<DealsShowcaseProps> = ({ hasPass, redeemedDeals = 
               ))}
             </div>
             {isFreeUser && (
-              <div className="text-center mt-12">
-                <p className="text-text-secondary mb-4">
-                  Interested in more deals? Sign in to browse all available offers.
-                </p>
-                <button
-                  onClick={onSignInClick}
-                  className="text-action-primary font-semibold hover:underline"
-                >
-                  Sign in to view all deals
-                </button>
-              </div>
-            )}
+               <div className="text-center mt-12">
+                 <p className="text-text-secondary mb-4">
+                   Ready to discover all Port Alfred has to offer? Sign in to explore all venues and deals.
+                 </p>
+                 <button
+                   onClick={onSignInClick}
+                   className="text-action-primary font-semibold hover:underline"
+                 >
+                   Sign in to discover more
+                 </button>
+               </div>
+             )}
           </>
         )}
       </div>
