@@ -133,6 +133,14 @@ const App: React.FC = () => {
     loadRedeemedDeals();
   }, [pass?.passId]);
 
+  // Handle post-auth purchase flow when user auth state updates
+  useEffect(() => {
+    if (user && selectedPassType && isAuthModalOpen === false) {
+      // User just signed in and selected a pass type, proceed with purchase
+      handleSelectAndPurchase(selectedPassType);
+    }
+  }, [user, selectedPassType, isAuthModalOpen]);
+
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -338,13 +346,7 @@ const App: React.FC = () => {
           setTimeout(() => {
             window.scrollTo(0, 0);
           }, 100);
-          // If they selected a pass type, proceed with purchase flow
-          if (selectedPassType) {
-            // The handleSelectAndPurchase function will check displayName and show profile modal if needed
-            setTimeout(() => {
-              handleSelectAndPurchase(selectedPassType);
-            }, 300);
-          }
+          // If they selected a pass type, it will be handled by the useEffect that watches user changes
           // Otherwise, just stay on home page and let user browse
         }}
       />
