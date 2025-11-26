@@ -327,6 +327,7 @@ const App: React.FC = () => {
           onClose={handleClosePurchaseModal}
           passType={selectedPassType}
           userEmail={user?.email}
+          userDisplayName={user?.displayName}
           userId={user?.uid}
         />
       )}
