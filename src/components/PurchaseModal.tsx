@@ -23,7 +23,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, passType
   const [isLoading, setIsLoading] = useState(false);
   const [passPrice, setPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
 
-  // Load dynamic price when modal opens
+  // Load dynamic price and sync email when modal opens
   useEffect(() => {
     if (isOpen) {
       const loadPrice = async () => {
@@ -31,8 +31,11 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, passType
         setPassPrice(price);
       };
       loadPrice();
+      
+      // Sync email when modal opens (important if user signs in after modal is mounted)
+      setEmail(userEmail || '');
     }
-  }, [isOpen]);
+  }, [isOpen, userEmail]);
 
   const handleYocoPayment = async () => {
     try {
