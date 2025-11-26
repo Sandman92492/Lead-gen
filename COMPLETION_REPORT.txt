@@ -18,7 +18,7 @@ CRITICAL ISSUE #2: Hardcoded baseUrl
 Status: ✅ FIXED
 File: netlify/functions/create-checkout.ts (line 45)
 Change: Dynamic URL from environment variable
-Before: const baseUrl = 'https://loquacious-arithmetic-f21122.netlify.app'
+Before: const baseUrl = 'https://hardcoded-domain.netlify.app'
 After:  const baseUrl = process.env.SITE_URL || (event.headers.host ? ...)
 Impact: Works with any domain, no hardcoding required
 
@@ -27,7 +27,7 @@ CRITICAL ISSUE #3: Firebase API Key Exposure
 Status: ✅ FIXED
 File: src/firebase.ts
 Change: All 7 Firebase config values now load from environment
-Before: apiKey: "AIzaSyDAKhgJEkxOczLBWBNtQbjGnfmyGGZ7nMg" (hardcoded)
+Before: apiKey: "hardcoded-api-key-value" (hardcoded)
 After:  apiKey: (import.meta as any).env.VITE_FIREBASE_API_KEY || fallback
 Impact: Credentials no longer in source code
 

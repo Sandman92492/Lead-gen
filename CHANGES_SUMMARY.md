@@ -29,10 +29,10 @@
 **Example**:
 ```typescript
 // Before
-apiKey: "AIzaSyDAKhgJEkxOczLBWBNtQbjGnfmyGGZ7nMg",
+apiKey: "hardcoded-api-key-here",
 
 // After
-apiKey: (import.meta as any).env.VITE_FIREBASE_API_KEY || "AIzaSyDAKhgJEkxOczLBWBNtQbjGnfmyGGZ7nMg",
+apiKey: (import.meta as any).env.VITE_FIREBASE_API_KEY || "fallback-key",
 ```
 
 ---
@@ -51,7 +51,7 @@ apiKey: (import.meta as any).env.VITE_FIREBASE_API_KEY || "AIzaSyDAKhgJEkxOczLBW
 **Key change**:
 ```typescript
 // Before
-const baseUrl = 'https://loquacious-arithmetic-f21122.netlify.app';
+const baseUrl = 'https://hardcoded-netlify-domain.netlify.app';
 
 // After
 const baseUrl = process.env.SITE_URL || 

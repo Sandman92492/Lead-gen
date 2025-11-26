@@ -584,7 +584,7 @@ New users see onboarding after their first pass purchase:
 ### Admin Dashboard
 Simple web UI to add vendors and deals without Firebase Console or code changes:
 - **Component:** `src/components/AdminDashboard.tsx`
-- **Access:** Add `?admin=true` to URL and sign in with `admin@holidaypass.co.za`
+- **Access:** Add `?admin=true` to URL and sign in with your admin email (configured in VITE_ADMIN_EMAIL)
 - **Features:**
   - Create vendors with name, email, phone, 4-digit PIN, category, city, address
   - Create deals linked to vendors with offer, savings amount, category, city, terms

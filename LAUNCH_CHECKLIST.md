@@ -43,7 +43,7 @@
 ## Progress Log
 
 ### ✅ CRITICAL #1: Admin Email Check
-- Fixed: App.tsx line 67 now requires `VITE_ADMIN_EMAIL` env var or defaults to admin@holidaypass.co.za
+- Fixed: App.tsx line 67 now requires `VITE_ADMIN_EMAIL` env var for admin access
 - Added dependency on `user` object to verify email before granting access
 - Status: COMPLETE
 

@@ -12,7 +12,7 @@ All 5 critical code changes have been completed and tested. Your app is now prod
 if (adminParam === 'true') { setIsAdminMode(true); }
 
 // After
-const ADMIN_EMAIL = (import.meta as any).env.VITE_ADMIN_EMAIL || 'admin@holidaypass.co.za';
+const ADMIN_EMAIL = (import.meta as any).env.VITE_ADMIN_EMAIL || 'your-admin-email@example.com';
 if (adminParam === 'true' && user?.email === ADMIN_EMAIL) {
 ```
 **Status**: Production-ready ✅
@@ -24,7 +24,7 @@ if (adminParam === 'true' && user?.email === ADMIN_EMAIL) {
 **Fix**: Now uses environment variable with smart fallback
 ```typescript
 // Before
-const baseUrl = 'https://loquacious-arithmetic-f21122.netlify.app';
+const baseUrl = 'https://hardcoded-netlify-domain.netlify.app';
 
 // After
 const baseUrl = process.env.SITE_URL || 
@@ -39,11 +39,11 @@ const baseUrl = process.env.SITE_URL ||
 **Fix**: Now loads from environment variables with dev fallbacks
 ```typescript
 // Before
-const firebaseConfig = { apiKey: "AIzaSyDAKhgJEkxOczLBWBNtQbjGnfmyGGZ7nMg", ... }
+const firebaseConfig = { apiKey: "hardcoded-api-key", ... }
 
 // After
 const firebaseConfig = {
-  apiKey: (import.meta as any).env.VITE_FIREBASE_API_KEY || "AIzaSyDAKhgJEkxOczLBWBNtQbjGnfmyGGZ7nMg",
+  apiKey: (import.meta as any).env.VITE_FIREBASE_API_KEY || "fallback-key",
   // ... 6 more config values from env
 }
 ```

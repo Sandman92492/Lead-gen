@@ -8,7 +8,7 @@ You must configure these 8 environment variables in Netlify before deploying to 
 
 1. **Go to Netlify Dashboard**
    - Login at https://app.netlify.com
-   - Select your site: `loquacious-arithmetic-f21122` (or your domain)
+   - Select your site (or your domain)
 
 2. **Navigate to Environment Settings**
    - Click **Site Settings** (top menu)

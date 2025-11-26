@@ -79,20 +79,13 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!user) return;
     
-    const ADMIN_EMAIL = (import.meta as any).env.VITE_ADMIN_EMAIL || 'imagenbeats@gmail.com';
+    const ADMIN_EMAIL = (import.meta as any).env.VITE_ADMIN_EMAIL;
+    if (!ADMIN_EMAIL) return; // Admin email not configured
+    
     const adminParamDetected = sessionStorage.getItem('adminParamDetected') === 'true';
     const emailMatches = user?.email === ADMIN_EMAIL;
     
-    console.log('Admin check:', {
-      adminParamDetected,
-      userEmail: user?.email,
-      ADMIN_EMAIL,
-      emailMatches,
-      shouldEnableAdmin: adminParamDetected && emailMatches,
-    });
-    
     if (adminParamDetected && emailMatches) {
-      console.log('✅ Admin mode enabled');
       setIsAdminMode(true);
     }
   }, [user]);
