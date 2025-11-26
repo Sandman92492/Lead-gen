@@ -1,0 +1,548 @@
+/**
+ * SEMANTIC COLOR SYSTEM - Single Source of Truth
+ * 
+ * All colors use semantic naming based on their job/purpose in the UI.
+ * This system supports automatic light/dark mode switching.
+ * 
+ * SEMANTIC COLOR NAMES (from AGENTS.md):
+ * - bg-primary: Main screen background
+ * - bg-card: Cards, sections, navigation bars
+ * - border-subtle: Dividers, borders, empty state patterns
+ * - action-primary: Prices, main CTAs, active states
+ * - urgency-high: Flash deals, countdown timers, stock alerts
+ * - value-highlight: "Best Value" badges, savings percentages
+ * - alert: Extreme scarcity, error messages
+ * - success: Confirmations, checkmarks, success states
+ * - text-primary: Headlines, important text, main prices
+ * - text-secondary: Descriptions, metadata, captions
+ */
+
+@layer components {
+  /* ============================================
+     BUTTONS - Actions and Interactions
+     ============================================ */
+
+  /* Primary CTA buttons - Ocean blue (Buy/Redeem) */
+   .btn-primary {
+     @apply bg-action-primary text-white hover:brightness-110 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-md font-bold shadow-lg;
+   }
+
+   /* Secondary buttons - Outline style (Directions) */
+   .btn-secondary {
+     @apply bg-bg-primary border-2 border-action-primary text-action-primary hover:bg-action-primary/10 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-md font-bold;
+   }
+
+   /* Redeem buttons - Coral electric (Primary CTA) */
+   .btn-redeem {
+     @apply bg-action-primary text-white hover:brightness-110 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-md font-bold text-base shadow-lg;
+   }
+
+   /* Redeemed buttons - Emerald success background */
+   .btn-redeemed {
+     @apply bg-success text-white hover:brightness-110 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-md font-bold text-base whitespace-nowrap;
+   }
+
+   /* Directions button - Secondary (Outline) style */
+   .btn-directions {
+     @apply bg-bg-primary border-2 border-action-primary text-action-primary hover:bg-action-primary/10 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-md font-bold text-base inline-flex items-center gap-2;
+   }
+
+  /* WhatsApp button - Brand green #25D366 */
+  .btn-whatsapp {
+    @apply bg-[#25D366] text-white hover:brightness-110 transition-all duration-300;
+  }
+
+  /* Outline/secondary buttons - Neutral background with border */
+  .btn-outline {
+    @apply bg-bg-primary border-2 border-border-subtle text-text-primary hover:bg-bg-card transition-all duration-300 px-6 py-3 md:py-2.5 rounded-md font-bold text-base;
+  }
+
+  /* Ghost/text buttons - Minimal style (Tertiary) */
+  .btn-ghost {
+    @apply text-action-primary hover:underline transition-colors duration-300;
+  }
+
+  /* ============================================
+     TEXT COLORS - Semantic text usage
+     ============================================ */
+
+  /* Primary text - Headlines, important text, main prices */
+  .text-primary {
+    @apply text-text-primary;
+  }
+
+  /* Secondary text - Descriptions, metadata, captions */
+  .text-secondary {
+    @apply text-text-secondary;
+  }
+
+  /* Accent primary text - Highlighted/important text */
+  .text-accent {
+    @apply text-action-primary;
+  }
+
+  /* Accent secondary text - Alternative highlight */
+  .text-accent-alt {
+    @apply text-urgency-high;
+  }
+
+  /* Inverted text - Light text on dark backgrounds */
+  .text-inverted {
+    @apply text-white dark:text-black;
+  }
+
+  /* Success text - Green confirmations */
+  .text-success {
+    @apply text-[var(--color-success)];
+  }
+
+  /* Error/Warning text - Red errors */
+  .text-error {
+    @apply text-alert;
+  }
+
+  /* Urgency text - Flash deals, scarcity */
+  .text-urgency {
+    @apply text-urgency-high;
+  }
+
+  /* Value text - Savings, badges */
+  .text-value {
+    @apply text-value-highlight;
+  }
+
+  /* ============================================
+     BACKGROUNDS - Section and fill colors
+     ============================================ */
+
+  /* Default background - Main page background */
+  .bg-primary {
+    @apply bg-bg-primary;
+  }
+
+  /* Card background - Cards, sections, navigation bars */
+  .bg-card {
+    @apply bg-bg-card;
+  }
+
+  /* Accent background - Highlight areas */
+  .bg-accent-light {
+    @apply bg-action-primary/10;
+  }
+
+  /* Deep background - Footer and dark sections */
+  .bg-dark-section {
+    @apply bg-action-primary text-white;
+  }
+
+  /* Success background - ONLY use with white text */
+  .bg-success {
+    @apply bg-[var(--color-success)] text-white;
+  }
+
+  /* Success background light - Subtle success areas */
+  .bg-success-light {
+    @apply bg-[var(--color-success)] bg-opacity-20 text-text-primary;
+  }
+
+  /* Error background - Error state areas */
+  .bg-error {
+    @apply bg-[var(--color-alert)] bg-opacity-20;
+  }
+
+  /* Alert background - Scarcity, urgency */
+  .bg-alert-light {
+    @apply bg-[var(--color-alert)] bg-opacity-10;
+  }
+
+  /* ============================================
+     BORDERS - Dividers and outlines
+     ============================================ */
+
+  /* Subtle border - Default dividers and card borders */
+  .border-default {
+    @apply border border-border-subtle;
+  }
+
+  /* Active/focus border - Highlighted borders */
+  .border-active {
+    @apply border-2 border-action-primary;
+  }
+
+  /* Accent border - Alternative highlight border */
+  .border-accent-light {
+    @apply border border-action-primary/30;
+  }
+
+  /* ============================================
+     CARDS & CONTAINERS - Reusable card styles
+     ============================================ */
+
+  /* Base card - Standard card container */
+  .card {
+    @apply bg-bg-card rounded-lg shadow-lg border-4 border-action-primary;
+  }
+
+  /* Interactive card - Card with hover effect */
+  .card-interactive {
+    @apply bg-bg-card rounded-lg shadow-lg border-4 border-action-primary overflow-hidden transition-all duration-300 hover:shadow-2xl hover:brightness-105;
+  }
+
+  /* Card with active state - Card that can be highlighted */
+  .card-active {
+    @apply bg-bg-card rounded-lg shadow-lg border-6 border-action-primary overflow-hidden;
+  }
+
+  /* Featured card - Prominent card styling */
+  .card-featured {
+    @apply bg-bg-card p-6 sm:p-8 rounded-xl border-4 border-action-primary shadow-lg;
+  }
+
+  /* Deal card - Specific styling for deal cards */
+  .card-deal {
+    @apply bg-bg-card rounded-lg shadow-lg border-4 border-action-primary overflow-hidden transition-all duration-300 hover:shadow-2xl hover:brightness-105;
+  }
+
+  /* ============================================
+     PRICE DISPLAYS
+     ============================================ */
+
+  /* Current price - Largest, boldest text */
+  .price-current {
+    @apply text-action-primary text-2xl font-bold;
+  }
+
+  /* Original price - With strikethrough */
+  .price-original {
+    @apply text-text-secondary line-through;
+  }
+
+  /* Savings percentage - Value highlight with icon */
+  .price-savings {
+    @apply text-value-highlight font-bold inline-flex items-center gap-1;
+  }
+
+  /* Flash sale price - Urgency high with pulse */
+  .price-flash {
+    @apply text-urgency-high font-bold animate-live-pulse;
+  }
+
+  /* ============================================
+     BADGES & ALERTS
+     ============================================ */
+
+  /* Best Value badge - Solid gold with glow */
+  .badge-value {
+   @apply bg-value-highlight text-value-highlight px-3 py-1 rounded-full text-sm font-bold shadow-md animate-glow;
+  }
+
+  /* Countdown badge - Vibrant red urgency */
+  .badge-countdown {
+   @apply bg-urgency-high text-white px-3 py-1 rounded-full text-sm font-bold;
+  }
+
+  /* Scarcity alert - Vibrant red */
+  .badge-scarcity {
+   @apply text-alert font-bold;
+  }
+
+  /* ============================================
+     ICONS & ILLUSTRATIONS
+     ============================================ */
+
+  /* Primary action icon color */
+  .icon-primary {
+    @apply text-action-primary;
+  }
+
+  /* Secondary accent icon color */
+  .icon-secondary {
+    @apply text-urgency-high;
+  }
+
+  /* Success icon color */
+  .icon-success {
+    @apply text-success;
+  }
+
+  /* Error icon color */
+  .icon-error {
+    @apply text-alert;
+  }
+
+  /* Value icon color */
+  .icon-value {
+    @apply text-value-highlight;
+  }
+
+  /* Dark text on value highlight (gold) - always readable regardless of theme */
+  .text-on-value-highlight {
+    @apply text-gray-900;
+  }
+
+  .dark .text-on-value-highlight {
+    @apply text-gray-900;
+  }
+
+  /* Savings badge text - force dark color even in dark mode */
+  .savings-badge-text {
+    color: #1F2937 !important;
+  }
+
+  .dark .savings-badge-text {
+    color: #1F2937 !important;
+  }
+
+   /* ============================================
+      STATES - Semantic state colors
+      ============================================ */
+
+  /* Success state - Green for confirmations */
+  .state-success {
+    @apply border-success text-success;
+  }
+
+  /* Error state - Red for errors */
+  .state-error {
+    @apply border-alert text-alert;
+  }
+
+  /* Warning state - Orange for warnings */
+  .state-warning {
+    @apply border-urgency-high text-urgency-high;
+  }
+
+  /* Info state - Teal for information */
+  .state-info {
+    @apply border-action-primary text-action-primary;
+  }
+
+  /* ============================================
+     MODALS & OVERLAYS
+     ============================================ */
+
+  /* Modal backdrop - Semi-transparent overlay */
+  .modal-backdrop {
+    @apply fixed inset-0 backdrop-blur-sm bg-black/50;
+  }
+
+  /* Modal content - Modal container */
+  .modal-content {
+    @apply bg-bg-card rounded-2xl shadow-2xl p-6 sm:p-8 relative border border-border-subtle;
+  }
+
+  /* Modal header - Modal title area */
+  .modal-header {
+    @apply text-center mb-6;
+  }
+
+  /* Modal close button - Standard close button style */
+  .modal-close-btn {
+    @apply absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors;
+  }
+
+  /* ============================================
+     FORM ELEMENTS
+     ============================================ */
+
+  /* Input field - Text input styling */
+  .input-field {
+    @apply w-full px-4 py-3 bg-bg-primary border-2 rounded-lg focus:outline-none focus:ring-2 transition text-text-primary;
+    border-color: color-mix(in srgb, var(--color-action-primary) 30%, transparent);
+    color: var(--color-text-primary);
+  }
+
+  .input-field::placeholder {
+    color: color-mix(in srgb, var(--color-text-secondary) 70%, transparent);
+  }
+
+  .input-field:focus {
+    @apply ring-[var(--color-action-primary)];
+  }
+
+  /* ============================================
+     ANIMATIONS & SPECIAL STATES
+     ============================================ */
+
+  /* Live pulse animation - For animated elements */
+  .animate-live-pulse {
+    animation: live-pulse 2s infinite;
+  }
+
+  /* Subtle pulse - Gentle pulsing animation */
+  .animate-subtle-pulse {
+    animation: subtle-pulse 3s infinite ease-in-out;
+  }
+
+  /* Smooth scroll reveal - For scroll reveal animations */
+  .scroll-reveal {
+    @apply opacity-0 transform translate-y-[30px] transition-all duration-700 ease-out;
+  }
+
+  .scroll-reveal.is-visible {
+    @apply opacity-100 translate-y-0;
+  }
+}
+
+/* ============================================
+   SEMANTIC COLOR VARIABLES (for Tailwind)
+   ============================================ */
+
+@layer utilities {
+  /* Legacy semantic colors for backward compatibility */
+  .text-accent-primary {
+    @apply text-[var(--color-accent-primary)];
+  }
+
+  .border-accent-primary {
+    @apply border-[var(--color-accent-primary)];
+  }
+
+  .bg-accent-primary {
+    @apply bg-[var(--color-accent-primary)];
+  }
+
+  /* New semantic utilities */
+  .bg-action-primary {
+    @apply bg-[var(--color-action-primary)];
+  }
+
+  .bg-bg-primary {
+    @apply bg-[var(--color-bg-primary)];
+  }
+
+  .bg-bg-card {
+    @apply bg-[var(--color-bg-card)];
+  }
+
+  .bg-urgency-high {
+    @apply bg-[var(--color-urgency-high)];
+  }
+
+  .bg-value-highlight {
+    @apply bg-[var(--color-value-highlight)];
+  }
+
+  .bg-alert {
+    @apply bg-[var(--color-alert)];
+  }
+
+  .bg-success {
+    @apply bg-[var(--color-success)];
+  }
+
+  /* Text colors */
+  .text-action-primary {
+    @apply text-[var(--color-action-primary)];
+  }
+
+  .text-text-primary {
+    @apply text-[var(--color-text-primary)];
+  }
+
+  .text-text-secondary {
+    @apply text-[var(--color-text-secondary)];
+  }
+
+  .text-urgency-high {
+    @apply text-[var(--color-urgency-high)];
+  }
+
+  .text-value-highlight {
+    @apply text-[var(--color-value-highlight)];
+  }
+
+  .text-alert {
+    @apply text-[var(--color-alert)];
+  }
+
+  .text-success {
+    @apply text-[var(--color-success)];
+  }
+
+  /* Border colors */
+  .border-border-subtle {
+    @apply border-[var(--color-border-subtle)];
+  }
+
+  .border-action-primary {
+    @apply border-[var(--color-action-primary)];
+  }
+
+  .border-urgency-high {
+    @apply border-[var(--color-urgency-high)];
+  }
+
+  .border-value-highlight {
+    @apply border-[var(--color-value-highlight)];
+  }
+
+  .border-alert {
+    @apply border-[var(--color-alert)];
+  }
+
+  .border-success {
+    @apply border-[var(--color-success)];
+  }
+
+  /* Brand color utilities */
+  .text-brand-white {
+    @apply text-[var(--color-brand-white)];
+  }
+
+  .text-brand-red {
+    @apply text-[var(--color-brand-red)];
+  }
+
+  .text-brand-yellow {
+    @apply text-[var(--color-brand-yellow)];
+  }
+
+  .bg-brand-red {
+    @apply bg-[var(--color-brand-red)];
+  }
+
+  .bg-brand-yellow {
+    @apply bg-[var(--color-brand-yellow)];
+  }
+
+  .bg-brand-white {
+    @apply bg-[var(--color-brand-white)];
+  }
+
+  .bg-brand-dark-blue {
+    @apply bg-[var(--color-brand-dark-blue)];
+  }
+
+  .border-brand-red {
+    @apply border-[var(--color-brand-red)];
+  }
+
+  .border-brand-yellow {
+    @apply border-[var(--color-brand-yellow)];
+  }
+
+  /* ============================================
+     BRAND COLOR BUTTONS (Pass-specific)
+     ============================================ */
+
+  /* WhatsApp integration button */
+  .btn-whatsapp-brand {
+    @apply bg-[#25D366] text-white hover:brightness-110 transition-all duration-300;
+  }
+
+  /* Brand red button - Confined to digital pass card only */
+  .btn-brand-red {
+    @apply bg-[var(--color-brand-red)] text-white hover:brightness-110 transition-all duration-300;
+  }
+
+  /* Brand yellow button - Confined to digital pass card only */
+  .btn-brand-yellow {
+    @apply bg-[var(--color-brand-yellow)] text-[var(--color-brand-dark-blue)] hover:brightness-110 transition-all duration-300;
+  }
+
+  /* Dark mode heading color - Warm coastal sand */
+  .dark .text-accent-primary {
+    @apply text-[var(--color-heading-dark-mode)];
+  }
+}

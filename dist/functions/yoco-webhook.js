@@ -1,0 +1,150 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.handler = void 0;
+const app_1 = require("firebase-admin/app");
+const firestore_1 = require("firebase-admin/firestore");
+const crypto_1 = require("crypto");
+// Yoco signing secret format: whsec_<base64-encoded-key>
+// Decode the base64 part to get the actual key
+const rawSecret = process.env.YOCO_SIGNING_SECRET?.trim() || '';
+const YOCO_SIGNING_SECRET = rawSecret.startsWith('whsec_')
+    ? Buffer.from(rawSecret.substring(6), 'base64').toString('utf-8')
+    : rawSecret;
+const FIREBASE_PRIVATE_KEY = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
+const FIREBASE_CLIENT_EMAIL = process.env.FIREBASE_CLIENT_EMAIL;
+// Initialize Firebase Admin
+let db;
+const initFirebase = () => {
+    if (!db) {
+        const app = (0, app_1.initializeApp)({
+            credential: (0, app_1.cert)({
+                projectId: FIREBASE_PROJECT_ID,
+                privateKey: FIREBASE_PRIVATE_KEY,
+                clientEmail: FIREBASE_CLIENT_EMAIL,
+            }),
+        });
+        db = (0, firestore_1.getFirestore)(app);
+    }
+    return db;
+};
+// Verify webhook signature using HMAC
+const verifyWebhook = (payload, signature, webhookId, timestamp) => {
+    if (!YOCO_SIGNING_SECRET) {
+        console.error('YOCO_SIGNING_SECRET not configured');
+        return false;
+    }
+    // Yoco sends signature as "v1,<base64-hash>" (may have multiple separated by space)
+    const signatureList = signature.split(' ');
+    const receivedSignature = signatureList[0]; // Take first one
+    const parts = receivedSignature.split(',');
+    if (parts.length !== 2 || parts[0] !== 'v1') {
+        console.error('Invalid signature format:', signature);
+        return false;
+    }
+    const receivedHash = parts[1];
+    // Signed content is: webhook-id.webhook-timestamp.raw-body
+    const signedContent = `${webhookId}.${timestamp}.${payload}`;
+    // Secret is stored as whsec_<base64>, extract and decode the base64 part
+    const secretBytes = Buffer.from(YOCO_SIGNING_SECRET, 'utf-8');
+    const hmac = (0, crypto_1.createHmac)('sha256', secretBytes);
+    hmac.update(signedContent);
+    const expectedHash = hmac.digest('base64');
+    return receivedHash === expectedHash;
+};
+const handler = async (event) => {
+    if (event.httpMethod !== 'POST') {
+        return {
+            statusCode: 405,
+            body: JSON.stringify({ error: 'Method not allowed' }),
+        };
+    }
+    try {
+        const signature = event.headers['webhook-signature'] || '';
+        const webhookId = event.headers['webhook-id'] || '';
+        const timestamp = event.headers['webhook-timestamp'] || '';
+        // Use rawBody if available (Netlify provides this for signature verification)
+        const payload = event.rawBody || event.body || '';
+        // Verify webhook signature
+        if (!verifyWebhook(payload, signature, webhookId, timestamp)) {
+            return {
+                statusCode: 401,
+                body: JSON.stringify({ error: 'Unauthorized' }),
+            };
+        }
+        const yocoEvent = JSON.parse(payload);
+        // Only handle succeeded payments
+        if (yocoEvent.type !== 'payment.succeeded' || yocoEvent.payload.status !== 'succeeded') {
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ received: true }),
+            };
+        }
+        const { passType, userEmail, passHolderName, userId } = yocoEvent.payload.metadata || {};
+        if (!passType || !userEmail || !passHolderName || !userId) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: 'Invalid metadata' }),
+            };
+        }
+        // Create pass in Firestore
+        const firestoreDb = initFirebase();
+        // Check if a paid pass already exists for this user
+        const existingPassQuery = await firestoreDb
+            .collection('passes')
+            .where('userId', '==', userId)
+            .where('paymentStatus', '==', 'completed')
+            .limit(1)
+            .get();
+        if (!existingPassQuery.empty) {
+            const existingPass = existingPassQuery.docs[0].data();
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ received: true, passId: existingPass.passId, isDuplicate: true }),
+            };
+        }
+        const passId = 'PAHP-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+        let expiryDate;
+        if (passType === 'annual') {
+            expiryDate = new Date();
+            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+        }
+        else {
+            // Holiday pass: valid for 30 days from purchase
+            expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 30);
+        }
+        await firestoreDb.collection('passes').doc(passId).set({
+            passId,
+            passHolderName,
+            email: userEmail,
+            passType,
+            passStatus: 'paid',
+            expiryDate: expiryDate.toISOString(),
+            userId,
+            createdAt: new Date().toISOString(),
+            paymentRef: yocoEvent.payload.id,
+            paymentStatus: 'completed',
+            purchasePrice: Math.round(yocoEvent.payload.amount / 100), // Convert cents to Rands
+        });
+        // Increment pass count for dynamic pricing
+        const statsRef = firestoreDb.collection('stats').doc('passCount');
+        const statsDoc = await statsRef.get();
+        const currentCount = statsDoc.exists ? (statsDoc.data().count || 0) : 0;
+        await statsRef.set({
+            count: currentCount + 1,
+            lastUpdated: new Date().toISOString(),
+        });
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ received: true, passId }),
+        };
+    }
+    catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Internal server error' }),
+        };
+    }
+};
+exports.handler = handler;

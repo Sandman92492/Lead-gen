@@ -1,0 +1,175 @@
+@import './colors.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light Mode - Coastal Holiday Savings */
+  --color-bg-primary: #E8E5DC;
+  --color-bg-card: #FFFFFF;
+  --color-border-subtle: #E0E0E0;
+  --color-action-primary: #0077B6;
+  --color-urgency-high: #FF8C69;
+  --color-value-highlight: #E6B800;
+  --color-alert: #0077B6;
+  --color-success: #00B894;
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-heading-dark-mode: #E8E5DC;
+  
+  /* Brand/Pass-specific colors - Coastal themed */
+  --color-brand-red: #FF8C69;
+  --color-brand-yellow: #FFD166;
+  --color-brand-white: #FFFFFF;
+  --color-brand-dark-blue: #0077B6;
+  --color-brand-light-text: #E0F7F9;
+  
+  /* Accent color - Royal blue */
+  --color-accent-primary: #3B82F6;
+  
+
+  
+  /* Legacy variables for backward compatibility */
+  --color-background: #FDF6E3;
+  --color-background-alt: #FFFFFF;
+  --color-text-inverted: #FFFFFF;
+  --color-button-text: #FFFFFF;
+  --color-redemption-green: #34D399;
+  --color-deep-teal: #FF6B5A;
+  --color-warm-coral: #FF6B5A;
+  --color-turquoise: #FF6B5A;
+  --color-light-turquoise: #34D399;
+  --color-warm-gold: #FFB340;
+  --color-fresh-green: #34D399;
+  --color-cream: #FDF6E3;
+  --color-light-cream: #FFFFFF;
+  
+  /* For legacy accent colors */
+  --color-accent-secondary: #3B82F6;
+  }
+
+.dark {
+   /* Dark Mode - Coastal Holiday Savings - Deep Ocean */
+   --color-bg-primary: #333333;
+   --color-bg-card: #444444;
+   --color-border-subtle: #555555;
+   --color-action-primary: #00A8E8;
+   --color-urgency-high: #FF8C69;
+   --color-value-highlight: #FFD166;
+   --color-alert: #00A8E8;
+   --color-success: #00E3B0;
+   --color-text-primary: #E8E5DC;
+   --color-text-secondary: #B0B0B0;
+   --color-heading-dark-mode: #E8E5DC;
+   
+
+   
+   /* Brand/Pass-specific colors - Coastal dark mode */
+   --color-brand-red: #FF9A84;
+   --color-brand-yellow: #FFE88D;
+   --color-brand-white: #FFFFFF;
+   --color-brand-dark-blue: #00A8E8;
+   --color-brand-light-text: #E0F7F9;
+   
+   /* Accent color - Royal blue */
+   --color-accent-primary: #3B82F6;
+  
+  /* Legacy variables for backward compatibility */
+  --color-background: #1B3A4B;
+  --color-background-alt: #2C5F78;
+  --color-text-inverted: #1B3A4B;
+  --color-button-text: #FFFFFF;
+  --color-redemption-green: #34D399;
+  --color-deep-teal: #FF6B5A;
+  --color-warm-coral: #FF6B5A;
+  --color-turquoise: #FF6B5A;
+  --color-light-turquoise: #34D399;
+  --color-warm-gold: #FFB340;
+  --color-fresh-green: #34D399;
+  --color-cream: #2C5F78;
+  --color-light-cream: #1F4D5F;
+  
+  /* For legacy accent colors */
+  --color-accent-secondary: #3B82F6;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.scroll-reveal {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes subtle-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.animate-subtle-pulse {
+  animation: subtle-pulse 3s infinite ease-in-out;
+}
+
+@keyframes gold-glow {
+  0%, 100% {
+    box-shadow: 0 0 25px 5px rgba(255, 179, 64, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px 6px rgba(255, 179, 64, 0.5);
+  }
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes subtle-wave {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-10px); }
+}
+
+@keyframes bounce-in {
+   0% {
+      opacity: 0;
+      transform: translate(-50%, 20px);
+   }
+   100% {
+      opacity: 1;
+      transform: translate(-50%, 0);
+   }
+}
+
+.animate-bounce-in {
+   animation: bounce-in 0.4s ease-out;
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px 4px rgba(255, 179, 64, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 25px 6px rgba(255, 179, 64, 0.6);
+  }
+}
+
+.animate-glow {
+  animation: glow 2s infinite;
+}
+
+/* Color transition for theme switching */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
