@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getPassPrice } from '../utils/pricing';
 
 interface FreUserTeaserProps {
   userName?: string;
@@ -6,6 +7,16 @@ interface FreUserTeaserProps {
 }
 
 const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }) => {
+  const [passPrice, setPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
+
+  useEffect(() => {
+    const loadPrice = async () => {
+      const price = await getPassPrice();
+      setPassPrice(price);
+    };
+    loadPrice();
+  }, []);
+
   return (
     <main className="pb-24 sm:pb-0">
       {/* Welcome Header */}
@@ -44,11 +55,17 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
               
               {/* Price Display */}
               <div className="bg-white/20 rounded-xl p-4 md:p-6 mb-6 md:mb-8 backdrop-blur-sm border border-white/30">
-                <p className="text-white/80 text-sm font-semibold mb-2">Limited Launch Offer</p>
+                {passPrice.launchPricing && (
+                  <p className="text-white/80 text-sm font-semibold mb-2">🎉 Limited Launch Offer</p>
+                )}
                 <div className="flex items-baseline gap-3">
-                  <span className="text-4xl font-display font-black text-white">R99</span>
-                  <span className="text-white/70 line-through">R299</span>
-                  <span className="text-value-highlight font-bold">67% OFF</span>
+                  <span className="text-4xl font-display font-black text-white">R{passPrice.price}</span>
+                  {passPrice.launchPricing && (
+                    <>
+                      <span className="text-white/70 line-through">R299</span>
+                      <span className="text-value-highlight font-bold">67% OFF</span>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -131,7 +148,7 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
               onClick={onSelectPass}
               className="inline-block bg-white text-action-primary font-bold text-lg py-4 px-12 rounded-lg hover:bg-white/95 transition-all duration-300 shadow-lg"
             >
-              Get Pass - R99 →
+              Get Pass - R{passPrice.price} →
             </button>
           </div>
         </div>

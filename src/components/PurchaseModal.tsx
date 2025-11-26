@@ -102,7 +102,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, passType
       isOpen={isOpen}
       onClose={onClose}
       title={`Get Your ${passType.charAt(0).toUpperCase() + passType.slice(1)} Pass!`}
-      maxWidth="md"
+      maxWidth="lg"
     >
       <p className="text-text-secondary mb-8">Enter your details to personalize and purchase your pass.</p>
            
