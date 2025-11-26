@@ -11,7 +11,7 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({ variant = 'intro' }) =>
     intro: {
       tag: 'Welcome',
       heading: 'Discover Port Alfred Like Never Before',
-      body: 'Where the gentle Kowie River meets the endless Indian Ocean. We believe a holiday is more than just seeing the sights, it\'s the feeling of warm sand between your toes, the taste of salt on the air, and the stories you\'ll share for years. Your real holiday starts now.',
+      body: 'Unlock exclusive deals at Port Alfred\'s best local spots. Every purchase supports our community while you enjoy genuine local experiences. Your real holiday starts now.',
     },
     welcome: {
       tag: 'Welcome Aboard',
@@ -40,7 +40,7 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({ variant = 'intro' }) =>
                 />
               </div>
             )}
-            <div className={`scroll-reveal ${variant === 'intro' ? 'text-center' : 'max-w-2xl mx-auto text-center'}`} style={{ transitionDelay: '150ms' }}>
+            <div className={`scroll-reveal ${variant === 'intro' ? 'text-left' : 'max-w-2xl mx-auto text-center'}`} style={{ transitionDelay: '150ms' }}>
               <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">
                 {current.tag}
               </h2>

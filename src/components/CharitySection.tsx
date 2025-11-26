@@ -13,12 +13,8 @@ const CharitySection: React.FC = () => {
              </svg>
            </div>
           <p className="text-lg text-text-secondary leading-relaxed">
-            Your holiday makes a real difference. For every Port Alfred Holiday Pass purchased, we proudly <span className="font-black text-urgency-high">DONATE 25%</span> to a local charity.
+            We're supporting the <span className="font-black text-urgency-high">PORT ALFRED SOUP KITCHEN</span>. For every Pass purchased, we donate <span className="font-black text-urgency-high">25%</span> to help feed families in our community.
           </p>
-          <p className="text-lg text-text-secondary leading-relaxed mt-4">
-            We're still in the process of choosing a <span className="font-black text-urgency-high">WORTHY CAUSE</span>. By exploring the best of our town, you're also helping build a brighter future for our community.
-          </p>
-          <p className="text-sm text-text-secondary mt-6">Donations <span className="font-semibold text-action-primary">verified quarterly</span> with partner charity reports</p>
         </div>
       </div>
     </section>
