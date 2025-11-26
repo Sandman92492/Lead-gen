@@ -62,7 +62,12 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass }) => {
 
                             <div className="text-center mb-6">
                                 <div>
-                                    <span className="text-5xl font-display font-black text-action-primary">R{passPrice.price}</span>
+                                    <div className="flex items-center justify-center gap-3 mb-2">
+                                        <span className="text-5xl font-display font-black text-action-primary">R{passPrice.price}</span>
+                                        {passPrice.launchPricing && (
+                                            <span className="text-text-secondary line-through text-2xl">R199</span>
+                                        )}
+                                    </div>
                                     {passPrice.launchPricing && (
                                         <>
                                             <span className="block text-sm text-urgency-high font-bold mt-1">🎉 Launch Pricing!</span>

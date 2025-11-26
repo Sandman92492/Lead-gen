@@ -1,4 +1,5 @@
 import { Handler } from '@netlify/functions';
+import * as admin from 'firebase-admin';
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { createHmac } from 'crypto';
@@ -172,13 +173,18 @@ const handler: Handler = async (event: any) => {
             purchasePrice: Math.round(yocoEvent.payload.amount / 100), // Convert cents to Rands
         });
 
-        // Increment pass count for dynamic pricing
-        const statsRef = firestoreDb.collection('stats').doc('passCount');
-        const statsDoc = await statsRef.get();
-        const currentCount = statsDoc.exists ? (statsDoc.data().count || 0) : 0;
-        await statsRef.set({
-            count: currentCount + 1,
+        // Atomically increment pass count in config/pricing for dynamic pricing
+        // Using admin.firestore.FieldValue.increment() prevents race conditions with concurrent payments
+        const pricingRef = firestoreDb.collection('config').doc('pricing');
+        await pricingRef.update({
+            currentPassCount: admin.firestore.FieldValue.increment(1),
             lastUpdated: new Date().toISOString(),
+        }).catch(async () => {
+            // If document doesn't exist, create it with increment
+            await pricingRef.set({
+                currentPassCount: 1,
+                lastUpdated: new Date().toISOString(),
+            }, { merge: true });
         });
 
         return {

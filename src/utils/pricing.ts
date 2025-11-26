@@ -3,41 +3,66 @@ import { doc, getDoc } from 'firebase/firestore';
 import { PassFeatures } from '../types';
 
 /**
- * Get current pass price based on user count
- * R99 for first 50 users (launch pricing)
- * R199 from user 50 onwards
+ * Get current pass price based on Firestore config
+ * Fetches pricing tiers from config/pricing document
  */
 export const getPassPrice = async (): Promise<{ price: number; cents: number; launchPricing: boolean }> => {
   try {
-    // Fetch user count from Firestore
-    const statsDoc = await getDoc(doc(db, 'stats', 'passCount'));
-    const passCount = statsDoc.exists() ? (statsDoc.data().count || 0) : 0;
+    // Fetch pricing config from Firestore
+    const pricingDoc = await getDoc(doc(db, 'config', 'pricing'));
+    
+    if (pricingDoc.exists()) {
+      const pricingData = pricingDoc.data();
+      const passCount = pricingData.currentPassCount || 0;
+      const launchThreshold = pricingData.launchThreshold || 50;
+      const launchPrice = pricingData.launchPrice || 99;
+      const launchPriceCents = pricingData.launchPriceCents || 9900;
+      const regularPrice = pricingData.regularPrice || 199;
+      const regularPriceCents = pricingData.regularPriceCents || 19900;
 
-    // R99 for first 50 users, R199 after
-    if (passCount < 50) {
-      return { price: 99, cents: 9900, launchPricing: true };
+      // Check if still in launch pricing based on threshold
+      if (passCount < launchThreshold) {
+        return { price: launchPrice, cents: launchPriceCents, launchPricing: true };
+      }
+      return { price: regularPrice, cents: regularPriceCents, launchPricing: false };
     }
-    return { price: 199, cents: 19900, launchPricing: false };
+    
+    // Fallback defaults if config doesn't exist
+    return getDefaultPrice();
   } catch (error) {
     console.error('Error fetching pass price:', error);
-    // Fallback to R199 if error
-    return { price: 199, cents: 19900, launchPricing: false };
+    return getDefaultPrice();
   }
 };
 
 /**
- * Increment pass count in Firestore
+ * Get default pricing (fallback)
+ */
+const getDefaultPrice = (): { price: number; cents: number; launchPricing: boolean } => ({
+  price: 199,
+  cents: 19900,
+  launchPricing: false
+});
+
+/**
+ * Increment pass count in Firestore config/pricing
  * Call this after successful payment
  */
 export const incrementPassCount = async (): Promise<void> => {
   try {
-    const statsRef = doc(db, 'stats', 'passCount');
-    const statsDoc = await getDoc(statsRef);
-    const currentCount = statsDoc.exists() ? (statsDoc.data().count || 0) : 0;
+    const pricingRef = doc(db, 'config', 'pricing');
+    const pricingDoc = await getDoc(pricingRef);
+    const currentCount = pricingDoc.exists() ? (pricingDoc.data().currentPassCount || 0) : 0;
     
-    // Use setDoc to create or overwrite
+    // Use setDoc to update with new count
     const { setDoc } = await import('firebase/firestore');
-    await setDoc(statsRef, { count: currentCount + 1, lastUpdated: new Date().toISOString() });
+    await setDoc(pricingRef, 
+      { 
+        currentPassCount: currentCount + 1,
+        lastUpdated: new Date().toISOString()
+      },
+      { merge: true } // Merge to preserve other fields
+    );
   } catch (error) {
     console.error('Error incrementing pass count:', error);
   }
