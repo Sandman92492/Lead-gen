@@ -59,7 +59,15 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
 
     // Scroll to top when route changes
     useEffect(() => {
+        // Immediate scroll
         window.scrollTo(0, 0);
+        if (contentRef.current) {
+            contentRef.current.scrollTop = 0;
+        }
+        // Ensure scroll happens after route renders
+        setTimeout(() => {
+            window.scrollTo(0, 0);
+        }, 50);
     }, [location.pathname]);
 
     // Extract user's first name from pass holder name or Firebase displayName or email
@@ -113,7 +121,16 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
             <div ref={contentRef} className="bg-bg-primary">
                 <Routes>
                     <Route path="/home" element={
-                        <HomePage hasPass={hasPass} userName={getUserName()} onSelectPass={onSelectPass} passType={pass?.passType === 'holiday' ? 'holiday' : undefined} redeemedDeals={redeemedDeals} purchasePrice={pass?.purchasePrice} />
+                        <HomePage 
+                            hasPass={hasPass} 
+                            userName={getUserName()} 
+                            onSelectPass={onSelectPass} 
+                            redeemedDeals={redeemedDeals}
+                            onNavigateToDeal={() => navigate('/deals')}
+                            pass={pass}
+                            onRedeemClick={onRedeemClick}
+                            onNavigateToPass={() => navigate('/pass')}
+                        />
                     } />
                     {hasPass && (
                         <Route path="/pass" element={
