@@ -5,12 +5,14 @@ import { Deal } from '../types';
 import ImageCarousel from './ImageCarousel';
 import ContactDropdown from './ContactDropdown';
 import ImageGalleryModal from './ImageGalleryModal';
+import { isPassExpired as checkPassExpiry } from '../utils/passExpiry';
 
 interface FeaturedDealCardProps {
   deal: Deal;
   index: number;
   hasPass: boolean;
   isRedeemed: boolean;
+  passExpiryDate?: string; // Pass expiry date to check if expired
   onRedeemClick?: (dealName: string) => void;
   cardHeight?: 'h-80' | 'h-96';
 }
@@ -20,12 +22,14 @@ const FeaturedDealCard: React.FC<FeaturedDealCardProps> = ({
   index,
   hasPass,
   isRedeemed,
+  passExpiryDate,
   onRedeemClick,
   cardHeight = 'h-96',
 }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const { vendor } = useVendor(deal.vendorId);
   const mapsUrl = vendor?.mapsUrl || null;
+  const isExpired = passExpiryDate ? checkPassExpiry(passExpiryDate) : false;
 
   const description = deal.offer;
 
@@ -101,7 +105,22 @@ const FeaturedDealCard: React.FC<FeaturedDealCardProps> = ({
               <div className="grid grid-cols-2 gap-2">
                 {hasPass && (
                   <>
-                    {isRedeemed ? (
+                    {isExpired ? (
+                      <div className="col-span-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 rounded-md bg-gray-500 text-white text-sm sm:text-base font-bold whitespace-nowrap cursor-not-allowed opacity-75">
+                        <svg
+                          className="w-4 h-4"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M13.477 14.89A6 6 0 15 1 2.05 8c.065-.327.67-.985.236-1.378.88-.88 1.95-1.965 2.6-1.965h.5a.5.5 0 0 1 .5.5v5.5a1 1 0 1 1-2 0V8.26l-.464 1.393a1 1 0 1 1-1.933-.644l2-6a1 1 0 0 1 1.933.644l-.464 1.393h1.93l-2.868 8.607a1 1 0 0 1-1.866-.373l2.868-8.607h.5a.5.5 0 0 0 .5-.5V.05z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span>Pass Expired</span>
+                      </div>
+                    ) : isRedeemed ? (
                       <div className="col-span-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 rounded-md bg-success text-white text-sm sm:text-base font-bold whitespace-nowrap">
                         <svg
                           className="w-4 h-4"

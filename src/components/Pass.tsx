@@ -3,6 +3,7 @@ import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import { useTheme } from './ThemeContext.tsx';
 import { PassType } from '../types.ts';
+import { isPassExpired, getExpiryStatus } from '../utils/passExpiry';
 
 interface PassProps {
     name: string;
@@ -42,6 +43,9 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
         year: 'numeric',
     }).toUpperCase();
 
+    const passIsExpired = isPassExpired(expiryDate);
+    const expiryStatusMessage = getExpiryStatus(expiryDate);
+
     const getConfettiColors = () => {
         if (typeof window === 'undefined') return ['#FFD166', '#FF8C69', '#FFFFFF'];
         const root = getComputedStyle(document.documentElement);
@@ -54,8 +58,8 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
         <div className="modal-backdrop flex items-center justify-center z-50 p-4" onClick={onClose}>
             {showConfetti && width > 0 && height > 0 && <Confetti width={width} height={height} recycle={false} numberOfPieces={400} colors={getConfettiColors()} />}
             <div
-                className={`relative text-brand-white w-full max-w-sm aspect-[9/16] rounded-3xl shadow-2xl overflow-hidden p-8 sm:p-10 flex flex-col justify-between border-4 border-brand-yellow drop-shadow-2xl ${isNew && onCardClick ? 'cursor-pointer hover:scale-105 transition-transform duration-300' : ''}`}
-                style={{ background: 'linear-gradient(135deg, var(--color-brand-dark-blue) 0%, #004A7A 50%, var(--color-brand-dark-blue) 100%)' }}
+                className={`relative text-brand-white w-full max-w-sm aspect-[9/16] rounded-3xl shadow-2xl overflow-hidden p-8 sm:p-10 flex flex-col justify-between border-4 drop-shadow-2xl ${passIsExpired ? 'border-red-500' : 'border-brand-yellow'} ${isNew && onCardClick ? 'cursor-pointer hover:scale-105 transition-transform duration-300' : ''}`}
+                style={{ background: passIsExpired ? 'linear-gradient(135deg, #4a2020 0%, #6b0000 50%, #4a2020 100%)' : 'linear-gradient(135deg, var(--color-brand-dark-blue) 0%, #004A7A 50%, var(--color-brand-dark-blue) 100%)' }}
                 onClick={(e) => {
                     e.stopPropagation();
                     if (isNew && onCardClick) {
@@ -69,8 +73,14 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
 
 
 
-                {passType === 'annual' && (
+                {passType === 'annual' && !passIsExpired && (
                     <div className="absolute top-0 right-0 bg-brand-red text-white text-xs font-bold py-1 px-4 rounded-bl-lg z-20 shadow-lg">VIP</div>
+                )}
+
+                {passIsExpired && (
+                    <div className="absolute top-0 left-0 right-0 bg-red-600 text-white text-xs font-bold py-2 text-center z-20 shadow-lg">
+                        PASS EXPIRED
+                    </div>
                 )}
 
 
@@ -111,6 +121,9 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
                         <div>
                             <p className="text-brand-red text-xs font-semibold tracking-wider uppercase">Valid Until</p>
                             <p className="font-mono text-xs text-brand-white/80 mt-0.5">{formattedExpiryDate}</p>
+                            <p className={`text-xs font-semibold mt-1 ${passIsExpired ? 'text-red-400' : 'text-brand-yellow'}`}>
+                                {expiryStatusMessage}
+                            </p>
                         </div>
                     </div>
                     <div className="pt-2">

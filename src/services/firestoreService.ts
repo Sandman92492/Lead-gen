@@ -494,3 +494,42 @@ export const deleteDeal = async (dealId: string) => {
         return { success: false, error: error.message };
     }
 };
+
+// --- ANALYTICS OPERATIONS (READ-ONLY) ---
+
+// Get all passes (including paid passes)
+export const getAllPasses = async (): Promise<PassDocument[]> => {
+    try {
+        const querySnapshot = await getDocs(collection(db, 'passes'));
+        return querySnapshot.docs.map((doc) => doc.data() as PassDocument);
+    } catch (error: any) {
+        console.error('Error getting all passes:', error);
+        return [];
+    }
+};
+
+// Get all redemptions
+export const getAllRedemptions = async (): Promise<RedemptionDocument[]> => {
+    try {
+        const querySnapshot = await getDocs(collection(db, 'redemptions'));
+        return querySnapshot.docs.map((doc) => doc.data() as RedemptionDocument);
+    } catch (error: any) {
+        console.error('Error getting all redemptions:', error);
+        return [];
+    }
+};
+
+// Get redemption count by deal
+export const getRedemptionsByDeal = async (dealId: string): Promise<number> => {
+    try {
+        const q = query(
+            collection(db, 'redemptions'),
+            where('dealName', '==', dealId) // Assuming dealId is stored as dealName in redemptions
+        );
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.size;
+    } catch (error: any) {
+        console.error('Error getting redemptions by deal:', error);
+        return 0;
+    }
+};

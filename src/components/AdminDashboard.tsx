@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { createVendor, getAllVendors, createDeal, getAllDeals, updateVendor, updateDeal, deleteVendor, deleteDeal } from '../services/firestoreService';
+import { createVendor, getAllVendors, createDeal, getAllDeals, updateVendor, updateDeal, deleteVendor, deleteDeal, getAllPasses, getAllRedemptions } from '../services/firestoreService';
 import { Vendor, Deal } from '../types';
+import { PassDocument } from '../services/firestoreService';
 import Button from './Button.tsx';
 import ImageCarousel from './ImageCarousel';
 import ContactDropdown from './ContactDropdown';
@@ -172,11 +173,14 @@ const DealCardPreview: React.FC<DealCardPreviewProps> = ({ deal, vendor, onEdit,
 };
 
 const AdminDashboard: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<'vendors' | 'deals'>('vendors');
+    const [activeTab, setActiveTab] = useState<'vendors' | 'deals' | 'analytics'>('vendors');
     const [vendors, setVendors] = useState<Vendor[]>([]);
     const [deals, setDeals] = useState<Deal[]>([]);
+    const [passes, setPasses] = useState<PassDocument[]>([]);
+    const [redemptions, setRedemptions] = useState<any[]>([]);
     const [isLoadingVendors, setIsLoadingVendors] = useState(false);
     const [isLoadingDeals, setIsLoadingDeals] = useState(false);
+    const [isLoadingAnalytics, setIsLoadingAnalytics] = useState(false);
 
     // Vendor form state
     const [vendorForm, setVendorForm] = useState({
@@ -216,6 +220,7 @@ const AdminDashboard: React.FC = () => {
     useEffect(() => {
         loadVendors();
         loadDeals();
+        loadAnalytics();
     }, []);
 
     const loadVendors = async () => {
@@ -239,6 +244,20 @@ const AdminDashboard: React.FC = () => {
             console.error('Error loading deals:', error);
         } finally {
             setIsLoadingDeals(false);
+        }
+    };
+
+    const loadAnalytics = async () => {
+        setIsLoadingAnalytics(true);
+        try {
+            const passesData = await getAllPasses();
+            const redemptionsData = await getAllRedemptions();
+            setPasses(passesData);
+            setRedemptions(redemptionsData);
+        } catch (error) {
+            console.error('Error loading analytics:', error);
+        } finally {
+            setIsLoadingAnalytics(false);
         }
     };
 
@@ -573,6 +592,15 @@ const AdminDashboard: React.FC = () => {
                             }`}
                     >
                         Deals
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('analytics')}
+                        className={`px-4 py-2 font-medium transition-colors ${activeTab === 'analytics'
+                            ? 'text-action-primary border-b-2 border-action-primary'
+                            : 'text-text-secondary hover:text-text-primary'
+                            }`}
+                    >
+                        Analytics
                     </button>
                 </div>
 
@@ -1036,7 +1064,7 @@ const AdminDashboard: React.FC = () => {
                         <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
                             <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
                                  📦 Deals <span className="text-sm font-normal text-text-secondary bg-border-subtle px-2 py-0.5 rounded-full">{deals.length}</span>
-                             </h2>
+                              </h2>
                             {isLoadingDeals ? (
                                 <p className="text-sm text-text-secondary">Loading...</p>
                             ) : deals.length === 0 ? (
@@ -1057,6 +1085,199 @@ const AdminDashboard: React.FC = () => {
                                 </div>
                             )}
                         </div>
+                    </div>
+                )}
+
+                {/* Analytics Tab */}
+                {activeTab === 'analytics' && (
+                    <div className="space-y-6">
+                        {isLoadingAnalytics ? (
+                            <p className="text-sm text-text-secondary">Loading analytics...</p>
+                        ) : (
+                            <>
+                                {/* Summary Cards */}
+                                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                    {/* Total Passes */}
+                                    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-xs sm:text-sm text-text-secondary font-medium">Total Passes</p>
+                                                <p className="text-2xl sm:text-3xl font-bold text-text-primary mt-2">{passes.length}</p>
+                                            </div>
+                                            <span className="text-4xl">🎫</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Revenue */}
+                                    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-xs sm:text-sm text-text-secondary font-medium">Total Revenue</p>
+                                                <p className="text-2xl sm:text-3xl font-bold text-value-highlight mt-2">
+                                                    R{passes.reduce((sum, p) => sum + (p.purchasePrice || 0), 0).toLocaleString()}
+                                                </p>
+                                            </div>
+                                            <span className="text-4xl">💰</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Total Redemptions */}
+                                    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-xs sm:text-sm text-text-secondary font-medium">Redemptions</p>
+                                                <p className="text-2xl sm:text-3xl font-bold text-action-primary mt-2">{redemptions.length}</p>
+                                            </div>
+                                            <span className="text-4xl">✓</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Redemption Rate */}
+                                    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-xs sm:text-sm text-text-secondary font-medium">Redemption Rate</p>
+                                                <p className="text-2xl sm:text-3xl font-bold text-success mt-2">
+                                                    {passes.length > 0 ? Math.round((redemptions.length / passes.length) * 100) : 0}%
+                                                </p>
+                                            </div>
+                                            <span className="text-4xl">📊</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Pass Breakdown */}
+                                <div className="grid gap-6 lg:grid-cols-2">
+                                    {/* Pass Purchases by Type */}
+                                    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
+                                        <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+                                            🎫 Pass Purchases by Type
+                                        </h3>
+                                        <div className="space-y-3">
+                                            {(() => {
+                                                const paidPasses = passes.filter(p => p.paymentStatus === 'completed');
+                                                const freePasses = passes.filter(p => p.passStatus === 'free');
+                                                return [
+                                                    { label: 'Paid Passes', count: paidPasses.length, color: 'text-value-highlight' },
+                                                    { label: 'Free Passes', count: freePasses.length, color: 'text-action-primary' },
+                                                ];
+                                            })().map((item) => (
+                                                <div key={item.label} className="flex items-center justify-between p-3 bg-bg-primary rounded-lg border border-border-subtle">
+                                                    <span className="text-sm text-text-secondary">{item.label}</span>
+                                                    <span className={`text-lg font-bold ${item.color}`}>{item.count}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Most Redeemed Deals */}
+                                    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
+                                        <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+                                            🏆 Most Redeemed Deals
+                                        </h3>
+                                        <div className="space-y-2 max-h-96 overflow-y-auto">
+                                            {(() => {
+                                                const dealCounts: Record<string, number> = {};
+                                                redemptions.forEach((r) => {
+                                                    dealCounts[r.dealName] = (dealCounts[r.dealName] || 0) + 1;
+                                                });
+                                                return Object.entries(dealCounts)
+                                                    .sort((a, b) => b[1] - a[1])
+                                                    .slice(0, 10);
+                                            })().map(([dealName, count]) => (
+                                                <div key={dealName} className="flex items-center justify-between p-2 bg-bg-primary rounded-lg border border-border-subtle/50">
+                                                    <span className="text-xs sm:text-sm text-text-secondary truncate flex-1">{dealName}</span>
+                                                    <span className="text-sm font-bold text-success ml-2 whitespace-nowrap">{count}x</span>
+                                                </div>
+                                            ))}
+                                            {redemptions.length === 0 && (
+                                                <p className="text-xs text-text-secondary text-center py-4">No redemptions yet</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Recent Purchases */}
+                                <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
+                                    <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+                                        👥 Recent Pass Purchases
+                                    </h3>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-xs sm:text-sm">
+                                            <thead className="border-b border-border-subtle">
+                                                <tr className="text-text-secondary">
+                                                    <th className="text-left py-2 px-2 font-medium">Name</th>
+                                                    <th className="text-left py-2 px-2 font-medium">Email</th>
+                                                    <th className="text-left py-2 px-2 font-medium">Type</th>
+                                                    <th className="text-right py-2 px-2 font-medium">Price</th>
+                                                    <th className="text-left py-2 px-2 font-medium">Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-border-subtle">
+                                                {passes
+                                                    .filter(p => p.paymentStatus === 'completed')
+                                                    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                                                    .slice(0, 20)
+                                                    .map((pass) => (
+                                                        <tr key={pass.passId} className="hover:bg-bg-primary transition-colors">
+                                                            <td className="py-2 px-2 text-text-primary font-medium">{pass.passHolderName}</td>
+                                                            <td className="py-2 px-2 text-text-secondary truncate">{pass.email}</td>
+                                                            <td className="py-2 px-2 text-text-secondary capitalize">{pass.passType}</td>
+                                                            <td className="py-2 px-2 text-right text-value-highlight font-bold">R{pass.purchasePrice || 0}</td>
+                                                            <td className="py-2 px-2 text-text-secondary text-xs">
+                                                                {new Date(pass.createdAt).toLocaleDateString()}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                            </tbody>
+                                        </table>
+                                        {passes.filter(p => p.paymentStatus === 'completed').length === 0 && (
+                                            <p className="text-center py-8 text-text-secondary">No purchased passes</p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Redemption Details */}
+                                <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
+                                    <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+                                        📜 Recent Redemptions
+                                    </h3>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-xs sm:text-sm">
+                                            <thead className="border-b border-border-subtle">
+                                                <tr className="text-text-secondary">
+                                                    <th className="text-left py-2 px-2 font-medium">Pass ID</th>
+                                                    <th className="text-left py-2 px-2 font-medium">Deal</th>
+                                                    <th className="text-left py-2 px-2 font-medium">Vendor</th>
+                                                    <th className="text-left py-2 px-2 font-medium">Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-border-subtle">
+                                                {redemptions
+                                                    .sort((a, b) => new Date(b.redeemedAt).getTime() - new Date(a.redeemedAt).getTime())
+                                                    .slice(0, 20)
+                                                    .map((redemption, idx) => {
+                                                        const vendor = vendors.find(v => v.vendorId === redemption.vendorId);
+                                                        return (
+                                                            <tr key={`${redemption.passId}-${idx}`} className="hover:bg-bg-primary transition-colors">
+                                                                <td className="py-2 px-2 text-text-secondary font-mono text-xs">{redemption.passId.substring(0, 8)}</td>
+                                                                <td className="py-2 px-2 text-text-primary">{redemption.dealName}</td>
+                                                                <td className="py-2 px-2 text-text-secondary">{vendor?.name || 'Unknown'}</td>
+                                                                <td className="py-2 px-2 text-text-secondary text-xs">
+                                                                    {new Date(redemption.redeemedAt).toLocaleDateString()}
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                            </tbody>
+                                        </table>
+                                        {redemptions.length === 0 && (
+                                            <p className="text-center py-8 text-text-secondary">No redemptions yet</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 )}
             </div>

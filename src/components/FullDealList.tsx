@@ -11,6 +11,7 @@ import ImageGalleryModal from './ImageGalleryModal';
 interface FullDealListProps {
   hasPass: boolean;
   redeemedDeals?: string[];
+  passExpiryDate?: string; // Pass expiry date to check if expired
   onRedeemClick?: (dealName: string) => void;
   isFreeUser?: boolean;
   onAuthClick?: () => void;
@@ -290,6 +291,7 @@ const DealListItemWithVendor: React.FC<DealListItemWithVendorProps> = ({
 const FullDealList: React.FC<FullDealListProps> = ({
   hasPass,
   redeemedDeals = [],
+  passExpiryDate,
   onRedeemClick,
   isFreeUser = false,
 }) => {
@@ -353,6 +355,7 @@ const FullDealList: React.FC<FullDealListProps> = ({
                     index={index}
                     hasPass={hasPass}
                     isRedeemed={redeemedDeals.includes(deal.name)}
+                    passExpiryDate={passExpiryDate}
                     onRedeemClick={onRedeemClick}
                     cardHeight="h-80"
                   />

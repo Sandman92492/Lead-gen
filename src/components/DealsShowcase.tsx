@@ -5,12 +5,13 @@ import FeaturedDealCard from './FeaturedDealCard';
 interface DealsShowcaseProps {
     hasPass: boolean;
     redeemedDeals?: string[];
+    passExpiryDate?: string; // Pass expiry date to check if expired
     onRedeemClick?: (dealName: string) => void;
     isFreeUser?: boolean;
     onSignInClick?: () => void;
 }
 
-const DealsShowcase: React.FC<DealsShowcaseProps> = ({ hasPass, redeemedDeals = [], onRedeemClick, isFreeUser = false, onSignInClick }) => {
+const DealsShowcase: React.FC<DealsShowcaseProps> = ({ hasPass, redeemedDeals = [], passExpiryDate, onRedeemClick, isFreeUser = false, onSignInClick }) => {
   const { deals: allDeals, isLoading } = useAllDeals();
   let deals = allDeals.filter(deal => deal.featured);
   
@@ -52,6 +53,7 @@ const DealsShowcase: React.FC<DealsShowcaseProps> = ({ hasPass, redeemedDeals = 
                   index={index}
                   hasPass={hasPass}
                   isRedeemed={isRedeemed(deal.name)}
+                  passExpiryDate={passExpiryDate}
                   onRedeemClick={onRedeemClick}
                   cardHeight="h-96"
                 />

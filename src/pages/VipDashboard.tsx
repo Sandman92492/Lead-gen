@@ -14,9 +14,15 @@ interface VipDashboardProps {
   onViewPass?: () => void;
 }
 
+// Helper to get pass info safely
+const getPassInfo = (pass?: PassInfo | null) => ({
+  expiryDate: pass?.expiryDate,
+});
+
 const VipDashboard: React.FC<VipDashboardProps> = ({
   userName,
   redeemedDeals = [],
+  pass,
   onBrowseDeals,
   onRedeemClick,
   onViewPass,
@@ -24,6 +30,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
   // Fetch real data
   const { deals: allDeals, isLoading: dealsLoading } = useAllDeals();
   const { totalSavings, isLoading: savingsLoading } = useTotalSavings(redeemedDeals);
+  const passInfo = getPassInfo(pass);
   
   // Get featured deals
   const featuredDeals = allDeals.filter(deal => deal.featured);
@@ -148,6 +155,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
                   index={0}
                   hasPass={true}
                   isRedeemed={isRedeemed || false}
+                  passExpiryDate={passInfo.expiryDate}
                   onRedeemClick={onRedeemClick}
                   cardHeight="h-96"
                 />

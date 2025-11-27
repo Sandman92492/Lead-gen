@@ -138,7 +138,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
                         } />
                     )}
                     <Route path="/deals" element={
-                        <AllDealsPage hasPass={hasPass} onRedeemClick={onRedeemClick} redeemedDeals={redeemedDeals} />
+                        <AllDealsPage hasPass={hasPass} onRedeemClick={onRedeemClick} redeemedDeals={redeemedDeals} passExpiryDate={pass?.expiryDate} />
                     } />
                     <Route path="/profile" element={
                         <ProfilePage userEmail={userEmail} userPhotoURL={userPhotoURL} onSignOut={onSignOut} hasPass={hasPass} onPrivacyClick={onPrivacyClick} onTermsClick={onTermsClick} onCharityClick={onCharityClick} onFaqClick={onFaqClick} />

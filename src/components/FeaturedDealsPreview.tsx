@@ -6,6 +6,7 @@ interface FeaturedDealsPreviewProps {
     hasPass: boolean;
     onRedeemClick: (dealName: string) => void;
     redeemedDeals: string[];
+    passExpiryDate?: string; // Pass expiry date to check if expired
     onViewAllDeals?: () => void;
 }
 
@@ -13,6 +14,7 @@ const FeaturedDealsPreview: React.FC<FeaturedDealsPreviewProps> = ({
     hasPass,
     onRedeemClick,
     redeemedDeals,
+    passExpiryDate,
     onViewAllDeals,
 }) => {
     const { deals: allDeals, isLoading } = useAllDeals();
@@ -51,6 +53,7 @@ const FeaturedDealsPreview: React.FC<FeaturedDealsPreviewProps> = ({
                             index={index}
                             hasPass={hasPass}
                             isRedeemed={isRedeemed(deal.name)}
+                            passExpiryDate={passExpiryDate}
                             onRedeemClick={onRedeemClick}
                             cardHeight="h-80"
                         />

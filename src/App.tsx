@@ -32,6 +32,7 @@ import { signOut } from './services/authService';
 import { recordRedemption, getRedemptionsByPass, getAllDeals, getVendorById } from './services/firestoreService';
 import { useAuth } from './context/AuthContext';
 import { activateSharedPass } from './server/validation';
+import { isPassExpired } from './utils/passExpiry';
 
 const App: React.FC = () => {
   const { user, userState, pass, isLoading, userPhotoURL, redeemedDeals, setRedeemedDeals } = useAuth();
@@ -278,6 +279,13 @@ const App: React.FC = () => {
   };
 
   const openRedemptionModal = async (dealName: string) => {
+    // Check if pass is expired
+    if (pass?.expiryDate && isPassExpired(pass.expiryDate)) {
+      // useToast is not available here, so we'll handle this at the component level
+      // by passing the pass expiry status to deal cards
+      return;
+    }
+
     // Fetch deal from Firestore to get vendorId
     try {
       const allDeals = await getAllDeals();
