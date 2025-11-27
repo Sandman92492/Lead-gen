@@ -26,6 +26,8 @@ const handler = async (event) => {
         // Get base URL from environment or construct from request headers
         const baseUrl = process.env.SITE_URL ||
             (event.headers.host ? `https://${event.headers.host}` : 'https://localhost:3000');
+        console.log('Checkout request:', { amount, passType, userEmail, passHolderName });
+        console.log('YOCO_SECRET_KEY first 10 chars:', YOCO_SECRET_KEY.substring(0, 10));
         const requestBody = {
             amount: Math.round(amount), // Yoco expects amount in cents
             currency: 'ZAR',
@@ -51,9 +53,10 @@ const handler = async (event) => {
         });
         const data = await response.json();
         if (!response.ok) {
+            console.error('Yoco API error:', { status: response.status, data });
             return {
                 statusCode: response.status,
-                body: JSON.stringify({ error: data?.message || 'Payment service error' }),
+                body: JSON.stringify({ error: data?.message || 'Payment service error', details: data }),
             };
         }
         return {
