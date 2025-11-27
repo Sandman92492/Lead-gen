@@ -154,9 +154,8 @@ const handler: Handler = async (event: any) => {
             expiryDate = new Date();
             expiryDate.setFullYear(expiryDate.getFullYear() + 1);
         } else {
-            // Holiday pass: valid for 30 days from purchase
-            expiryDate = new Date();
-            expiryDate.setDate(expiryDate.getDate() + 30);
+            // Holiday pass: valid until Jan 31, 2026 23:59:59 UTC
+            expiryDate = new Date('2026-01-31T23:59:59Z');
         }
 
         await firestoreDb.collection('passes').doc(passId).set({
