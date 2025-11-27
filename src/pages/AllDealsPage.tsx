@@ -6,12 +6,13 @@ interface AllDealsPageProps {
   onRedeemClick: (dealName: string) => void;
   redeemedDeals: string[];
   passExpiryDate?: string;
+  onBuyPassClick?: () => void;
 }
 
-const AllDealsPage: React.FC<AllDealsPageProps> = ({ hasPass, onRedeemClick, redeemedDeals, passExpiryDate }) => {
+const AllDealsPage: React.FC<AllDealsPageProps> = ({ hasPass, onRedeemClick, redeemedDeals, passExpiryDate, onBuyPassClick }) => {
   return (
     <main className="pb-24 sm:pb-0">
-      <FullDealList hasPass={hasPass} onRedeemClick={onRedeemClick} redeemedDeals={redeemedDeals} passExpiryDate={passExpiryDate} />
+      <FullDealList hasPass={hasPass} onRedeemClick={onRedeemClick} redeemedDeals={redeemedDeals} passExpiryDate={passExpiryDate} onBuyPassClick={onBuyPassClick} />
     </main>
   );
 };

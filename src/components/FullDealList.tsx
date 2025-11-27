@@ -7,6 +7,7 @@ import DealsCategoryFilter from './DealsCategoryFilter';
 import FeaturedDealCard from './FeaturedDealCard';
 import ContactDropdown from './ContactDropdown';
 import ImageGalleryModal from './ImageGalleryModal';
+import { isPassExpired as checkPassExpiry } from '../utils/passExpiry';
 
 interface FullDealListProps {
   hasPass: boolean;
@@ -15,6 +16,7 @@ interface FullDealListProps {
   onRedeemClick?: (dealName: string) => void;
   isFreeUser?: boolean;
   onAuthClick?: () => void;
+  onBuyPassClick?: () => void;
 }
 
 interface DealListItemProps {
@@ -32,6 +34,7 @@ interface DealListItemProps {
   images?: string[];
   email?: string;
   phone?: string;
+  passExpiryDate?: string;
 }
 
 const getCategoryColor = (category?: string) => {
@@ -77,6 +80,7 @@ const DealListItem: React.FC<DealListItemProps> = ({
   images,
   email,
   phone,
+  passExpiryDate,
 }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const savingsMatch = offer.match(/Save R(\d+)/);
@@ -85,6 +89,7 @@ const DealListItem: React.FC<DealListItemProps> = ({
     .replace(/\(Save R\d+[^)]*\)|\(Free \w+[^)]*\)/g, '')
     .trim();
 
+  const isExpired = passExpiryDate ? checkPassExpiry(passExpiryDate) : false;
   const categoryColors = getCategoryColor(category);
 
   return (
@@ -165,7 +170,22 @@ const DealListItem: React.FC<DealListItemProps> = ({
             <div className="grid grid-cols-2 gap-2">
               {hasPass && (
                 <>
-                  {isRedeemed ? (
+                  {isExpired ? (
+                    <div className="col-span-2 inline-flex items-center justify-center gap-1.5 px-6 py-3 md:py-2.5 rounded-md bg-gray-500 text-white text-base font-bold whitespace-nowrap cursor-not-allowed opacity-75">
+                      <svg
+                        className="w-4 h-4"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M13.477 14.89A6 6 0 15 1 2.05 8c.065-.327.67-.985.236-1.378.88-.88 1.95-1.965 2.6-1.965h.5a.5.5 0 0 1 .5.5v5.5a1 1 0 1 1-2 0V8.26l-.464 1.393a1 1 0 1 1-1.933-.644l2-6a1 1 0 0 1 1.933.644l-.464 1.393h1.93l-2.868 8.607a1 1 0 0 1-1.866-.373l2.868-8.607h.5a.5.5 0 0 0 .5-.5V.05z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span>Pass Expired</span>
+                    </div>
+                  ) : isRedeemed ? (
                     <button
                       disabled
                       className="col-span-2 inline-flex items-center justify-center gap-1.5 px-6 py-3 md:py-2.5 rounded-md bg-success text-white text-base font-bold whitespace-nowrap"
@@ -249,6 +269,7 @@ interface DealListItemWithVendorProps {
   hasPass: boolean;
   isRedeemed: boolean;
   onRedeemClick?: (dealName: string) => void;
+  passExpiryDate?: string;
 }
 
 const DealListItemWithVendor: React.FC<DealListItemWithVendorProps> = ({
@@ -256,6 +277,7 @@ const DealListItemWithVendor: React.FC<DealListItemWithVendorProps> = ({
   hasPass,
   isRedeemed,
   onRedeemClick,
+  passExpiryDate,
 }) => {
   const { vendor } = useVendor(deal.vendorId);
 
@@ -284,6 +306,7 @@ const DealListItemWithVendor: React.FC<DealListItemWithVendorProps> = ({
       images={displayImages}
       email={vendor?.email}
       phone={vendor?.phone}
+      passExpiryDate={passExpiryDate}
     />
   );
 };
@@ -294,9 +317,11 @@ const FullDealList: React.FC<FullDealListProps> = ({
   passExpiryDate,
   onRedeemClick,
   isFreeUser = false,
+  onBuyPassClick,
 }) => {
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const { deals: allDeals, isLoading } = useAllDeals();
+  const isPassExpired = passExpiryDate ? checkPassExpiry(passExpiryDate) : false;
 
   const featuredDeals = isFreeUser
     ? []
@@ -317,6 +342,25 @@ const FullDealList: React.FC<FullDealListProps> = ({
 
   return (
     <section id="full-deal-list" className="bg-bg-primary relative">
+      {isPassExpired && hasPass && (
+        <div className="bg-red-50 dark:bg-red-950/30 border-t border-b border-red-200 dark:border-red-800 py-4">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="font-semibold text-red-900 dark:text-red-200">Your pass has expired</p>
+                <p className="text-sm text-red-800 dark:text-red-300">Purchase a new pass to access exclusive deals</p>
+              </div>
+              <button
+                onClick={onBuyPassClick}
+                className="flex-shrink-0 px-6 py-2 bg-urgency-high text-white font-bold rounded-md hover:brightness-110 transition-all whitespace-nowrap"
+              >
+                Get New Pass
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="container mx-auto px-4 sm:px-6 py-8">
         <DealsCategoryFilter
           subtitle={isFreeUser ? 'Browse All Partners' : undefined}
@@ -365,26 +409,27 @@ const FullDealList: React.FC<FullDealListProps> = ({
         )}
 
         {/* Regular Deals Section */}
-        {!isLoading && filteredRegular.length > 0 && (
-          <div>
-            <h3 className="text-2xl font-bold text-accent-primary mb-6 text-center">
-              {filteredFeatured.length > 0 ? 'All Other Deals' : 'All Deals'}
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {filteredRegular
-                .filter((deal) => !redeemedDeals.includes(deal.name))
-                .map((deal) => (
-                  <DealListItemWithVendor
-                    key={deal.name}
-                    deal={deal}
-                    hasPass={hasPass}
-                    isRedeemed={redeemedDeals.includes(deal.name)}
-                    onRedeemClick={onRedeemClick}
-                  />
-                ))}
-            </div>
-          </div>
-        )}
+         {!isLoading && filteredRegular.length > 0 && (
+           <div>
+             <h3 className="text-2xl font-bold text-accent-primary mb-6 text-center">
+               {filteredFeatured.length > 0 ? 'All Other Deals' : 'All Deals'}
+             </h3>
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+               {filteredRegular
+                 .filter((deal) => !redeemedDeals.includes(deal.name))
+                 .map((deal) => (
+                   <DealListItemWithVendor
+                     key={deal.name}
+                     deal={deal}
+                     hasPass={hasPass}
+                     isRedeemed={redeemedDeals.includes(deal.name)}
+                     onRedeemClick={onRedeemClick}
+                     passExpiryDate={passExpiryDate}
+                   />
+                 ))}
+             </div>
+           </div>
+         )}
 
         {!isLoading &&
           filteredFeatured.length === 0 &&

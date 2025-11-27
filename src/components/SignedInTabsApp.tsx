@@ -21,6 +21,7 @@ interface SignedInTabsAppProps {
     onRedeemClick: (dealName: string) => void;
     onSignOut: () => void;
     onSelectPass?: (passType: PassType) => void;
+    onBuyPassClick?: () => void;
     onPrivacyClick?: () => void;
     onTermsClick?: () => void;
     onCharityClick?: () => void;
@@ -38,6 +39,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
     onRedeemClick,
     onSignOut,
     onSelectPass,
+    onBuyPassClick,
     onPrivacyClick,
     onTermsClick,
     onCharityClick,
@@ -138,7 +140,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
                         } />
                     )}
                     <Route path="/deals" element={
-                        <AllDealsPage hasPass={hasPass} onRedeemClick={onRedeemClick} redeemedDeals={redeemedDeals} passExpiryDate={pass?.expiryDate} />
+                        <AllDealsPage hasPass={hasPass} onRedeemClick={onRedeemClick} redeemedDeals={redeemedDeals} passExpiryDate={pass?.expiryDate} onBuyPassClick={onBuyPassClick} />
                     } />
                     <Route path="/profile" element={
                         <ProfilePage userEmail={userEmail} userPhotoURL={userPhotoURL} onSignOut={onSignOut} hasPass={hasPass} onPrivacyClick={onPrivacyClick} onTermsClick={onTermsClick} onCharityClick={onCharityClick} onFaqClick={onFaqClick} />

@@ -9,6 +9,7 @@ interface SignedInWithPassViewProps {
   redeemedDeals: string[];
   onViewPass: () => void;
   onRedeemClick: (dealName: string) => void;
+  onBuyPassClick?: () => void;
 }
 
 const SignedInWithPassView: React.FC<SignedInWithPassViewProps> = ({
@@ -16,6 +17,7 @@ const SignedInWithPassView: React.FC<SignedInWithPassViewProps> = ({
   redeemedDeals,
   onViewPass,
   onRedeemClick,
+  onBuyPassClick,
 }) => {
   return (
     <main>
@@ -27,11 +29,14 @@ const SignedInWithPassView: React.FC<SignedInWithPassViewProps> = ({
         hasPass={true} 
         onRedeemClick={onRedeemClick} 
         redeemedDeals={redeemedDeals}
+        passExpiryDate={pass.expiryDate}
       />
       <FullDealList 
          hasPass={true} 
          onRedeemClick={onRedeemClick} 
          redeemedDeals={redeemedDeals}
+         passExpiryDate={pass.expiryDate}
+         onBuyPassClick={onBuyPassClick}
        />
     </main>
   );

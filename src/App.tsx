@@ -481,6 +481,7 @@ const App: React.FC = () => {
           onRedeemClick={openRedemptionModal}
           onSignOut={handleSignOutClick}
           onSelectPass={handleSelectAndPurchase}
+          onBuyPassClick={() => handleSelectAndPurchase('holiday')}
           onPrivacyClick={() => setIsPrivacyPolicyOpen(true)}
           onTermsClick={() => setIsTermsOfServiceOpen(true)}
           onCharityClick={() => setIsCharitySectionOpen(true)}
