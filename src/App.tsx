@@ -29,7 +29,7 @@ import CookieConsentBanner from './components/CookieConsentBanner.tsx';
 
 import { PassType } from './types.ts';
 import { signOut } from './services/authService';
-import { recordRedemption, getRedemptionsByPass, getAllDeals, getVendorById } from './services/firestoreService';
+import { recordRedemption, getRedemptionsByPass, getAllDeals, getVendorById, getPassesByUserId } from './services/firestoreService';
 import { useAuth } from './context/AuthContext';
 import { activateSharedPass } from './server/validation';
 import { isPassExpired } from './utils/passExpiry';
