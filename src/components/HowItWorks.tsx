@@ -5,16 +5,16 @@ import React from 'react';
 const HowItWorks: React.FC = () => {
     const steps = [
         {
-            title: 'Get Your Pass',
-            description: <>Purchase the <span className="font-bold">Holiday Pass</span> and get instant access to exclusive deals from December 1st to January 31st.</>,
+            title: 'Get the Pass',
+            description: 'One secure payment gives you unlimited access to all deals from Dec 1st to Jan 31st.',
         },
         {
-            title: 'Show Your Pass',
-            description: 'Present the digital pass on your phone at any partner venue.',
+            title: 'Flash Your Phone',
+            description: 'Login to the app and show your digital pass at any partner venue. No awkward codes required.',
         },
         {
             title: 'Save Instantly',
-            description: 'Enjoy your exclusive deal on the spot. It\'s that easy!',
+            description: 'The staff verifies your pass, and the discount comes off your bill immediately. Easy.',
         },
     ];
 
@@ -22,11 +22,8 @@ const HowItWorks: React.FC = () => {
         <section id="how-it-works" className="py-20 md:py-32 bg-bg-card">
             <div className="container mx-auto px-4 sm:px-6">
                 <div className="max-w-3xl mx-auto text-center mb-16 scroll-reveal">
-                    <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">
-                        Three Simple Steps
-                    </h2>
                     <h1 className="text-4xl md:text-5xl font-display font-black text-accent-primary mb-4 md:mb-6">Howzit Work?</h1>
-                    <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">Get your Holiday Pass in 3 easy steps and start saving at your favorite venues</p>
+                    <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">No printing. No paper coupons. Discover hidden gems and save instantly on your phone.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
                     {steps.map((step, index) => (

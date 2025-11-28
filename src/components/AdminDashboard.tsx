@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createVendor, getAllVendors, createDeal, getAllDeals, updateVendor, updateDeal, deleteVendor, deleteDeal, getAllPasses, getAllRedemptions } from '../services/firestoreService';
+import { deleteField } from 'firebase/firestore';
 import { Vendor, Deal } from '../types';
 import { PassDocument } from '../services/firestoreService';
 import Button from './Button.tsx';
@@ -204,6 +205,7 @@ const AdminDashboard: React.FC = () => {
         vendorId: '',
         name: '',
         offer: '',
+        description: '',
         savings: '',
         imageUrl: '',
         category: 'restaurant' as 'restaurant' | 'activity' | 'shopping',
@@ -431,7 +433,7 @@ const AdminDashboard: React.FC = () => {
         try {
             if (editingDealId) {
                 // Update existing deal - filter out undefined values to avoid Firestore errors
-                const updates: Partial<Deal> = {
+                const updates: any = {
                     vendorId: dealForm.vendorId,
                     name: dealForm.name.trim(),
                     offer: dealForm.offer.trim(),
@@ -441,6 +443,13 @@ const AdminDashboard: React.FC = () => {
                 };
                 if (dealForm.savings) updates.savings = Number(dealForm.savings);
                 if (dealForm.imageUrl.trim()) updates.imageUrl = dealForm.imageUrl.trim();
+                // Handle description: if empty, delete the field from Firestore; otherwise set it
+                if (dealForm.description.trim()) {
+                    updates.description = dealForm.description.trim();
+                } else {
+                    // Delete description field from Firestore if it's empty
+                    updates.description = deleteField();
+                }
                 if (dealForm.city.trim()) updates.city = dealForm.city.trim();
                 if (dealForm.terms.trim()) updates.terms = dealForm.terms.trim();
 
@@ -453,6 +462,7 @@ const AdminDashboard: React.FC = () => {
                         vendorId: '',
                         name: '',
                         offer: '',
+                        description: '',
                         savings: '',
                         imageUrl: '',
                         category: 'restaurant' as 'restaurant' | 'activity' | 'shopping',
@@ -471,6 +481,7 @@ const AdminDashboard: React.FC = () => {
                     vendorId: dealForm.vendorId,
                     name: dealForm.name.trim(),
                     offer: dealForm.offer.trim(),
+                    description: dealForm.description.trim() || undefined,
                     savings: dealForm.savings ? Number(dealForm.savings) : undefined,
                     imageUrl: dealForm.imageUrl.trim() || undefined,
                     category: dealForm.category,
@@ -489,6 +500,7 @@ const AdminDashboard: React.FC = () => {
                         vendorId: '',
                         name: '',
                         offer: '',
+                        description: '',
                         savings: '',
                         imageUrl: '',
                         category: 'restaurant' as 'restaurant' | 'activity' | 'shopping',
@@ -512,6 +524,7 @@ const AdminDashboard: React.FC = () => {
             vendorId: deal.vendorId,
             name: deal.name,
             offer: deal.offer,
+            description: deal.description || '',
             savings: deal.savings?.toString() || '',
             imageUrl: deal.imageUrl || '',
             category: (deal.category || 'restaurant') as 'restaurant' | 'activity' | 'shopping',
@@ -531,6 +544,7 @@ const AdminDashboard: React.FC = () => {
             vendorId: '',
             name: '',
             offer: '',
+            description: '',
             savings: '',
             imageUrl: '',
             category: 'restaurant' as 'restaurant' | 'activity' | 'shopping',
@@ -923,12 +937,25 @@ const AdminDashboard: React.FC = () => {
 
                                     <div>
                                         <label className="block text-xs font-medium text-text-primary mb-1">
-                                            Description <span className="text-urgency-high">*</span>
+                                            Offer <span className="text-urgency-high">*</span>
                                         </label>
                                         <textarea
                                             value={dealForm.offer}
                                             onChange={(e) => setDealForm({ ...dealForm, offer: e.target.value })}
                                             placeholder="2-for-1 on Main Meals"
+                                            rows={2}
+                                            className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                            Marketing Copy
+                                        </label>
+                                        <textarea
+                                            value={dealForm.description}
+                                            onChange={(e) => setDealForm({ ...dealForm, description: e.target.value })}
+                                            placeholder="Get amazing meals at unbeatable prices..."
                                             rows={2}
                                             className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
                                         />

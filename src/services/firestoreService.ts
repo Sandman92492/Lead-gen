@@ -470,9 +470,10 @@ export const getDealsByVendor = async (vendorId: string): Promise<Deal[]> => {
 };
 
 // Update deal
-export const updateDeal = async (dealId: string, updates: Partial<Deal>) => {
+export const updateDeal = async (dealId: string, updates: any) => {
     try {
         // Remove undefined fields (Firestore doesn't allow undefined values)
+        // but KEEP deleteField() values (they need to be passed through)
         const cleanedUpdates = Object.fromEntries(
             Object.entries(updates).filter(([, value]) => value !== undefined)
         );

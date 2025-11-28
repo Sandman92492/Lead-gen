@@ -36,7 +36,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
       aria-modal="true"
     >
       <div
-        className={`bg-bg-card rounded-2xl shadow-2xl p-6 sm:p-8 ${maxWidthClasses[maxWidth]} w-full relative border border-border-subtle my-8`}
+        className={`bg-bg-card rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 ${maxWidthClasses[maxWidth]} w-full relative border border-border-subtle my-4 sm:my-8`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button - Top Right (default) */}

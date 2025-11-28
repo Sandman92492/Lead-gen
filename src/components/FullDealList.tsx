@@ -5,6 +5,7 @@ import { useVendor } from '../hooks/useVendor';
 import { Deal } from '../types';
 import DealsCategoryFilter from './DealsCategoryFilter';
 import FeaturedDealCard from './FeaturedDealCard';
+import DealDetailModal from './DealDetailModal';
 import ContactDropdown from './ContactDropdown';
 import ImageGalleryModal from './ImageGalleryModal';
 import { isPassExpired as checkPassExpiry } from '../utils/passExpiry';
@@ -279,6 +280,7 @@ const DealListItemWithVendor: React.FC<DealListItemWithVendorProps> = ({
   onRedeemClick,
   passExpiryDate,
 }) => {
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const { vendor } = useVendor(deal.vendorId);
 
   const mainImage = deal.imageUrl || vendor?.imageUrl;
@@ -292,22 +294,45 @@ const DealListItemWithVendor: React.FC<DealListItemWithVendorProps> = ({
     : additionalImages;
 
   return (
-    <DealListItem
-      name={deal.name}
-      offer={deal.offer}
-      mapsUrl={vendor?.mapsUrl}
-      terms={deal.terms}
-      hasPass={hasPass}
-      isRedeemed={isRedeemed}
-      onRedeemClick={onRedeemClick}
-      category={deal.category}
-      location={vendor?.city}
-      vendorId={deal.vendorId}
-      images={displayImages}
-      email={vendor?.email}
-      phone={vendor?.phone}
-      passExpiryDate={passExpiryDate}
-    />
+    <>
+      <div>
+        <DealListItem
+          name={deal.name}
+          offer={deal.offer}
+          mapsUrl={vendor?.mapsUrl}
+          terms={deal.terms}
+          hasPass={hasPass}
+          isRedeemed={isRedeemed}
+          onRedeemClick={onRedeemClick}
+          category={deal.category}
+          location={vendor?.city}
+          vendorId={deal.vendorId}
+          images={displayImages}
+          email={vendor?.email}
+          phone={vendor?.phone}
+          passExpiryDate={passExpiryDate}
+        />
+
+        {/* Learn More Link - Below card */}
+        {deal.description && (
+          <div className="text-center mt-2">
+            <button
+              onClick={() => setIsDetailModalOpen(true)}
+              className="text-sm font-semibold text-action-primary hover:text-action-primary/80 transition-colors underline"
+            >
+              Learn more →
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Deal Detail Modal */}
+      <DealDetailModal
+        isOpen={isDetailModalOpen}
+        deal={deal}
+        onClose={() => setIsDetailModalOpen(false)}
+      />
+    </>
   );
 };
 

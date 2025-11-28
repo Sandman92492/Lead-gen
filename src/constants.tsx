@@ -38,8 +38,8 @@ export const FAQS: FAQItem[] = [
     answer: "It's simple! After purchasing, you'll receive a digital pass on your phone. Browse deals, click 'Redeem' on any deal you like, and confirm your redemption. The venue staff will enter a 4-digit PIN to verify, and a green success screen will appear. Show this to the staff member to complete your savings!",
   },
   {
-    question: "How much does the pass cost?",
-    answer: "The Holiday Pass is R199 and gives you access to exclusive deals from December 1st to January 31st. It's the perfect companion for your summer holiday or festive season getaway!",
+    question: "Is the pass really worth R199?",
+    answer: "100%. We did the math so you don't have to.<br><br>If you use the <strong>Outdoor Focus Deal (Save R100)</strong> and the <strong>Chef Pantry Deal (Save R90)</strong> just once, the pass has practically paid for itself.<br><br>If you use the <strong>Pix By Grant Deal (Save R600)</strong>, you are instantly in profit. Everything else is just free money in your pocket.",
   },
    {
     question: "When can I use my pass?",

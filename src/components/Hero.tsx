@@ -1,7 +1,8 @@
 
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from './Button.tsx';
+import { getPassPrice } from '../utils/pricing';
 
 interface HeroProps {
   onButtonClick: () => void;
@@ -12,8 +13,17 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick: _onActivateClick, appStatus }) => {
+  const [passPrice, setPassPrice] = useState(199);
   const isLoading = appStatus === 'loading';
   const mainButtonText = isLoading ? 'Checking Pass...' : buttonText;
+
+  useEffect(() => {
+    const loadPrice = async () => {
+      const price = await getPassPrice();
+      setPassPrice(price.price);
+    };
+    loadPrice();
+  }, []);
 
   const imageUrl = "https://portalfred.co.za/wp-content/uploads/2021/09/West-beach-from-air-Copy-scaled.jpg";
 
@@ -51,9 +61,12 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
                    Port Alfred Holiday Pass
                </h2>
                <h1 className="font-display text-white leading-tight mb-12 md:mb-16 drop-shadow-lg">
-                   <span className="block text-2xl md:text-4xl font-normal"><span className="font-bold text-yellow-300">Holiday</span> Like a <span className="font-bold text-yellow-300">Local</span> on</span>
+                   <span className="block text-2xl md:text-4xl font-normal">Holiday Like a <span className="font-bold text-yellow-300">Local</span> on</span>
                    <span className="block text-5xl md:text-7xl font-black">SA's Blue Flag Coast</span>
                </h1>
+               <p className="text-lg md:text-xl text-white leading-relaxed mb-6 drop-shadow-lg max-w-2xl">
+                   Don't pay peak season prices. <span className="font-bold text-yellow-300">Pay Like a Local.</span> Unlock R1,000+ in exclusive savings at Port Alfred's best spots.
+               </p>
 
                <div className="flex flex-col items-center gap-8">
                   <Button 
@@ -63,7 +76,7 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
                     onClick={onButtonClick}
                     disabled={isLoading}
                   >
-                      {mainButtonText}
+                      {isLoading ? mainButtonText : `Get the Pass – R${passPrice}`}
                   </Button>
                   
                   {/* Subtle scroll down arrow */}

@@ -26,6 +26,7 @@ export interface Deal {
   vendorId: string; // Reference to vendor
   name: string;
   offer: string;
+  description?: string; // Marketing copy (fallback: empty string)
   savings?: number; // Numeric savings amount (e.g. 150 for "Save R150+")
   gmapsQuery?: string; // Fallback: if no vendor address, use this for directions
   terms?: string;

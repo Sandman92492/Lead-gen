@@ -5,6 +5,7 @@ import { Deal } from '../types';
 import ImageCarousel from './ImageCarousel';
 import ContactDropdown from './ContactDropdown';
 import ImageGalleryModal from './ImageGalleryModal';
+import DealDetailModal from './DealDetailModal';
 import { isPassExpired as checkPassExpiry } from '../utils/passExpiry';
 
 interface FeaturedDealCardProps {
@@ -27,11 +28,10 @@ const FeaturedDealCard: React.FC<FeaturedDealCardProps> = ({
   cardHeight = 'h-96',
 }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const { vendor } = useVendor(deal.vendorId);
   const mapsUrl = vendor?.mapsUrl || null;
   const isExpired = passExpiryDate ? checkPassExpiry(passExpiryDate) : false;
-
-  const description = deal.offer;
 
   const handleCardClick = (e: React.MouseEvent) => {
     // Don't open gallery if clicking on buttons, links, or any interactive element
@@ -59,9 +59,11 @@ const FeaturedDealCard: React.FC<FeaturedDealCardProps> = ({
     <>
       <div
         key={deal.name}
-        className="scroll-reveal rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl"
+        className="scroll-reveal"
         style={{ transitionDelay: `${index * 100}ms` }}
       >
+        {/* Card Container */}
+        <div className="rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl">
         {/* Card Container with Image + Overlay */}
         <div
           className={`relative ${cardHeight} group bg-gray-300 dark:bg-gray-600 cursor-pointer`}
@@ -85,9 +87,9 @@ const FeaturedDealCard: React.FC<FeaturedDealCardProps> = ({
               {deal.name}
             </h3>
 
-            {/* Description */}
-            <p className="text-sm sm:text-base text-gray-100 font-medium mb-3 line-clamp-2">
-              {description}
+            {/* Offer - Primary Headline */}
+            <p className="text-lg sm:text-xl font-bold text-white mb-2">
+              {deal.offer}
             </p>
 
             {/* Terms if present */}
@@ -176,6 +178,19 @@ const FeaturedDealCard: React.FC<FeaturedDealCardProps> = ({
             </div>
           </div>
         </div>
+        </div>
+
+        {/* Learn More Link - Below card */}
+        {deal.description && (
+          <div className="text-center mt-2">
+            <button
+              onClick={() => setIsDetailModalOpen(true)}
+              className="text-sm font-semibold text-action-primary hover:text-action-primary/80 transition-colors underline"
+            >
+              Learn more →
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Image Gallery Modal - Rendered at root level via portal */}
@@ -190,9 +205,16 @@ const FeaturedDealCard: React.FC<FeaturedDealCardProps> = ({
             location={vendor?.city}
           />,
           document.body
-        )}
-    </>
-  );
-};
+          )}
 
-export default FeaturedDealCard;
+          {/* Deal Detail Modal */}
+          <DealDetailModal
+          isOpen={isDetailModalOpen}
+          deal={deal}
+          onClose={() => setIsDetailModalOpen(false)}
+          />
+          </>
+          );
+          };
+          
+          export default FeaturedDealCard;

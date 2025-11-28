@@ -9,9 +9,9 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({ variant = 'intro' }) =>
 
   const content = {
     intro: {
-      tag: 'Welcome',
-      heading: 'Discover Port Alfred Like Never Before',
-      body: 'Unlock exclusive deals at Port Alfred\'s best local spots. Every purchase supports our community while you enjoy genuine local experiences. Your real holiday starts now.',
+      tag: 'The December Survival Kit',
+      heading: 'Your December. Sorted.',
+      body: 'Whether you\'re a local dodging inflation or a visitor looking for the best spots, December can get expensive.\n\nWe\'ve partnered with local legends to create a digital pass that helps you do more for less.\n\nDon\'t pay Peak Season prices. Unlock the local rate instantly.',
     },
     welcome: {
       tag: 'Welcome Aboard',
@@ -47,9 +47,13 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({ variant = 'intro' }) =>
               <h1 className="text-4xl md:text-5xl font-display font-black text-text-primary mb-4 md:mb-6">
                 {current.heading}
               </h1>
-              <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">
-                {current.body}
-              </p>
+              <div className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">
+                 {current.body.split('\n\n').map((paragraph, idx) => (
+                   <p key={idx} className={idx > 0 ? 'mt-4' : ''}>
+                     {paragraph}
+                   </p>
+                 ))}
+               </div>
             </div>
           </div>
         </div>
