@@ -40,7 +40,7 @@
   /hooks          - useAllDeals, useRedemptions, useTotalSavings, useVendor, useSwipeGesture
   /pages          - HomePage, MyPassPage, AllDealsPage, VipDashboard, ProfilePage, etc.
   /services       - authService (Firebase auth), firestoreService (CRUD operations)
-  /server         - validation.ts (localStorage mock DB for pass validation/sharing)
+  /server         - validation.ts (validation utilities)
   /utils          - formatting, validation, pricing, haptics, PWA utilities
   App.tsx         - Root component with modal orchestration
   firebase.ts     - Firebase initialization (env-based config)
@@ -53,67 +53,110 @@
 /server           - Shared validation logic (runs in browser localStorage)
 ```
 
-## Data Models
+## Firestore Database Schema
 
-### PassDocument (Firestore: passes collection)
+### Configuration (config collection)
+
+**config/pricing**
 ```
-passId: string
-passHolderName: string
-email: string
-userId: string (Firebase UID)
-passType: 'holiday' | 'annual'
-passStatus: 'free' | 'paid'
-expiryDate: ISO8601 string
+currentPassCount: number (e.g., 5)
+launchPrice: number (e.g., 5)
+launchPriceCents: number (e.g., 500)
+launchThreshold: number (e.g., 10)
+regularPrice: number (e.g., 199)
+regularPriceCents: number (e.g., 19900)
+lastUpdated: ISO8601 string
+```
+
+**config/passFeatures**
+```
+description: string (Marketing copy)
+feature1: string
+feature2: string
+feature3: string
+venueCount: number
+```
+
+**config/admin**
+```
+email: string (Admin email for dashboard access)
+```
+
+### Core Collections
+
+**deals** (Individual Offers)
+```
+vendorId: string (Reference to vendor)
+name: string (e.g., "Kakklein Collective")
+offer: string (e.g., "10% OFF...")
+description: string
+savings: number (Estimated value in Rands)
+category: 'activity' | 'restaurant' | 'shopping'
+city: string
+terms: string
+featured: boolean
+sortOrder: number (1-10 for sorting featured cards)
+imageUrl: string (Main card image)
+images: string[] (Gallery images)
 createdAt: ISO8601 string
-paymentRef?: string (Yoco ID)
-paymentStatus?: 'pending' | 'completed' | 'failed'
-purchasePrice?: number (Rands, set by webhook)
-plusOneName?: string
-plusOneAddedBy?: string (email)
-plusOneActivatedBy?: string (email)
 ```
 
-### Vendor (Firestore: vendors collection)
+**vendors** (Business Profiles)
 ```
 vendorId: string
 name: string
 email: string
 phone: string
-pin: string (4-digit PIN for redemption verification)
-category: 'restaurant' | 'activity' | 'shopping'
+pin: string (4-digit redemption PIN)
+category: 'activity' | 'restaurant' | 'shopping'
 city: string
-address?: string
-mapsUrl?: string
-imageUrl?: string
-images?: string[]
-createdAt: ISO8601 string
+address: string
+mapsUrl: string
+imageUrl: string
+images: string[]
 isActive: boolean
+createdAt: ISO8601 string
 ```
 
-### Deal (Firestore: deals collection)
+**passes** (Purchased Tickets)
 ```
-id?: string (Firestore doc ID)
-vendorId: string (reference to vendor)
-name: string
-offer: string
-savings?: number (numeric amount)
-category?: 'restaurant' | 'activity' | 'shopping'
-city?: string
-featured?: boolean
-imageUrl?: string
-images?: string[]
-gmapsQuery?: string (fallback for directions)
-terms?: string
-createdAt?: ISO8601 string
+passId: string (Unique pass ID)
+passHolderName: string
+email: string
+userId: string (Firebase UID)
+passType: 'holiday'
+passStatus: 'paid' | 'free'
+purchasePrice: number (Rands)
+paymentStatus: 'completed' | 'pending' | 'failed'
+paymentRef: string (Yoco ID)
+expiryDate: ISO8601 string
+createdAt: ISO8601 string
 ```
 
-### RedemptionDocument (Firestore: redemptions collection)
+**users** (App Users)
+```
+uid: string (Firebase UID)
+displayName: string
+email: string
+photoURL: string
+createdAt: ISO8601 string
+```
+
+**redemptions** (Usage Logs)
 ```
 passId: string
-dealName: string
+userId: string
 vendorId: string
+dealName: string
 redeemedAt: ISO8601 string
-userId?: string
+```
+
+**stats** (Analytics)
+
+**stats/passCount**
+```
+count: number (Total passes sold)
+lastUpdated: ISO8601 string
 ```
 
 ## Services & Hooks
@@ -262,17 +305,10 @@ FIREBASE_PRIVATE_KEY               - Admin SDK private key (escaped newlines: \\
 3. Correct PIN → Calls recordRedemption() → Shows RedemptionSuccessModal
 4. Redeemed deals stored in AuthContext.redeemedDeals (used to disable buttons)
 
-### Pass Sharing (+1 Family Member)
-- Primary holder can add +1 name to pass
-- Secondary user activates pass using Pass ID + Primary Name + email verification
-- Uses `activateSharedPass()` from `src/server/validation.ts` (localStorage mock DB)
-- Production: Replace with real backend when ready
-
 ## Modal Orchestration (App.tsx)
 App.tsx manages all modal state. Key modals:
 - `AuthModal` - Sign in/sign up
 - `PurchaseModal` - Pass purchase flow
-- `ActivatePassModal` - Activate shared pass
 - `RedemptionConfirmationModal` - Confirm deal redemption
 - `PinVerificationModal` - Vendor PIN entry
 - `RedemptionSuccessModal` - Redemption success screen
@@ -314,11 +350,7 @@ App.tsx manages all modal state. Key modals:
 3. Function is automatically compiled to `dist/functions/my-function.js`
 4. Access via `/.netlify/functions/my-function`
 
-### Debug localStorage mock DB
-- Open browser DevTools → Application → localStorage
-- Find `pass_validation_database` key
-- Parse JSON to inspect pass records
-- Useful during development without backend
+
 
 ### Test payment flow locally
 - Use Yoco test credentials (available in Yoco dashboard)

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getPassPrice, getPassFeatures } from '../utils/pricing';
 import { PassFeatures } from '../types';
+import { useAllDeals } from '../hooks/useAllDeals';
 
 interface FreUserTeaserProps {
   userName?: string;
@@ -16,6 +17,8 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
     feature3: 'Enjoy verified savings and great experiences',
     venueCount: 70
   });
+  const [totalSavings, setTotalSavings] = useState(0);
+  const { deals } = useAllDeals();
 
   useEffect(() => {
     const loadData = async () => {
@@ -27,6 +30,15 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
     loadData();
   }, []);
 
+  // Calculate total savings from all deals, rounded down to nearest hundred
+  useEffect(() => {
+    if (deals.length > 0) {
+      const total = deals.reduce((sum, deal) => sum + (deal.savings || 0), 0);
+      const roundedTotal = Math.floor(total / 100) * 100;
+      setTotalSavings(roundedTotal);
+    }
+  }, [deals]);
+
   return (
     <main className="pb-24 sm:pb-0">
       {/* Welcome Header */}
@@ -37,7 +49,7 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
               Welcome, {userName || 'Friend'}
             </h1>
             <p className="text-lg md:text-xl text-text-secondary mb-6">
-              You are one step away from unlocking R2,000+ in local savings.
+              You are one step away from unlocking R{totalSavings.toLocaleString()}+ in local savings.
             </p>
             
             {/* Status Badge */}
