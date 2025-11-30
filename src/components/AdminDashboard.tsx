@@ -6,6 +6,7 @@ import { PassDocument } from '../services/firestoreService';
 import Button from './Button.tsx';
 import ImageCarousel from './ImageCarousel';
 import ContactDropdown from './ContactDropdown';
+import DealReorderPanel from './DealReorderPanel';
 
 // Image preview component
 const ImagePreview: React.FC<{ url?: string; alt: string }> = ({ url, alt }) => {
@@ -1087,11 +1088,14 @@ const AdminDashboard: React.FC = () => {
                             </div>
                         </div>
 
+                        {/* Deal Reorder Panel */}
+                        <DealReorderPanel deals={deals} onReorderComplete={loadDeals} />
+
                         {/* Deals List */}
                         <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
                             <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
                                  📦 Deals <span className="text-sm font-normal text-text-secondary bg-border-subtle px-2 py-0.5 rounded-full">{deals.length}</span>
-                              </h2>
+                               </h2>
                             {isLoadingDeals ? (
                                 <p className="text-sm text-text-secondary">Loading...</p>
                             ) : deals.length === 0 ? (

@@ -1,0 +1,180 @@
+import React, { useState } from 'react';
+import { Deal } from '../types';
+import { updateDeal } from '../services/firestoreService';
+
+interface DealReorderPanelProps {
+  deals: Deal[];
+  onReorderComplete: () => void;
+}
+
+const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderComplete }) => {
+  const [isReordering, setIsReordering] = useState(false);
+  const [reorderingDealId, setReorderingDealId] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const handleMoveUp = async (dealId: string, currentIndex: number) => {
+    if (currentIndex === 0) return;
+    setReorderingDealId(dealId);
+    
+    try {
+      const currentDeal = deals[currentIndex];
+      const prevDeal = deals[currentIndex - 1];
+      
+      const currentOrder = currentDeal.sortOrder || 999;
+      const prevOrder = prevDeal.sortOrder || 999;
+      
+      // Swap sortOrder values
+      await updateDeal(currentDeal.id || '', { sortOrder: prevOrder });
+      await updateDeal(prevDeal.id || '', { sortOrder: currentOrder });
+      
+      setSuccessMessage(`Moved "${currentDeal.name}" up`);
+      setTimeout(() => setSuccessMessage(''), 2000);
+      onReorderComplete();
+    } catch (error) {
+      console.error('Error reordering deals:', error);
+    } finally {
+      setReorderingDealId(null);
+    }
+  };
+
+  const handleMoveDown = async (dealId: string, currentIndex: number) => {
+    if (currentIndex === deals.length - 1) return;
+    setReorderingDealId(dealId);
+    
+    try {
+      const currentDeal = deals[currentIndex];
+      const nextDeal = deals[currentIndex + 1];
+      
+      const currentOrder = currentDeal.sortOrder || 999;
+      const nextOrder = nextDeal.sortOrder || 999;
+      
+      // Swap sortOrder values
+      await updateDeal(currentDeal.id || '', { sortOrder: nextOrder });
+      await updateDeal(nextDeal.id || '', { sortOrder: currentOrder });
+      
+      setSuccessMessage(`Moved "${currentDeal.name}" down`);
+      setTimeout(() => setSuccessMessage(''), 2000);
+      onReorderComplete();
+    } catch (error) {
+      console.error('Error reordering deals:', error);
+    } finally {
+      setReorderingDealId(null);
+    }
+  };
+
+  const handleSetFeatured = async (dealId: string, featured: boolean) => {
+    setReorderingDealId(dealId);
+    try {
+      await updateDeal(dealId, { featured });
+      setSuccessMessage(featured ? 'Deal marked as featured' : 'Deal unmarked as featured');
+      setTimeout(() => setSuccessMessage(''), 2000);
+      onReorderComplete();
+    } catch (error) {
+      console.error('Error updating deal:', error);
+    } finally {
+      setReorderingDealId(null);
+    }
+  };
+
+  // Sort deals by featured first, then by sortOrder
+  const sortedDeals = [...deals].sort((a, b) => {
+    if (a.featured && !b.featured) return -1;
+    if (!a.featured && b.featured) return 1;
+    const aOrder = a.sortOrder || 999;
+    const bOrder = b.sortOrder || 999;
+    return aOrder - bOrder;
+  });
+
+  return (
+    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          🔄 Reorder Deals
+        </h2>
+        {successMessage && (
+          <span className="text-sm text-value-highlight font-semibold">{successMessage}</span>
+        )}
+      </div>
+
+      {deals.length === 0 ? (
+        <p className="text-sm text-text-secondary text-center py-8">No deals to reorder</p>
+      ) : (
+        <div className="space-y-2">
+          {sortedDeals.map((deal, index) => (
+            <div
+              key={deal.id}
+              className={`flex items-center justify-between gap-3 p-3 bg-bg-primary rounded-lg border border-border-subtle transition-opacity ${
+                reorderingDealId === deal.id ? 'opacity-50' : ''
+              }`}
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-text-primary">
+                    {index + 1}. {deal.name}
+                  </span>
+                  {deal.featured && (
+                    <span className="text-xs bg-value-highlight/30 text-value-highlight px-1.5 py-0.5 rounded font-bold">
+                      ⭐ Featured
+                    </span>
+                  )}
+                  {deal.sortOrder && (
+                    <span className="text-xs bg-action-primary/30 text-action-primary px-1.5 py-0.5 rounded">
+                      Order: {deal.sortOrder}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {/* Featured toggle */}
+                <button
+                  onClick={() => handleSetFeatured(deal.id || '', !deal.featured)}
+                  disabled={reorderingDealId === deal.id}
+                  className={`px-2 py-1 rounded text-xs font-semibold transition-colors ${
+                    deal.featured
+                      ? 'bg-value-highlight/20 text-value-highlight'
+                      : 'bg-border-subtle text-text-secondary hover:bg-border-subtle/70'
+                  } disabled:opacity-50`}
+                  title={deal.featured ? 'Click to unfeature' : 'Click to feature'}
+                >
+                  {deal.featured ? '⭐' : '☆'}
+                </button>
+
+                {/* Move up button */}
+                <button
+                  onClick={() => handleMoveUp(deal.id || '', index)}
+                  disabled={index === 0 || reorderingDealId === deal.id}
+                  className="px-2 py-1 rounded text-xs font-semibold bg-action-primary/20 text-action-primary hover:bg-action-primary/30 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  title="Move up"
+                >
+                  ↑
+                </button>
+
+                {/* Move down button */}
+                <button
+                  onClick={() => handleMoveDown(deal.id || '', index)}
+                  disabled={index === sortedDeals.length - 1 || reorderingDealId === deal.id}
+                  className="px-2 py-1 rounded text-xs font-semibold bg-action-primary/20 text-action-primary hover:bg-action-primary/30 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  title="Move down"
+                >
+                  ↓
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-4 p-3 bg-action-primary/10 rounded-lg text-xs text-action-primary">
+        <p className="font-semibold mb-1">💡 How to use:</p>
+        <ul className="space-y-1 text-action-primary/80">
+          <li>• Click ⭐ to mark a deal as featured (shows in featured section)</li>
+          <li>• Use ↑/↓ arrows to reorder deals (sortOrder is auto-updated)</li>
+          <li>• Featured deals always appear first, then sorted by order</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default DealReorderPanel;
