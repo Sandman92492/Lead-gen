@@ -49,22 +49,29 @@ export function SWUpdatePrompt() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 bg-blue-500 text-white rounded-lg shadow-lg p-4 max-w-sm">
-      <p className="text-sm font-medium mb-3">New version available</p>
-      <div className="flex gap-2">
-        <button
-          onClick={handleUpdate}
-          className="flex-1 bg-white text-blue-500 px-3 py-2 rounded font-medium text-sm hover:bg-gray-100 transition"
-        >
-          Update Now
-        </button>
-        <button
-          onClick={handleDismiss}
-          className="flex-1 bg-blue-600 text-white px-3 py-2 rounded font-medium text-sm hover:bg-blue-700 transition"
-        >
-          Later
-        </button>
+    <>
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-black/40 z-[9998]" onClick={handleDismiss} />
+      
+      {/* Modal */}
+      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[9999] bg-white rounded-lg shadow-2xl p-6 max-w-sm">
+        <p className="text-lg font-bold text-gray-900 mb-2">Update Available</p>
+        <p className="text-sm text-gray-600 mb-4">A new version is ready to use.</p>
+        <div className="flex gap-3">
+          <button
+            onClick={handleUpdate}
+            className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-blue-600 transition cursor-pointer"
+          >
+            Update Now
+          </button>
+          <button
+            onClick={handleDismiss}
+            className="flex-1 bg-gray-200 text-gray-900 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-gray-300 transition cursor-pointer"
+          >
+            Later
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
