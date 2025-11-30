@@ -105,22 +105,14 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass }) => {
                                 </div>
                             </div>
 
-                            <div className="pt-3 space-y-3">
+                            <div className="pt-3">
                                 <Button
                                     variant="primary"
                                     className="w-full text-lg py-3 transform transition-transform duration-300 hover:scale-105 animate-subtle-pulse disabled:animate-none"
-                                    onClick={handleJoinWaitingList}
-                                >
-                                    Join Waiting List
-                                </Button>
-                                {/* Test Payment Button - Remove before launch */}
-                                <Button
-                                    variant="secondary"
-                                    className="w-full text-lg py-3 opacity-75"
                                     onClick={handleTestPayment}
                                     disabled={isTestPaymentLoading}
                                 >
-                                    {isTestPaymentLoading ? 'Processing...' : `Test Payment (R${passPrice.price})`}
+                                    {isTestPaymentLoading ? 'Processing...' : `Buy Pass (R${passPrice.price})`}
                                 </Button>
                             </div>
                         </div>

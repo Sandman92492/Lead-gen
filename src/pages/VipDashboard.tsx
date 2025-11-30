@@ -77,7 +77,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
                 <p className="text-text-secondary font-semibold">Deals Redeemed</p>
                 {redeemedDeals.length > 0 && (
                   <p className="text-xs text-text-secondary mt-2">
-                    {redeemedDeals.length === 1 ? '1 step closer to mastery' : 'Great progress!'}
+                    {redeemedDeals.length === 1 ? 'Great start!' : 'You\'re saving big!'}
                   </p>
                 )}
               </div>
@@ -96,7 +96,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
                 </p>
                 {totalSavings > 0 && (
                   <p className="text-xs text-text-secondary mt-2">
-                    That's {Math.round((totalSavings / 3500) * 100)}% of pass value back!
+                    That's {Math.round((totalSavings / (pass?.purchasePrice || 3500)) * 100)}% of pass value back!
                   </p>
                 )}
               </div>

@@ -88,12 +88,19 @@ const FeaturedDealCard: React.FC<FeaturedDealCardProps> = ({
             </h3>
 
             {/* Offer - Primary Headline */}
-            <p className="text-lg sm:text-xl font-bold text-white mb-2">
-              {deal.offer}
-            </p>
+              <p className="text-lg sm:text-xl font-bold text-white mb-2">
+                {deal.offer}
+              </p>
 
-            {/* Terms if present */}
-            {deal.terms && (
+              {/* City Location */}
+              {vendor?.city && (
+                <p className="text-xs text-gray-200 font-medium mb-2">
+                  {vendor.city}
+                </p>
+              )}
+
+              {/* Terms if present */}
+              {deal.terms && (
               <p className="text-xs text-gray-200 font-medium italic mb-4 border-t border-gray-300/50 pt-2">
                 <span className="text-xs font-bold uppercase tracking-wide">
                   Terms:

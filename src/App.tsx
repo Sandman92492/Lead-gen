@@ -26,6 +26,7 @@ import SignedInTabsApp from './components/SignedInTabsApp.tsx';
 import ToastContainer from './components/ToastContainer.tsx';
 import AdminDashboard from './components/AdminDashboard.tsx';
 import CookieConsentBanner from './components/CookieConsentBanner.tsx';
+import { SWUpdatePrompt } from './components/SWUpdatePrompt.tsx';
 
 import { PassType } from './types.ts';
 import { signOut } from './services/authService';
@@ -194,6 +195,10 @@ const App: React.FC = () => {
       setIsAuthModalOpen(true);
       return;
     }
+    // If user already has a pass, don't open purchase modal
+    if (userState === 'signed-in-with-pass') {
+      return;
+    }
     // If authenticated and has displayName, open purchase modal
     if (user.displayName) {
       setSelectedPassType(passType);
@@ -326,6 +331,7 @@ const App: React.FC = () => {
     <div>
       <LaunchBanner />
       <CookieConsentBanner />
+      <SWUpdatePrompt />
       <ToastContainer />
       {isLoading && <LoadingScreen />}
 

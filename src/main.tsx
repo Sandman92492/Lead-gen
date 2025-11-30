@@ -14,14 +14,6 @@ const queryClient = new QueryClient();
 // Register service worker for PWA functionality
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js', { scope: '/' })
-    .then((registration) => {
-      // Check for updates periodically
-      setInterval(() => {
-        registration.update().catch(() => {
-          // Silent fail - non-critical update check
-        });
-      }, 60000); // Check every minute
-    })
     .catch(() => {
       // Silent fail - non-critical service worker registration
     });

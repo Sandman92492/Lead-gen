@@ -192,10 +192,15 @@ self.addEventListener('sync', (event) => {
   }
 });
 
-// Message handler for triggering manual sync
+// Message handler for triggering manual sync and SW updates
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SYNC_REDEMPTIONS') {
     event.waitUntil(syncQueuedRedemptions());
+  }
+  
+  // Skip waiting: activate new SW immediately
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
 });
 
