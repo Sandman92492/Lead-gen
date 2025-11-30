@@ -390,7 +390,7 @@ const FullDealList: React.FC<FullDealListProps> = ({
         <DealsCategoryFilter
           subtitle={isFreeUser ? 'Browse All Partners' : undefined}
           title="Deals By Category"
-          description={`Explore all ${totalDeals}+ partner venues organized by what you love`}
+          description={`Explore all ${totalDeals} partner venues organized by what you love`}
           categories={categories}
           selectedCategory={filterCategory}
           onCategoryChange={setFilterCategory}
