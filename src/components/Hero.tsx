@@ -25,7 +25,7 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
     loadPrice();
   }, []);
 
-  const imageUrl = "/Images/hero.jpg";
+  const imageUrl = "/Images/herov2.jpg";
 
   return (
     <>

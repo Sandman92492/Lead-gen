@@ -5,7 +5,7 @@ interface WelcomeSectionProps {
 }
 
 const WelcomeSection: React.FC<WelcomeSectionProps> = ({ variant = 'intro' }) => {
-   const imageUrl = "/Images/welcome.jpg?v=2";
+   const imageUrl = "/Images/welcomev2.jpg";
 
   const content = {
     intro: {
