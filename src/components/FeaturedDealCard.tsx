@@ -101,7 +101,7 @@ const FeaturedDealCard: React.FC<FeaturedDealCardProps> = ({
 
               {/* Terms if present */}
               {deal.terms && (
-              <p className="text-xs text-gray-200 font-medium italic mb-4 border-t border-gray-300/50 pt-2">
+              <p className="text-xs text-gray-200 font-medium italic mb-4 border-t border-gray-300/50 pt-2 line-clamp-2">
                 <span className="text-xs font-bold uppercase tracking-wide">
                   Terms:
                 </span>{' '}
