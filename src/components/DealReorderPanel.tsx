@@ -8,7 +8,6 @@ interface DealReorderPanelProps {
 }
 
 const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderComplete }) => {
-  const [isReordering, setIsReordering] = useState(false);
   const [reorderingDealId, setReorderingDealId] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState('');
 
