@@ -402,11 +402,12 @@ const App: React.FC = () => {
         />
       )}
 
-      {selectedDealToRedeem && selectedVendorId && (
+      {selectedDealToRedeem && selectedVendorId && selectedDealOffer && (
         <PinVerificationModal
           isOpen={isPinVerificationOpen}
           vendorId={selectedVendorId}
           dealName={selectedDealToRedeem}
+          dealOffer={selectedDealOffer}
           onSuccess={async () => {
             // Get vendor name for success screen
             const vendor = await getVendorById(selectedVendorId);

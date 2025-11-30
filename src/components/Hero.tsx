@@ -37,7 +37,7 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
     }
   }, [deals]);
 
-  const imageUrl = "/Images/herov2.jpg";
+  const imageUrl = "/Images/welcomev3.webp";
 
   return (
     <>

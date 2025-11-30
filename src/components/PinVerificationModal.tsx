@@ -9,6 +9,7 @@ interface PinVerificationModalProps {
   isOpen: boolean;
   vendorId: string;
   dealName: string;
+  dealOffer: string;
   onSuccess: () => Promise<void>;
   onCancel: () => void;
 }
@@ -17,6 +18,7 @@ const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
   isOpen,
   vendorId,
   dealName,
+  dealOffer,
   onSuccess,
   onCancel,
 }) => {
@@ -112,8 +114,8 @@ const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
           </div>
 
           <div className="bg-bg-primary border border-accent-primary/30 rounded-lg p-3 mb-6">
-            <p className="text-sm text-text-secondary mb-1">Deal:</p>
-            <p className="font-display font-bold text-accent-primary">{dealName}</p>
+            <p className="text-sm text-text-secondary mb-1">{dealName}</p>
+            <p className="font-display font-bold text-accent-primary">{dealOffer}</p>
           </div>
 
           <div className="mb-6">

@@ -5,13 +5,21 @@ interface WelcomeSectionProps {
 }
 
 const WelcomeSection: React.FC<WelcomeSectionProps> = ({ variant = 'intro' }) => {
-   const imageUrl = "/Images/welcomev2.jpg";
+  const renderTextWithBold = (text: string) => {
+    const parts = text.split(/(\*\*[^*]+\*\*)/);
+    return parts.map((part, idx) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={idx}>{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+  };
 
   const content = {
     intro: {
-      tag: 'The December Survival Kit',
-      heading: 'Your December. Sorted.',
-      body: 'Whether you\'re a local dodging inflation or a visitor looking for the best spots, December can get expensive.\n\nWe\'ve partnered with local legends to create a digital pass that helps you do more for less.\n\nDon\'t pay Peak Season prices. Unlock the local rate instantly.',
+      tag: 'THE 2025 SURVIVAL KIT',
+      heading: 'Don\'t Overpay This Summer.',
+      body: 'Whether you\'re a local dodging inflation or a visitor looking for the best spots, the holidays can get expensive.\n\n**We fixed that.**',
     },
     welcome: {
       tag: 'Welcome Aboard',
@@ -30,17 +38,8 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({ variant = 'intro' }) =>
   return (
     <section id="welcome" className="py-20 md:py-32 bg-bg-primary">
       <div className="container mx-auto px-4 sm:px-6">
-         <div className={`${variant === 'intro' ? 'grid md:grid-cols-2' : ''} gap-12 md:gap-16 items-center`}>
-            {variant === 'intro' && (
-              <div className="scroll-reveal">
-                <img 
-                  src={imageUrl} 
-                  alt="An aerial view of Port Alfred's coastline and the Kowie River mouth."
-                  className="rounded-lg shadow-2xl w-full h-full object-cover border-4 border-action-primary"
-                />
-              </div>
-            )}
-            <div className={`scroll-reveal ${variant === 'intro' ? 'text-left' : 'max-w-2xl mx-auto text-center'}`} style={{ transitionDelay: '150ms' }}>
+         <div className="gap-12 md:gap-16 items-center">
+            <div className={`scroll-reveal ${variant === 'intro' ? 'max-w-3xl mx-auto text-center px-4 sm:px-8' : 'max-w-2xl mx-auto text-center'}`} style={{ transitionDelay: '150ms' }}>
               <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">
                 {current.tag}
               </h2>
@@ -50,7 +49,7 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({ variant = 'intro' }) =>
               <div className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">
                  {current.body.split('\n\n').map((paragraph, idx) => (
                    <p key={idx} className={idx > 0 ? 'mt-4' : ''}>
-                     {paragraph}
+                     {renderTextWithBold(paragraph)}
                    </p>
                  ))}
                </div>
