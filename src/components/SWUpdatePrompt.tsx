@@ -24,8 +24,7 @@ export function SWUpdatePrompt() {
       showToast(
         'New version available. Click to update.',
         'info',
-        5000,
-        true
+        5000
       );
     };
 

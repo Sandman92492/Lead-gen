@@ -29,10 +29,6 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass }) => {
         loadData();
     }, []);
 
-    const handleJoinWaitingList = () => {
-        window.open('https://chat.whatsapp.com/HRSAKdexnaR0FkzGohcLqX', '_blank');
-    };
-
     const handleTestPayment = () => {
         if (onSelectPass) {
             setIsTestPaymentLoading(true);
