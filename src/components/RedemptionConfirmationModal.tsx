@@ -5,6 +5,7 @@ import BaseModal from './BaseModal.tsx';
 interface RedemptionConfirmationModalProps {
   isOpen: boolean;
   dealName: string;
+  dealOffer: string;
   vendorId: string;
   onConfirm: () => Promise<void>;
   onCancel: () => void;
@@ -13,6 +14,7 @@ interface RedemptionConfirmationModalProps {
 const RedemptionConfirmationModal: React.FC<RedemptionConfirmationModalProps> = ({
   isOpen,
   dealName,
+  dealOffer,
   vendorId: _vendorId,
   onConfirm,
   onCancel,
@@ -55,7 +57,8 @@ const RedemptionConfirmationModal: React.FC<RedemptionConfirmationModalProps> = 
         </p>
 
         <div className="bg-bg-primary border border-accent-primary/30 rounded-lg p-4 mb-6">
-          <p className="font-display font-bold text-lg text-accent-primary">{dealName}</p>
+          <p className="text-sm text-text-secondary mb-2">{dealName}</p>
+          <p className="font-display font-bold text-lg text-accent-primary">{dealOffer}</p>
         </div>
 
         <p className="text-sm text-text-secondary mb-6">

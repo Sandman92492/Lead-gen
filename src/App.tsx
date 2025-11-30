@@ -58,6 +58,7 @@ const App: React.FC = () => {
   // Redemption state
   const [isRedemptionModalOpen, setIsRedemptionModalOpen] = useState(false);
   const [selectedDealToRedeem, setSelectedDealToRedeem] = useState<string | null>(null);
+  const [selectedDealOffer, setSelectedDealOffer] = useState<string | null>(null);
   const [selectedVendorId, setSelectedVendorId] = useState<string | null>(null);
   const [isPinVerificationOpen, setIsPinVerificationOpen] = useState(false);
   const [justRedeemedDeal, setJustRedeemedDeal] = useState<string | null>(null);
@@ -277,6 +278,7 @@ const App: React.FC = () => {
     setIsPinVerificationOpen(false);
     setIsRedemptionModalOpen(false);
     setSelectedDealToRedeem(null);
+    setSelectedDealOffer(null);
     setSelectedVendorId(null);
 
     // Show success screen for staff verification
@@ -298,10 +300,11 @@ const App: React.FC = () => {
       const deal = allDeals.find(d => d.name === dealName);
 
       if (deal && deal.vendorId) {
-        setSelectedDealToRedeem(dealName);
-        setSelectedVendorId(deal.vendorId);
-        setIsRedemptionModalOpen(true);
-      }
+         setSelectedDealToRedeem(dealName);
+         setSelectedDealOffer(deal.offer);
+         setSelectedVendorId(deal.vendorId);
+         setIsRedemptionModalOpen(true);
+       }
     } catch (error) {
       // Silently fail - user can try again
     }
@@ -379,10 +382,11 @@ const App: React.FC = () => {
         />
       )}
 
-      {selectedDealToRedeem && selectedVendorId && (
+      {selectedDealToRedeem && selectedVendorId && selectedDealOffer && (
         <RedemptionConfirmationModal
           isOpen={isRedemptionModalOpen}
           dealName={selectedDealToRedeem}
+          dealOffer={selectedDealOffer}
           vendorId={selectedVendorId}
           onConfirm={async () => {
             // Close confirmation modal and open PIN verification
@@ -392,6 +396,7 @@ const App: React.FC = () => {
           onCancel={() => {
             setIsRedemptionModalOpen(false);
             setSelectedDealToRedeem(null);
+            setSelectedDealOffer(null);
             setSelectedVendorId(null);
           }}
         />
@@ -410,6 +415,7 @@ const App: React.FC = () => {
           onCancel={() => {
             setIsPinVerificationOpen(false);
             setSelectedDealToRedeem(null);
+            setSelectedDealOffer(null);
             setSelectedVendorId(null);
           }}
         />
