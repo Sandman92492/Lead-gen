@@ -106,12 +106,10 @@ const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
             Please ask the staff to enter their 4-digit PIN to verify this redemption.
           </p>
 
-          {vendor && (
-            <div className="bg-bg-primary border border-accent-primary/30 rounded-lg p-3 mb-6">
-              <p className="text-sm text-text-secondary mb-1">Venue:</p>
-              <p className="font-display font-bold text-accent-primary">{vendor.name}</p>
-            </div>
-          )}
+          <div className="bg-bg-primary border border-accent-primary/30 rounded-lg p-3 mb-6">
+            <p className="text-sm text-text-secondary mb-1">Redeeming at:</p>
+            <p className="font-display font-bold text-accent-primary">{vendor?.name}</p>
+          </div>
 
           <div className="bg-bg-primary border border-accent-primary/30 rounded-lg p-3 mb-6">
             <p className="text-sm text-text-secondary mb-1">Deal:</p>
