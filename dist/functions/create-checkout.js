@@ -28,6 +28,7 @@ const handler = async (event) => {
             (event.headers.host ? `https://${event.headers.host}` : 'https://localhost:3000');
         console.log('Checkout request:', { amount, passType, userEmail, passHolderName });
         console.log('YOCO_SECRET_KEY first 10 chars:', YOCO_SECRET_KEY.substring(0, 10));
+        console.log('SITE_URL:', baseUrl);
         const requestBody = {
             amount: Math.round(amount), // Yoco expects amount in cents
             currency: 'ZAR',
@@ -52,6 +53,8 @@ const handler = async (event) => {
             body: JSON.stringify(requestBody),
         });
         const data = await response.json();
+        console.log('Yoco API response status:', response.status);
+        console.log('Yoco API response data:', JSON.stringify(data, null, 2));
         if (!response.ok) {
             console.error('Yoco API error:', { status: response.status, data });
             return {
@@ -59,6 +62,7 @@ const handler = async (event) => {
                 body: JSON.stringify({ error: data?.message || 'Payment service error', details: data }),
             };
         }
+        console.log('Checkout created successfully:', { checkoutId: data?.id });
         return {
             statusCode: 200,
             body: JSON.stringify({

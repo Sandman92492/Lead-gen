@@ -43,6 +43,7 @@ const handler: Handler = async (event: any) => {
     
     console.log('Checkout request:', { amount, passType, userEmail, passHolderName });
     console.log('YOCO_SECRET_KEY first 10 chars:', YOCO_SECRET_KEY.substring(0, 10));
+    console.log('SITE_URL:', baseUrl);
     
     const requestBody = {
       amount: Math.round(amount), // Yoco expects amount in cents
@@ -71,6 +72,9 @@ const handler: Handler = async (event: any) => {
 
     const data = await response.json() as any;
 
+    console.log('Yoco API response status:', response.status);
+    console.log('Yoco API response data:', JSON.stringify(data, null, 2));
+
     if (!response.ok) {
       console.error('Yoco API error:', { status: response.status, data });
       return {
@@ -79,6 +83,7 @@ const handler: Handler = async (event: any) => {
       };
     }
 
+    console.log('Checkout created successfully:', { checkoutId: data?.id });
     return {
       statusCode: 200,
       body: JSON.stringify({

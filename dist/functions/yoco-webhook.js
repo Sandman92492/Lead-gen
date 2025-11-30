@@ -144,8 +144,10 @@ const handler = async (event) => {
             expiryDate.setFullYear(expiryDate.getFullYear() + 1);
         }
         else {
-            // Holiday pass: valid until Jan 31, 2026 23:59:59 UTC
-            expiryDate = new Date('2026-01-31T23:59:59Z');
+            // Holiday pass: valid until Jan 31, 2026 23:59:59 South African Time (UTC+2)
+            // Midnight UTC+2 on Jan 31 = 22:00 UTC on Jan 31
+            expiryDate = new Date('2026-01-31T22:00:00Z');
+            console.log('Using fixed Jan 31 expiry date:', expiryDate.toISOString());
         }
         await firestoreDb.collection('passes').doc(passId).set({
             passId,
