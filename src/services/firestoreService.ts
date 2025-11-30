@@ -305,6 +305,20 @@ export const deleteVendor = async (vendorId: string) => {
 
 // --- DEAL OPERATIONS ---
 
+// Helper function to sort deals by featured status and sortOrder
+const sortDeals = (deals: Deal[]): Deal[] => {
+    return deals.sort((a, b) => {
+        // Primary sort: isFeatured (true first)
+        if (a.featured && !b.featured) return -1;
+        if (!a.featured && b.featured) return 1;
+        
+        // Secondary sort: sortOrder (ascending)
+        const aOrder = a.sortOrder || 999;
+        const bOrder = b.sortOrder || 999;
+        return aOrder - bOrder;
+    });
+};
+
 // Create a new deal
 export const createDeal = async (deal: Deal) => {
     try {
@@ -358,7 +372,7 @@ export const getAllDeals = async (): Promise<Deal[]> => {
             
             return { ...deal, id: doc.id };
         }));
-        return deals;
+        return sortDeals(deals);
     } catch (error: any) {
         console.error('Error getting deals:', error);
         return [];
@@ -383,7 +397,7 @@ export const getDealsByCity = async (city: string): Promise<Deal[]> => {
             
             return { ...deal, id: doc.id };
         }));
-        return deals;
+        return sortDeals(deals);
     } catch (error: any) {
         console.error('Error getting deals by city:', error);
         return [];
@@ -408,7 +422,7 @@ export const getDealsByCategory = async (category: string): Promise<Deal[]> => {
             
             return { ...deal, id: doc.id };
         }));
-        return deals;
+        return sortDeals(deals);
     } catch (error: any) {
         console.error('Error getting deals by category:', error);
         return [];
@@ -437,7 +451,7 @@ export const getDealsByCityAndCategory = async (city: string, category: string):
             
             return { ...deal, id: doc.id };
         }));
-        return deals;
+        return sortDeals(deals);
     } catch (error: any) {
         console.error('Error getting deals by city and category:', error);
         return [];
@@ -462,7 +476,7 @@ export const getDealsByVendor = async (vendorId: string): Promise<Deal[]> => {
             
             return { ...deal, id: doc.id };
         }));
-        return deals;
+        return sortDeals(deals);
     } catch (error: any) {
         console.error('Error getting deals by vendor:', error);
         return [];

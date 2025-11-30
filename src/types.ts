@@ -33,6 +33,7 @@ export interface Deal {
   category?: 'restaurant' | 'activity' | 'shopping'; // For filtering
   city?: string; // City where deal is available
   featured?: boolean; // Mark as featured (shows in hero section)
+  sortOrder?: number; // Display order (1-10) for featured deals, used as secondary sort
   imageUrl?: string; // Image URL (from vendor or deal)
   images?: string[]; // Array of additional images
   createdAt?: string;
