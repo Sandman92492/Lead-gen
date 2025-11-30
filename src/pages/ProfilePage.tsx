@@ -137,7 +137,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userEmail, userPhotoURL, onSi
         </div>
 
         {/* Danger Zone */}
-         <div className="bg-urgency-high/5 rounded-xl border-2 border-urgency-high/50 p-6 sm:p-8">
+         <div className="bg-urgency-high/5 rounded-xl border-2 border-urgency-high p-6 sm:p-8">
           <h2 className="text-xl font-display font-bold text-urgency-high mb-4 flex items-center gap-2">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4v2m0 4v2" />
