@@ -36,10 +36,12 @@ export function SWUpdatePrompt() {
   }, [showToast]);
 
   const handleUpdate = () => {
+    console.log('Update button clicked');
     acceptSWUpdate();
   };
 
   const handleDismiss = () => {
+    console.log('Dismiss button clicked');
     clearPendingRegistration();
     setUpdateAvailable(false);
   };

@@ -65,18 +65,23 @@ export function initSWUpdateListener() {
  * Call this when user clicks "Update" button
  */
 export function acceptSWUpdate() {
+  console.log('acceptSWUpdate called, pendingRegistration:', pendingRegistration);
   if (pendingRegistration?.waiting) {
+    console.log('Sending SKIP_WAITING to waiting SW');
     // Tell the waiting service worker to activate
     pendingRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
 
     // Reload page once new SW takes over
     let refreshed = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
+      console.log('Controller changed, reloading page');
       if (!refreshed) {
         window.location.reload();
         refreshed = true;
       }
     });
+  } else {
+    console.log('No pending registration or waiting SW');
   }
 }
 
