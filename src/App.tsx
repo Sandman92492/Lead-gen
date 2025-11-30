@@ -26,6 +26,7 @@ import SignedInTabsApp from './components/SignedInTabsApp.tsx';
 import ToastContainer from './components/ToastContainer.tsx';
 import AdminDashboard from './components/AdminDashboard.tsx';
 import CookieConsentBanner from './components/CookieConsentBanner.tsx';
+import ScrollToTopButton from './components/ScrollToTopButton.tsx';
 // import { SWUpdatePrompt } from './components/SWUpdatePrompt.tsx';
 
 import { PassType } from './types.ts';
@@ -330,6 +331,7 @@ const App: React.FC = () => {
   return (
     <div>
       <CookieConsentBanner />
+      <ScrollToTopButton />
       {/* <SWUpdatePrompt /> */}
       <ToastContainer />
       {isLoading && <LoadingScreen />}
