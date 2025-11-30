@@ -19,18 +19,22 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
       const currentDeal = deals[currentIndex];
       const prevDeal = deals[currentIndex - 1];
       
-      // If deals don't have sortOrder, assign them sequentially
-      let currentOrder = currentDeal.sortOrder;
-      let prevOrder = prevDeal.sortOrder;
-      
-      if (currentOrder === undefined) {
-        currentOrder = currentIndex + 1;
+      // Initialize sortOrder for ALL deals if not already set (only do this once)
+      const needsInit = deals.some(d => d.sortOrder === undefined);
+      if (needsInit) {
+        for (let i = 0; i < deals.length; i++) {
+          if (deals[i].sortOrder === undefined) {
+            await updateDeal(deals[i].id || '', { sortOrder: i + 1 });
+          }
+        }
+        // Wait for all updates to propagate
+        await new Promise(resolve => setTimeout(resolve, 200));
       }
-      if (prevOrder === undefined) {
-        prevOrder = currentIndex;
-      }
       
-      // Swap sortOrder values
+      // Now swap current and previous
+      const currentOrder = currentDeal.sortOrder || currentIndex + 1;
+      const prevOrder = prevDeal.sortOrder || currentIndex;
+      
       await updateDeal(currentDeal.id || '', { sortOrder: prevOrder });
       await updateDeal(prevDeal.id || '', { sortOrder: currentOrder });
       
@@ -38,7 +42,7 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
       setTimeout(() => setSuccessMessage(''), 2000);
       
       // Reload deals from Firestore to reflect changes
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 200));
       onReorderComplete();
     } catch (error) {
       console.error('Error reordering deals:', error);
@@ -55,18 +59,22 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
       const currentDeal = deals[currentIndex];
       const nextDeal = deals[currentIndex + 1];
       
-      // If deals don't have sortOrder, assign them sequentially
-      let currentOrder = currentDeal.sortOrder;
-      let nextOrder = nextDeal.sortOrder;
-      
-      if (currentOrder === undefined) {
-        currentOrder = currentIndex + 1;
+      // Initialize sortOrder for ALL deals if not already set (only do this once)
+      const needsInit = deals.some(d => d.sortOrder === undefined);
+      if (needsInit) {
+        for (let i = 0; i < deals.length; i++) {
+          if (deals[i].sortOrder === undefined) {
+            await updateDeal(deals[i].id || '', { sortOrder: i + 1 });
+          }
+        }
+        // Wait for all updates to propagate
+        await new Promise(resolve => setTimeout(resolve, 200));
       }
-      if (nextOrder === undefined) {
-        nextOrder = currentIndex + 2;
-      }
       
-      // Swap sortOrder values
+      // Now swap current and next
+      const currentOrder = currentDeal.sortOrder || currentIndex + 1;
+      const nextOrder = nextDeal.sortOrder || currentIndex + 2;
+      
       await updateDeal(currentDeal.id || '', { sortOrder: nextOrder });
       await updateDeal(nextDeal.id || '', { sortOrder: currentOrder });
       
@@ -74,7 +82,7 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
       setTimeout(() => setSuccessMessage(''), 2000);
       
       // Reload deals from Firestore to reflect changes
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 200));
       onReorderComplete();
     } catch (error) {
       console.error('Error reordering deals:', error);
@@ -86,12 +94,24 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
   const handleSetFeatured = async (dealId: string, featured: boolean) => {
     setReorderingDealId(dealId);
     try {
+      // Initialize sortOrder for ALL deals if not already set
+      const needsInit = deals.some(d => d.sortOrder === undefined);
+      if (needsInit) {
+        for (let i = 0; i < deals.length; i++) {
+          if (deals[i].sortOrder === undefined) {
+            await updateDeal(deals[i].id || '', { sortOrder: i + 1 });
+          }
+        }
+        // Wait for all updates to propagate
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+      
       await updateDeal(dealId, { featured });
       setSuccessMessage(featured ? 'Deal marked as featured' : 'Deal unmarked as featured');
       setTimeout(() => setSuccessMessage(''), 2000);
       
       // Reload deals from Firestore to reflect changes
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 200));
       onReorderComplete();
     } catch (error) {
       console.error('Error updating deal:', error);
