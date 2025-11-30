@@ -883,7 +883,11 @@ const AdminDashboard: React.FC = () => {
 
                 {/* Deals Tab */}
                 {activeTab === 'deals' && (
-                    <div className="grid gap-8 lg:grid-cols-2">
+                    <div className="space-y-8">
+                        {/* Deal Reorder Panel - Full Width */}
+                        <DealReorderPanel deals={deals} onReorderComplete={loadDeals} />
+
+                        <div className="grid gap-8 lg:grid-cols-2">
                         {/* Deal Form - Sticky on desktop */}
                         <div className="lg:sticky lg:top-24 lg:self-start">
                             <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
@@ -1088,9 +1092,6 @@ const AdminDashboard: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Deal Reorder Panel */}
-                        <DealReorderPanel deals={deals} onReorderComplete={loadDeals} />
-
                         {/* Deals List */}
                         <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
                             <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
@@ -1115,6 +1116,7 @@ const AdminDashboard: React.FC = () => {
                                     ))}
                                 </div>
                             )}
+                        </div>
                         </div>
                     </div>
                 )}
