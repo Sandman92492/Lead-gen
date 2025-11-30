@@ -25,30 +25,19 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
     loadPrice();
   }, []);
 
-  const imageUrl = "https://portalfred.co.za/wp-content/uploads/2021/09/West-beach-from-air-Copy-scaled.jpg";
+  const imageUrl = "/Images/hero.jpg";
 
   return (
     <>
       <section className="relative min-h-screen flex flex-col items-center justify-start md:justify-center text-center overflow-hidden">
-        {/* Video background - mobile only */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover md:hidden z-0"
-        >
-          <source src="/Videos/hero-background.mp4" type="video/mp4" />
-        </video>
-
-        {/* Fallback image for desktop & if video fails */}
-        <div
-          className="hidden md:block absolute inset-0 bg-cover bg-center bg-fixed z-0"
-          style={{
-            backgroundImage: `url('${imageUrl}')`,
-            backgroundAttachment: 'fixed'
-          }}
-        />
+         {/* Image background for all devices */}
+         <div
+           className="absolute inset-0 bg-cover bg-center bg-fixed z-0"
+           style={{
+             backgroundImage: `url('${imageUrl}')`,
+             backgroundAttachment: 'fixed'
+           }}
+         />
 
         {/* Overlay for text readability */}
         <div className="absolute inset-0 bg-black/50 dark:bg-black/60 z-0"></div>

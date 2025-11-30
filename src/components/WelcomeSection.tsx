@@ -5,7 +5,7 @@ interface WelcomeSectionProps {
 }
 
 const WelcomeSection: React.FC<WelcomeSectionProps> = ({ variant = 'intro' }) => {
-  const imageUrl = "https://portalfred.co.za/wp-content/uploads/2021/09/West-beach-from-air-Copy-scaled.jpg";
+  const imageUrl = "/Images/welcome.jpg";
 
   const content = {
     intro: {

@@ -149,14 +149,15 @@ const handler: Handler = async (event: any) => {
         
         const passId = 'PAHP-' + Math.random().toString(36).substring(2, 9).toUpperCase();
 
-        let expiryDate: Date;
-        if (passType === 'annual') {
-            expiryDate = new Date();
-            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-        } else {
-            // Holiday pass: valid until Jan 31, 2026 23:59:59 UTC
-            expiryDate = new Date('2026-01-31T23:59:59Z');
-        }
+         let expiryDate: Date;
+         if (passType === 'annual') {
+             expiryDate = new Date();
+             expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+         } else {
+             // Holiday pass: valid until Jan 31, 2026 23:59:59 South African Time (UTC+2)
+             // Midnight UTC+2 on Jan 31 = 22:00 UTC on Jan 30
+             expiryDate = new Date('2026-01-30T22:00:00Z');
+         }
 
         await firestoreDb.collection('passes').doc(passId).set({
             passId,

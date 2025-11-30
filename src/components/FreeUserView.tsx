@@ -4,6 +4,7 @@ import WelcomeSection from './WelcomeSection';
 import HowItWorks from './HowItWorks';
 import DealsShowcase from './DealsShowcase';
 import CharitySection from './CharitySection';
+import CharityImageSection from './CharityImageSection';
 import FAQ from './FAQ';
 import PricingOptions from './PricingOptions';
 import { PassType } from '../types';
@@ -34,6 +35,7 @@ const FreeUserView: React.FC<FreeUserViewProps> = ({
       <HowItWorks />
       <DealsShowcase hasPass={false} onRedeemClick={() => {}} redeemedDeals={[]} isFreeUser={true} onSignInClick={onAuthClick} />
       <CharitySection />
+      <CharityImageSection />
       <FAQ />
       <PricingOptions onSelectPass={onSelectPass} />
     </main>
