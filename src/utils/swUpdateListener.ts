@@ -11,13 +11,17 @@ let pendingRegistration: ServiceWorkerRegistration | null = null;
  * Dispatches custom event when new version is ready
  */
 export function initSWUpdateListener() {
+  console.log('initSWUpdateListener: Starting');
   if (!('serviceWorker' in navigator)) {
+    console.log('initSWUpdateListener: Service Worker not supported');
     return;
   }
 
   // Get current registration
   navigator.serviceWorker.getRegistration().then((registration) => {
+    console.log('initSWUpdateListener: Got registration:', registration);
     if (!registration) {
+      console.log('initSWUpdateListener: No registration found');
       return;
     }
 
@@ -30,23 +34,29 @@ export function initSWUpdateListener() {
 
     // Listen for new waiting service worker
     registration.addEventListener('updatefound', () => {
+      console.log('initSWUpdateListener: updatefound event fired');
       const newWorker = registration.installing;
 
       if (!newWorker) {
+        console.log('initSWUpdateListener: No installing worker');
         return;
       }
 
       newWorker.addEventListener('statechange', () => {
+        console.log('initSWUpdateListener: SW state changed to:', newWorker.state);
         // New SW is waiting (installed but not activated)
         if (newWorker.state === 'installed') {
           // Check if we already have an active service worker
           if (navigator.serviceWorker.controller) {
+            console.log('initSWUpdateListener: Dispatching swupdate event');
             // Active SW exists, so this is a new update
             pendingRegistration = registration;
             // Dispatch custom event for app to listen to
             window.dispatchEvent(
               new CustomEvent('swupdate', { detail: registration })
             );
+          } else {
+            console.log('initSWUpdateListener: No active controller, skipping update prompt');
           }
         }
 

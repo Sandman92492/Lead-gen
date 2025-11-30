@@ -15,11 +15,14 @@ export function SWUpdatePrompt() {
   const { showToast } = useToast();
 
   useEffect(() => {
+    console.log('SWUpdatePrompt: Initializing update listener');
+    
     // Initialize SW update listener
     initSWUpdateListener();
 
     // Listen for update ready events
     const handleSWUpdate = () => {
+      console.log('SWUpdatePrompt: swupdate event fired');
       setUpdateAvailable(true);
       showToast(
         'New version available. Click to update.',
