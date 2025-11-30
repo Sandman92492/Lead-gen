@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface ContactDropdownProps {
     email?: string;
@@ -10,26 +11,39 @@ interface ContactDropdownProps {
 const ContactDropdown: React.FC<ContactDropdownProps> = ({ email, phone, className = '', buttonClassName = '' }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
+
+    // Track button position and close dropdown when clicking outside
+    useEffect(() => {
+        if (isOpen && buttonRef.current) {
+            setButtonRect(buttonRef.current.getBoundingClientRect());
+        }
+    }, [isOpen]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
+                buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside);
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, []);
+    }, [isOpen]);
 
     if (!email && !phone) return null;
 
     return (
         <div className={`relative ${className}`} ref={dropdownRef}>
             <button
+                ref={buttonRef}
                 onClick={(e) => {
                     e.stopPropagation();
                     setIsOpen(!isOpen);
@@ -50,8 +64,16 @@ const ContactDropdown: React.FC<ContactDropdownProps> = ({ email, phone, classNa
                 </svg>
             </button>
 
-            {isOpen && (
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 bg-bg-card rounded-lg shadow-xl border border-border-subtle overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+            {isOpen && buttonRect && createPortal(
+                <div
+                    ref={dropdownRef}
+                    className="fixed w-[calc(100vw-1rem)] sm:w-72 max-w-xs bg-bg-card rounded-lg shadow-xl border border-border-subtle overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-2 duration-200"
+                    style={{
+                        left: `calc(${buttonRect.left + buttonRect.width / 2}px - 50%)`,
+                        top: `${buttonRect.top - 8}px`,
+                        transform: 'translateY(-100%)',
+                    }}
+                >
                     <div className="p-1">
                         {phone && (
                             <>
@@ -91,7 +113,7 @@ const ContactDropdown: React.FC<ContactDropdownProps> = ({ email, phone, classNa
                             </>
                         )}
 
-                        {email && (
+                        {email && email !== 'noemail@email.com' && (
                             <a
                                 href={`mailto:${email}`}
                                 className="flex items-center gap-3 px-4 py-3 hover:bg-bg-secondary rounded-md transition-colors text-text-primary"
@@ -110,7 +132,8 @@ const ContactDropdown: React.FC<ContactDropdownProps> = ({ email, phone, classNa
                             </a>
                         )}
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );
