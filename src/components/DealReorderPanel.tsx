@@ -10,6 +10,30 @@ interface DealReorderPanelProps {
 const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderComplete }) => {
   const [reorderingDealId, setReorderingDealId] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const [isInitializingAll, setIsInitializingAll] = useState(false);
+
+  // Fix deals stuck at sortOrder 999 or without sortOrder
+  const initializeAllSortOrders = async () => {
+    if (!window.confirm('This will assign sortOrder to all deals. Continue?')) {
+      return;
+    }
+    setIsInitializingAll(true);
+    try {
+      for (let i = 0; i < deals.length; i++) {
+        const deal = deals[i];
+        // Assign sequential sortOrder (1, 2, 3, etc)
+        await updateDeal(deal.id || '', { sortOrder: i + 1 });
+      }
+      setSuccessMessage('All deals initialized with proper sort order');
+      setTimeout(() => setSuccessMessage(''), 2000);
+      await new Promise(resolve => setTimeout(resolve, 300));
+      onReorderComplete();
+    } catch (error) {
+      console.error('Error initializing sort orders:', error);
+    } finally {
+      setIsInitializingAll(false);
+    }
+  };
 
   const handleMoveUp = async (dealId: string, currentIndex: number) => {
     if (currentIndex === 0) return;
@@ -129,6 +153,9 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
     return aOrder - bOrder;
   });
 
+  // Check if any deals are stuck at 999 or missing sortOrder
+  const hasUnorderedDeals = deals.some(d => d.sortOrder === undefined || d.sortOrder === 999);
+
   return (
     <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
       <div className="flex items-center justify-between mb-4">
@@ -139,6 +166,19 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
           <span className="text-sm text-value-highlight font-semibold">{successMessage}</span>
         )}
       </div>
+
+      {hasUnorderedDeals && (
+        <div className="mb-4 p-3 bg-urgency-high/10 border border-urgency-high rounded-lg">
+          <p className="text-xs text-urgency-high font-medium mb-2">⚠️ Some deals are missing sort order</p>
+          <button
+            onClick={initializeAllSortOrders}
+            disabled={isInitializingAll}
+            className="text-xs px-3 py-1.5 bg-urgency-high text-white hover:bg-urgency-high/80 rounded font-medium disabled:opacity-50 transition-colors"
+          >
+            {isInitializingAll ? 'Initializing...' : 'Fix All Deals'}
+          </button>
+        </div>
+      )}
 
       {deals.length === 0 ? (
         <p className="text-sm text-text-secondary text-center py-8">No deals to reorder</p>
