@@ -46,145 +46,92 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({ onClose }) => {
 
         <div className="space-y-6 text-text-primary overflow-y-auto max-h-[60vh]">
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">1. Acceptance of Terms</h2>
+            <h2 className="text-xl font-bold text-accent-primary mb-3">1. Legal Entity & Acceptance</h2>
             <p>
-              By accessing and using the Port Alfred Holiday Pass application, you accept and agree to be bound by the terms
-              and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+              These Terms of Service ("Terms") constitute a legally binding agreement between you ("User") and Matthew Santillan trading as Port Alfred Holiday Pass ("the Provider"). By purchasing or using the pass, you agree to these terms.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">2. License</h2>
-            <p>
-              We grant you a limited, non-exclusive, non-transferable license to use the application for your personal,
-              non-commercial use only. You may not modify, copy, distribute, or use the application for any other purpose.
+            <h2 className="text-xl font-bold text-accent-primary mb-3">2. The Service (Platform Only)</h2>
+            <p className="mb-3">
+              The Port Alfred Holiday Pass is a digital marketing voucher platform. We provide access to discounts offered by third-party businesses ("Vendors").
             </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">3. User Responsibilities</h2>
-            <p className="mb-3">You agree to:</p>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Provide accurate and complete information when creating an account</li>
-              <li>Maintain confidentiality of your password</li>
-              <li>Use the app only for legitimate purposes</li>
-              <li>Not engage in fraudulent or illegal activities</li>
-              <li>Not attempt to reverse-engineer or hack the application</li>
-              <li>Comply with all applicable laws and regulations</li>
+              <li>We are not the supplier of the food, activities, or goods</li>
+              <li>The contract for the sale of goods/services is strictly between you and the Vendor</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">4. Pass Terms</h2>
+            <h2 className="text-xl font-bold text-accent-primary mb-3">3. Pass Validity & Rules</h2>
+            <ul className="list-disc pl-5 space-y-1">
+              <li><strong>Validity:</strong> 1 December 2025 – 31 January 2026</li>
+              <li><strong>Expiry:</strong> The pass automatically expires on 31 Jan 2026. Unused deals are forfeited</li>
+              <li><strong>Single User License:</strong> The pass is valid for use by the registered account holder only. It is non-transferable once a deal has been redeemed</li>
+              <li><strong>Verification:</strong> Vendors reserve the right to request ID to match the name on the Digital Pass</li>
+              <li><strong>Redemption:</strong> Each deal is valid for one-time use per pass, unless specified otherwise in the specific Deal Terms</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-accent-primary mb-3">4. Payments & Refunds (CPA & ECTA)</h2>
             <div className="space-y-3">
               <div>
-                <h3 className="font-semibold mb-2">Validity and Expiration</h3>
-                 <ul className="list-disc pl-5 space-y-1">
-                    <li>Holiday passes are valid from December 1st through January 31st</li>
-                    <li>Passes cannot be used after January 31st</li>
-                 </ul>
+                <h3 className="font-semibold mb-2">Cooling-Off Period</h3>
+                <p>In terms of the Electronic Communications and Transactions Act (ECTA), you are entitled to cancel your purchase within 7 days of payment, provided no deals have been redeemed.</p>
               </div>
               <div>
-                <h3 className="font-semibold mb-2">Redemption</h3>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li>Each deal can be redeemed once per visit</li>
-                  <li>Businesses reserve the right to verify pass validity before redemption</li>
-                  <li>Redemptions are final and non-transferable</li>
-                </ul>
+                <h3 className="font-semibold mb-2">Refund Process</h3>
+                <p>To request a refund, email portalfredholidaypass@gmail.com.</p>
               </div>
               <div>
-                <h3 className="font-semibold mb-2">Transferability</h3>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li>Plus One passes may be transferred to one additional person</li>
-                  <li>Transfers must be done before redemption</li>
-                  <li>Only the registered owner or transferred recipient may use the pass</li>
-                </ul>
+                <h3 className="font-semibold mb-2">Non-Refundable</h3>
+                <p>Once a single deal has been redeemed, or after the 7-day cooling-off period, the pass is non-refundable.</p>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">Vendor Availability</h3>
+                <p>We do not guarantee that every Vendor will be open at all times (e.g., due to weather or capacity). Vendor unavailability does not constitute grounds for a full refund of the Pass.</p>
               </div>
             </div>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">5. Payment and Refunds</h2>
+            <h2 className="text-xl font-bold text-accent-primary mb-3">5. Limitation of Liability (Important)</h2>
+            <p className="mb-3">To the fullest extent permitted by South African law:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li><strong>Indemnity:</strong> You agree to indemnify Matthew Santillan (t/a Port Alfred Holiday Pass) against any claims arising from your use of the Vendor services</li>
+              <li><strong>No Liability for Vendors:</strong> We are not liable for any injury, illness, loss, or damage experienced at a Vendor's premises (e.g., food poisoning, activity injuries, or poor service). Your claim lies solely with the Vendor</li>
+              <li><strong>App Uptime:</strong> We strive for 100% uptime but are not liable for temporary technical glitches that prevent redemption at a specific moment</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-accent-primary mb-3">6. User Conduct</h2>
+            <p className="mb-3">You agree not to:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Attempt to duplicate, screenshot, or forge the digital pass</li>
+              <li>Share your login details to allow multiple people to use a single pass</li>
+              <li>Abuse staff at Partner Venues. (We reserve the right to revoke passes for abusive behavior without refund)</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-accent-primary mb-3">7. Governing Law & Domicilium</h2>
             <p className="mb-3">
-              Payments are processed securely through Yoco. All prices are in the currency specified at checkout.
+              These terms are governed by the laws of the Republic of South Africa.
             </p>
-            <div className="space-y-3">
-              <div>
-                <h3 className="font-semibold mb-2">Cooling-Off Period (ECTA Section 25)</h3>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li>You have 7 calendar days from purchase to cancel your pass</li>
-                  <li>To cancel, email: portalfredholidaypass@gmail.com with your order reference</li>
-                  <li>If you have redeemed any deals, cooling-off rights are forfeited</li>
-                  <li>This is your statutory right under South African law (ECTA)</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">Refund Policy</h3>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li>Refunds are available within 14 days of purchase if no redemptions have been made</li>
-                  <li>Once a pass has been redeemed, it is non-refundable</li>
-                  <li>Refunds will be processed to the original payment method</li>
-                  <li>Processing time: 5-10 business days</li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">6. Limitation of Liability</h2>
             <p>
-              Port Alfred Holiday Pass is provided "as is" without warranties. We are not liable for direct, indirect,
-              incidental, special, or consequential damages arising from your use of the application, including but not
-              limited to loss of data, business interruption, or personal injury.
+              <strong>Physical Service Address (Domicilium):</strong> <br />
+              1404, Albany RD, Port Alfred, 6170
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">7. Business Partner Terms</h2>
+            <h2 className="text-xl font-bold text-accent-primary mb-3">8. Contact</h2>
             <p>
-              We do not control or endorse the quality of products/services offered by partner businesses. They operate
-              independently and are responsible for their own operations, customer service, and dispute resolution.
-              Claims should be directed to the respective business, not to us.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">8. Suspension and Termination</h2>
-            <p>
-              We reserve the right to suspend or terminate your account if you violate these terms, engage in fraudulent
-              activity, or attempt to misuse the service. Violations may result in permanent bans.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">9. Intellectual Property</h2>
-            <p>
-              All content, logos, designs, and intellectual property in the application are owned by Port Alfred Holiday Pass
-              or our partners. You may not reproduce, distribute, or use them without explicit permission.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">10. Governing Law</h2>
-            <p>
-              These terms are governed by the laws of South Africa. Any disputes will be resolved in the courts of
-              South Africa.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">11. Changes to Terms</h2>
-            <p>
-              We may update these terms periodically. Continued use of the application constitutes acceptance of updated terms.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">12. Contact</h2>
-            <p>
-              For questions about these terms, contact us at: <br />
               <strong>Email:</strong> portalfredholidaypass@gmail.com <br />
-              <strong>WhatsApp:</strong> 065 806 2198
+              <strong>WhatsApp:</strong> 079 956 9040
             </p>
           </section>
         </div>
