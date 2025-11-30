@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import LaunchBanner from './components/LaunchBanner.tsx';
+
 import Header from './components/Header.tsx';
 import Footer from './components/Footer.tsx';
 import PurchaseModal from './components/PurchaseModal.tsx';
@@ -329,7 +329,6 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <LaunchBanner />
       <CookieConsentBanner />
       {/* <SWUpdatePrompt /> */}
       <ToastContainer />
