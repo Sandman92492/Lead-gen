@@ -7,7 +7,7 @@ const CharityImageSection: React.FC = () => {
         <div className="max-w-4xl mx-auto">
           <div className="scroll-reveal">
             <img 
-              src="/Images/charity.jpg" 
+              src="/Images/charity2.webp" 
               alt="Making a difference in the Port Alfred community through charitable giving"
               className="rounded-lg shadow-2xl w-full h-auto object-cover border-4 border-action-primary"
             />

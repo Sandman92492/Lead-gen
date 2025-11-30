@@ -136,7 +136,7 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
                                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                              </svg>
                          </div>
-                         <p className="text-center text-xs text-brand-white/50 mt-1 sm:mt-2">Scan at any partner venue</p>
+                         <p className="text-center text-xs text-brand-white/50 mt-1 sm:mt-2">Show this screen to Redeem</p>
                      </div>
                      <div className="flex justify-center pt-1 sm:pt-3">
                          <div className="flex items-center gap-1.5 bg-brand-white/10 backdrop-blur-sm px-2.5 py-1.5 rounded-md border border-brand-yellow/30">

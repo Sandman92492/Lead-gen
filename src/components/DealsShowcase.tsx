@@ -31,7 +31,7 @@ const DealsShowcase: React.FC<DealsShowcaseProps> = ({ hasPass, redeemedDeals = 
           </h2>
           <p className="text-3xl md:text-4xl font-display font-black text-accent-primary mb-4 md:mb-6">Discover & Save</p>
            <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">
-             Explore Port Alfred's most loved local venues and support the businesses that make our town special
+             Connect with the heart of Port Alfred and surrounding areas by supporting the local people and establishments we love
            </p>
         </div>
 
