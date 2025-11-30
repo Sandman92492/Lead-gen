@@ -122,6 +122,7 @@ const handler: Handler = async (event: any) => {
         const { passType, userEmail, passHolderName, userId } = yocoEvent.payload.metadata || {};
 
         if (!passType || !userEmail || !passHolderName || !userId) {
+            console.error('Missing required metadata:', { passType, userEmail, passHolderName, userId });
             return {
                 statusCode: 400,
                 body: JSON.stringify({ error: 'Invalid metadata' }),
@@ -193,6 +194,8 @@ const handler: Handler = async (event: any) => {
             body: JSON.stringify({ received: true, passId }),
         };
     } catch (error) {
+        console.error('Webhook processing error:', error instanceof Error ? error.message : String(error));
+        console.error('Full error:', error);
         return {
             statusCode: 500,
             body: JSON.stringify({ error: 'Internal server error' }),
