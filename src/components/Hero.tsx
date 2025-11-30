@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from './Button.tsx';
 import { getPassPrice } from '../utils/pricing';
+import { useAllDeals } from '../hooks/useAllDeals';
 
 interface HeroProps {
   onButtonClick: () => void;
@@ -14,6 +15,8 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick: _onActivateClick, appStatus }) => {
   const [passPrice, setPassPrice] = useState(199);
+  const [totalSavings, setTotalSavings] = useState(1000);
+  const { deals } = useAllDeals();
   const isLoading = appStatus === 'loading';
   const mainButtonText = isLoading ? 'Checking Pass...' : buttonText;
 
@@ -24,6 +27,15 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
     };
     loadPrice();
   }, []);
+
+  // Calculate total savings from all deals, rounded down to nearest hundred
+  useEffect(() => {
+    if (deals.length > 0) {
+      const total = deals.reduce((sum, deal) => sum + (deal.savings || 0), 0);
+      const roundedTotal = Math.floor(total / 100) * 100;
+      setTotalSavings(roundedTotal);
+    }
+  }, [deals]);
 
   const imageUrl = "/Images/herov2.jpg";
 
@@ -54,7 +66,7 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
                    <span className="block text-5xl md:text-7xl font-black">SA's Blue Flag Coast</span>
                </h1>
                <p className="text-lg md:text-xl text-white leading-relaxed mb-6 drop-shadow-lg max-w-2xl">
-                   Don't pay peak season prices. <span className="font-bold text-yellow-300">Pay Like a Local.</span> Unlock R1,000+ in exclusive savings at Port Alfred's best spots.
+                   Don't pay peak season prices. <span className="font-bold text-yellow-300">Pay Like a Local.</span> Unlock R{totalSavings.toLocaleString()}+ in exclusive savings at Port Alfred's best spots.
                </p>
 
                <div className="flex flex-col items-center gap-8">
