@@ -13,3 +13,7 @@ dist
 .qodo
 .netlify
 SECRETS_REMOVAL_COMPLETE.md
+FIXES_SUMMARY.txt
+HANDOFF_*.md
+NAVBAR_*.md
+RESPONSIVE_DESIGN_*.md

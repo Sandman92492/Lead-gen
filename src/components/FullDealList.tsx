@@ -31,8 +31,8 @@ const FullDealList: React.FC<FullDealListProps> = ({
   return (
     <section id="full-deal-list" className="bg-bg-primary relative">
       {isPassExpired && hasPass && (
-        <div className="bg-red-50 dark:bg-red-950/30 border-t border-b border-red-200 dark:border-red-800 py-4">
-          <div className="container mx-auto px-4 sm:px-6">
+         <div className="bg-red-50 dark:bg-red-950/30 border-t border-b border-red-200 dark:border-red-800 py-4">
+           <div className="container mx-auto px-4 sm:px-6">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="font-semibold text-red-900 dark:text-red-200">Your pass has expired</p>
@@ -50,7 +50,7 @@ const FullDealList: React.FC<FullDealListProps> = ({
       )}
       <div className="container mx-auto px-4 sm:px-6 py-8 md:py-12">
         {/* Hero Section */}
-        <div className="mb-12 text-center">
+        <div className="mb-12 text-center sm:text-right">
           <h1 className="text-3xl md:text-4xl font-display font-black text-action-primary mb-2">
             All Deals
           </h1>
@@ -72,49 +72,52 @@ const FullDealList: React.FC<FullDealListProps> = ({
 
 
         {/* Category Deal Scrollers */}
-        {!isLoading && filteredDeals.length > 0 && (
-          <>
-            <CategoryDealScroller
-              title="Local Eats & Treats"
-              emoji="🍔"
-              deals={filteredDeals.filter(
-                (deal) =>
-                  deal.category === 'restaurant' &&
-                  !redeemedDeals.includes(deal.name)
-              )}
-              redeemedDeals={redeemedDeals}
-              passExpiryDate={passExpiryDate}
-              onRedeemClick={onRedeemClick}
-              hasPass={hasPass}
-            />
-            <CategoryDealScroller
-              title="Activities & Adventure"
-              emoji="🛶"
-              deals={filteredDeals.filter(
-                (deal) =>
-                  deal.category === 'activity' &&
-                  !redeemedDeals.includes(deal.name)
-              )}
-              redeemedDeals={redeemedDeals}
-              passExpiryDate={passExpiryDate}
-              onRedeemClick={onRedeemClick}
-              hasPass={hasPass}
-            />
-            <CategoryDealScroller
-              title="Lifestyle & Wellness"
-              emoji="✨"
-              deals={filteredDeals.filter(
-                (deal) =>
-                  deal.category === 'shopping' &&
-                  !redeemedDeals.includes(deal.name)
-              )}
-              redeemedDeals={redeemedDeals}
-              passExpiryDate={passExpiryDate}
-              onRedeemClick={onRedeemClick}
-              hasPass={hasPass}
-            />
-          </>
-        )}
+         {!isLoading && filteredDeals.length > 0 && (
+           <>
+             <CategoryDealScroller
+               title="Local Eats & Treats"
+               emoji="🍔"
+               description="Support our favorite local food spots and enjoy exclusive discounts on great meals"
+               deals={filteredDeals.filter(
+                 (deal) =>
+                   deal.category === 'restaurant' &&
+                   !redeemedDeals.includes(deal.name)
+               )}
+               redeemedDeals={redeemedDeals}
+               passExpiryDate={passExpiryDate}
+               onRedeemClick={onRedeemClick}
+               hasPass={hasPass}
+             />
+             <CategoryDealScroller
+               title="Activities & Adventure"
+               emoji="🛶"
+               description="Unforgettable experiences and adventures waiting for you in and around Port Alfred"
+               deals={filteredDeals.filter(
+                 (deal) =>
+                   deal.category === 'activity' &&
+                   !redeemedDeals.includes(deal.name)
+               )}
+               redeemedDeals={redeemedDeals}
+               passExpiryDate={passExpiryDate}
+               onRedeemClick={onRedeemClick}
+               hasPass={hasPass}
+             />
+             <CategoryDealScroller
+               title="Lifestyle & Wellness"
+               emoji="✨"
+               description="Discover local shops, spas, and wellness experiences that enhance your lifestyle"
+               deals={filteredDeals.filter(
+                 (deal) =>
+                   deal.category === 'shopping' &&
+                   !redeemedDeals.includes(deal.name)
+               )}
+               redeemedDeals={redeemedDeals}
+               passExpiryDate={passExpiryDate}
+               onRedeemClick={onRedeemClick}
+               hasPass={hasPass}
+             />
+           </>
+         )}
       </div>
     </section>
   );

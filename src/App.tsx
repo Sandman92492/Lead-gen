@@ -169,7 +169,7 @@ const App: React.FC = () => {
     const hasPass = userState === 'signed-in-with-pass' && pass !== null;
     return [
       { id: 'home', label: 'Home', path: '/home' },
-      { id: 'deals', label: 'All Deals', path: '/deals' },
+      { id: 'deals', label: 'Deals', path: '/deals' },
       ...(hasPass ? [{ id: 'pass', label: 'My Pass', path: '/pass' }] : []),
       { id: 'profile', label: 'Profile', path: '/profile' },
     ];

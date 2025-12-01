@@ -4,6 +4,7 @@ import HomePage from '../pages/HomePage';
 import MyPassPage from '../pages/MyPassPage';
 import AllDealsPage from '../pages/AllDealsPage';
 import ProfilePage from '../pages/ProfilePage';
+import Footer from './Footer';
 import { HomeIcon, PassIcon, DealsIcon, ProfileIcon } from './TabIcons';
 import { PassInfo } from '../context/AuthContext';
 import { PassType } from '../types';
@@ -94,7 +95,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
 
     const tabs = useMemo(() => [
         { id: 'home', label: 'Home', path: '/home', icon: <HomeIcon /> },
-        { id: 'deals', label: 'All Deals', path: '/deals', icon: <DealsIcon /> },
+        { id: 'deals', label: 'Deals', path: '/deals', icon: <DealsIcon /> },
         ...(hasPass ? [{ id: 'pass', label: 'My Pass', path: '/pass', icon: <PassIcon /> }] : []),
         { id: 'profile', label: 'Profile', path: '/profile', icon: <ProfileIcon /> },
     ], [hasPass]);
@@ -135,6 +136,17 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
                     {/* Redirect unknown routes to home */}
                     <Route path="*" element={<Navigate to="/home" replace />} />
                 </Routes>
+            </div>
+
+            {/* Desktop footer (hidden on mobile) */}
+            <div className="hidden md:block">
+                <Footer
+                    onButtonClick={onBuyPassClick || onMainCta}
+                    buttonText="Get My Pass"
+                    hasPass={hasPass}
+                    onPrivacyClick={onPrivacyClick}
+                    onTermsClick={onTermsClick}
+                />
             </div>
 
             {/* Mobile bottom tabs */}

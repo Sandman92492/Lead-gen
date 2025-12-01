@@ -11,6 +11,7 @@ interface CategoryDealScrollerProps {
   passExpiryDate?: string;
   onRedeemClick?: (dealName: string) => void;
   hasPass: boolean;
+  description?: string;
 }
 
 const CategoryDealScroller: React.FC<CategoryDealScrollerProps> = ({
@@ -21,139 +22,109 @@ const CategoryDealScroller: React.FC<CategoryDealScrollerProps> = ({
   passExpiryDate,
   onRedeemClick,
   hasPass,
+  description,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const touchStartRef = useRef({ x: 0, y: 0 });
+  const [isTabletOrLarger, setIsTabletOrLarger] = useState(typeof window !== 'undefined' ? window.innerWidth >= 768 : false);
 
-  const checkScroll = () => {
+  // Detect tablet/desktop breakpoint
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsTabletOrLarger(window.innerWidth >= 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const handleScroll = () => {
     if (scrollContainerRef.current) {
       const { scrollLeft, clientWidth } = scrollContainerRef.current;
-      
-      // Update current index based on scroll position
       const cardWidth = clientWidth;
       const gap = 16;
       const newIndex = Math.round(scrollLeft / (cardWidth + gap));
+      
+      // Update current index based on scroll position (just for dots)
       setCurrentIndex(Math.min(newIndex, deals.length - 1));
     }
   };
 
-  const scrollToIndex = (index: number) => {
-    if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      const cardWidth = container.clientWidth;
-      const gap = 16;
-      const scrollAmount = cardWidth + gap;
-      
-      container.scrollTo({
-        left: index * scrollAmount,
-        behavior: 'smooth',
-      });
-      
-      setTimeout(checkScroll, 300);
-    }
-  };
-
-  // Handle swipes to move one card at a time
-  const handleTouchStart = (e: TouchEvent) => {
-    touchStartRef.current = {
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
-    };
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    const currentTouch = {
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
-    };
-
-    const deltaX = currentTouch.x - touchStartRef.current.x;
-    const deltaY = currentTouch.y - touchStartRef.current.y;
-    const absDeltaX = Math.abs(deltaX);
-    const absDeltaY = Math.abs(deltaY);
-
-    // Only prevent vertical scroll if significant horizontal movement detected
-    const isHorizontal = absDeltaX > absDeltaY * 1.5 && absDeltaX > 10;
-    if (isHorizontal && e.cancelable) {
-      e.preventDefault();
-    }
-  };
-
-  const handleTouchEnd = (e: TouchEvent) => {
-    const touchEnd = {
-      x: e.changedTouches[0].clientX,
-      y: e.changedTouches[0].clientY,
-    };
-
-    const deltaX = touchEnd.x - touchStartRef.current.x;
-    const deltaY = touchEnd.y - touchStartRef.current.y;
-    const absDeltaX = Math.abs(deltaX);
-    const absDeltaY = Math.abs(deltaY);
-
-    // Only trigger if primarily horizontal (1.5x more than vertical)
-    const isHorizontal = absDeltaX > absDeltaY * 1.5;
-
-    if (isHorizontal && absDeltaX > 20) {
-      if (deltaX > 0) {
-        // Swiped right - go to previous card
-        scrollToIndex(Math.max(0, currentIndex - 1));
-      } else {
-        // Swiped left - go to next card
-        scrollToIndex(Math.min(deals.length - 1, currentIndex + 1));
-      }
-    }
-  };
-
   React.useEffect(() => {
-    checkScroll();
     const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener('scroll', checkScroll);
-      container.addEventListener('touchstart', handleTouchStart, false);
-      container.addEventListener('touchmove', handleTouchMove, { passive: false });
-      container.addEventListener('touchend', handleTouchEnd, false);
+    if (container && !isTabletOrLarger) {
+      container.addEventListener('scroll', handleScroll, { passive: true });
+      
       return () => {
-        container.removeEventListener('scroll', checkScroll);
-        container.removeEventListener('touchstart', handleTouchStart);
-        container.removeEventListener('touchmove', handleTouchMove);
-        container.removeEventListener('touchend', handleTouchEnd);
+        container.removeEventListener('scroll', handleScroll);
       };
     }
-  }, [deals.length, currentIndex]);
+  }, [deals.length, isTabletOrLarger]);
 
   if (deals.length === 0) {
     return null;
   }
 
+  // Grid on tablet/desktop
+  if (isTabletOrLarger) {
+    return (
+      <section className="bg-bg-primary py-8 md:py-12 lg:py-16 border-t border-border-subtle">
+        <div className="container-px container mx-auto">
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-6 md:mb-8">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-black text-action-primary flex items-center gap-3 mb-4">
+                <span className="text-3xl md:text-4xl lg:text-5xl">{emoji}</span>
+                <span>{title}</span>
+              </h2>
+              {description && (
+                <p className="text-text-primary text-base md:text-lg">{description}</p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+              {deals.map((deal, index) => (
+                <div key={deal.id || deal.name} className="scroll-reveal" style={{ transitionDelay: `${index * 100}ms` }}>
+                  <FeaturedDealCard
+                    deal={deal}
+                    index={index}
+                    hasPass={hasPass}
+                    isRedeemed={redeemedDeals.includes(deal.name)}
+                    passExpiryDate={passExpiryDate}
+                    onRedeemClick={onRedeemClick}
+                    cardHeight="h-96"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Carousel on mobile
   return (
-    <section className="bg-bg-primary py-8 md:py-12">
-      <div className="container mx-auto px-4 sm:px-6">
+    <section className="bg-bg-primary py-8 sm:py-10 md:py-12 border-t border-border-subtle">
+      <div className="container-px container mx-auto">
         <div className="max-w-4xl mx-auto">
-          {/* Section Title */}
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-black text-action-primary flex items-center gap-2 leading-tight">
-              <span className="flex-shrink-0">{emoji}</span>
+            <h2 className="text-2xl sm:text-3xl font-display font-black text-action-primary flex items-center gap-2 leading-tight">
+              <span>{emoji}</span>
               <span className="truncate">{title}</span>
             </h2>
-            <div className="text-sm font-semibold text-text-secondary">
-              {currentIndex + 1} of {deals.length}
+            <div className="text-xs xs:text-sm font-semibold text-text-secondary">
+              {currentIndex + 1}/{deals.length}
             </div>
           </div>
 
-          {/* Scroll Container */}
-           <div
-             ref={scrollContainerRef}
-             className="overflow-x-auto scrollbar-hide"
-             style={{ scrollSnapType: 'x mandatory', overscrollBehavior: 'contain', touchAction: 'pan-y' }}
-           >
-            <div className="flex gap-4 pb-4">
+          {description && (
+            <p className="text-text-secondary text-sm sm:text-base md:text-lg mb-6">{description}</p>
+          )}
+
+          <div ref={scrollContainerRef} className="overflow-x-auto scrollbar-hide" style={{scrollBehavior: 'smooth', scrollSnapType: 'x mandatory'}}>
+            <div className="flex gap-3 xs:gap-4 pb-4">
               {deals.map((deal, index) => (
-                <div
-                  key={deal.id || deal.name}
-                  className="flex-shrink-0 w-full"
-                  style={{ scrollSnapAlign: 'center' }}
-                >
+                <div key={deal.id || deal.name} className="flex-shrink-0 w-full" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}>
                   <FeaturedDealCard
                     deal={deal}
                     index={index}
@@ -168,17 +139,18 @@ const CategoryDealScroller: React.FC<CategoryDealScrollerProps> = ({
             </div>
           </div>
 
-          {/* Carousel Dots */}
-          <div className="flex justify-center items-center gap-2 mt-6">
+          <div className="flex justify-center items-center gap-2 mt-4 xs:mt-5">
             {deals.map((_, index) => (
               <button
                 key={index}
-                onClick={() => scrollToIndex(index)}
-                className={`transition-all duration-200 rounded-full ${
-                  index === currentIndex
-                    ? 'bg-action-primary w-3 h-3'
-                    : 'bg-border-subtle hover:bg-text-secondary/30 w-2 h-2'
-                }`}
+                onClick={() => {
+                  if (scrollContainerRef.current) {
+                    const scrollAmount = scrollContainerRef.current.clientWidth + 16;
+                    scrollContainerRef.current.scrollTo({left: index * scrollAmount, behavior: 'smooth'});
+                    setCurrentIndex(index);
+                  }
+                }}
+                className={`transition-all rounded-full ${index === currentIndex ? 'bg-action-primary w-2.5 xs:w-3 h-2.5 xs:h-3' : 'bg-border-subtle w-2 h-2'}`}
                 aria-label={`Go to deal ${index + 1}`}
               />
             ))}

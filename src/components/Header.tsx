@@ -186,11 +186,11 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                                     {!userPhotoURL && (
                                         <div className="w-10 h-10 rounded-full bg-action-primary flex items-center justify-center text-text-primary font-semibold text-xs">{userEmail?.charAt(0).toUpperCase()}</div>
                                     )}
-                                    <Button onClick={onSignOutClick} variant="outline" size="sm">Sign Out</Button>
+                                    <Button onClick={onSignOutClick} variant="outline" size="sm" className="whitespace-nowrap">Sign Out</Button>
                                 </>
                             ) : (
                                 <>
-                                    <Button onClick={onAuthClick} variant="outline" size="sm">Sign In</Button>
+                                    <Button onClick={onAuthClick} variant="outline" size="sm" className="whitespace-nowrap">Sign In</Button>
                                     <Button onClick={onButtonClick} variant="primary" size="sm">{buttonText}</Button>
                                 </>
                             )}
