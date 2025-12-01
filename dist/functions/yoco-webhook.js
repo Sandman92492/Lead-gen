@@ -107,6 +107,29 @@ const handler = async (event) => {
             };
         }
         const yocoEvent = JSON.parse(payload);
+        // VERIFY payment exists on Yoco before creating pass
+        const yocoSecretKey = process.env.YOCO_SECRET_KEY;
+        const paymentId = yocoEvent.payload.id;
+        try {
+            const verifyResponse = await fetch(`https://api.yoco.com/v1/payments/${paymentId}`, {
+                headers: { 'Authorization': `Bearer ${yocoSecretKey}` }
+            });
+            const payment = await verifyResponse.json();
+            if (payment.status !== 'succeeded') {
+                console.error('Payment verification failed. Status:', payment.status);
+                return {
+                    statusCode: 400,
+                    body: JSON.stringify({ error: 'Payment not verified' }),
+                };
+            }
+        }
+        catch (error) {
+            console.error('Failed to verify payment with Yoco:', error instanceof Error ? error.message : String(error));
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: 'Payment verification failed' }),
+            };
+        }
         // Only handle succeeded payments
         if (yocoEvent.type !== 'payment.succeeded' || yocoEvent.payload.status !== 'succeeded') {
             return {
@@ -124,15 +147,15 @@ const handler = async (event) => {
         }
         // Create pass in Firestore
         const firestoreDb = initFirebase();
-        // Check if a paid pass already exists for this user
+        // Check if a pass already exists for this payment (prevent duplicates from webhook retries)
         const existingPassQuery = await firestoreDb
             .collection('passes')
-            .where('userId', '==', userId)
-            .where('paymentStatus', '==', 'completed')
+            .where('paymentRef', '==', paymentId)
             .limit(1)
             .get();
         if (!existingPassQuery.empty) {
             const existingPass = existingPassQuery.docs[0].data();
+            console.log('Duplicate payment detected. paymentRef:', paymentId, 'existing passId:', existingPass.passId);
             return {
                 statusCode: 200,
                 body: JSON.stringify({ received: true, passId: existingPass.passId, isDuplicate: true }),
