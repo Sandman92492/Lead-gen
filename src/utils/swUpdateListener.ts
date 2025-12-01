@@ -5,28 +5,6 @@
  */
 
 let pendingRegistration: ServiceWorkerRegistration | null = null;
-let currentRegistration: ServiceWorkerRegistration | null = null;
-
-/**
- * Manually trigger an update check (useful for testing)
- */
-export function checkForUpdatesNow() {
-  if (currentRegistration) {
-    currentRegistration.update().catch(() => {
-      // Silent fail
-    });
-  } else {
-    // Try to get registration
-    navigator.serviceWorker.getRegistration().then((reg) => {
-      if (reg) {
-        currentRegistration = reg;
-        reg.update().catch(() => {
-          // Silent fail
-        });
-      }
-    });
-  }
-}
 
 /**
  * Listen for service worker updates
@@ -42,8 +20,6 @@ export function initSWUpdateListener() {
     if (!registration) {
       return;
     }
-
-    currentRegistration = registration;
 
     // Check for updates every 60 seconds
     setInterval(() => {

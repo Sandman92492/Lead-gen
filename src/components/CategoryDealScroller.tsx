@@ -24,6 +24,7 @@ const CategoryDealScroller: React.FC<CategoryDealScrollerProps> = ({
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const touchStartRef = useRef({ x: 0, y: 0 });
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -53,14 +54,73 @@ const CategoryDealScroller: React.FC<CategoryDealScrollerProps> = ({
     }
   };
 
+  // Handle swipes to move one card at a time
+  const handleTouchStart = (e: TouchEvent) => {
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    const currentTouch = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+
+    const deltaX = currentTouch.x - touchStartRef.current.x;
+    const deltaY = currentTouch.y - touchStartRef.current.y;
+    const absDeltaX = Math.abs(deltaX);
+    const absDeltaY = Math.abs(deltaY);
+
+    // Only prevent vertical scroll if significant horizontal movement detected
+    const isHorizontal = absDeltaX > absDeltaY * 1.5 && absDeltaX > 10;
+    if (isHorizontal && e.cancelable) {
+      e.preventDefault();
+    }
+  };
+
+  const handleTouchEnd = (e: TouchEvent) => {
+    const touchEnd = {
+      x: e.changedTouches[0].clientX,
+      y: e.changedTouches[0].clientY,
+    };
+
+    const deltaX = touchEnd.x - touchStartRef.current.x;
+    const deltaY = touchEnd.y - touchStartRef.current.y;
+    const absDeltaX = Math.abs(deltaX);
+    const absDeltaY = Math.abs(deltaY);
+
+    // Only trigger if primarily horizontal (1.5x more than vertical)
+    const isHorizontal = absDeltaX > absDeltaY * 1.5;
+
+    if (isHorizontal && absDeltaX > 20) {
+      if (deltaX > 0) {
+        // Swiped right - go to previous card
+        scrollToIndex(Math.max(0, currentIndex - 1));
+      } else {
+        // Swiped left - go to next card
+        scrollToIndex(Math.min(deals.length - 1, currentIndex + 1));
+      }
+    }
+  };
+
   React.useEffect(() => {
     checkScroll();
     const container = scrollContainerRef.current;
     if (container) {
       container.addEventListener('scroll', checkScroll);
-      return () => container.removeEventListener('scroll', checkScroll);
+      container.addEventListener('touchstart', handleTouchStart, false);
+      container.addEventListener('touchmove', handleTouchMove, { passive: false });
+      container.addEventListener('touchend', handleTouchEnd, false);
+      return () => {
+        container.removeEventListener('scroll', checkScroll);
+        container.removeEventListener('touchstart', handleTouchStart);
+        container.removeEventListener('touchmove', handleTouchMove);
+        container.removeEventListener('touchend', handleTouchEnd);
+      };
     }
-  }, [deals.length]);
+  }, [deals.length, currentIndex]);
 
   if (deals.length === 0) {
     return null;
@@ -82,11 +142,11 @@ const CategoryDealScroller: React.FC<CategoryDealScrollerProps> = ({
           </div>
 
           {/* Scroll Container */}
-          <div
-            ref={scrollContainerRef}
-            className="overflow-x-auto scroll-smooth scrollbar-hide"
-            style={{ scrollBehavior: 'smooth', scrollSnapType: 'x mandatory' }}
-          >
+           <div
+             ref={scrollContainerRef}
+             className="overflow-x-auto scrollbar-hide"
+             style={{ scrollSnapType: 'x mandatory', overscrollBehavior: 'contain', touchAction: 'pan-y' }}
+           >
             <div className="flex gap-4 pb-4">
               {deals.map((deal, index) => (
                 <div

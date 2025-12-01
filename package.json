@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && tsc --project tsconfig.netlify.json",
+    "build": "node scripts/update-version.js && tsc && vite build && tsc --project tsconfig.netlify.json",
     "preview": "vite preview"
   },
   "dependencies": {
