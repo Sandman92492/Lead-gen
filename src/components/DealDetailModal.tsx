@@ -65,23 +65,14 @@ const DealDetailModal: React.FC<DealDetailModalProps> = ({
           </div>
         )}
 
-        {/* Category & City */}
-        <div className="flex flex-wrap gap-2">
-          {deal.category && (
-            <span className="text-xs bg-bg-primary text-text-secondary px-3 py-1.5 rounded-full border border-border-subtle font-medium">
-              {deal.category === 'restaurant'
-                ? '🍽️ Restaurant'
-                : deal.category === 'activity'
-                  ? '🎯 Activity'
-                  : '🛍️ Shopping'}
-            </span>
-          )}
-          {deal.city && (
+        {/* City */}
+        {deal.city && (
+          <div className="flex flex-wrap gap-2">
             <span className="text-xs bg-bg-primary text-text-secondary px-3 py-1.5 rounded-full border border-border-subtle font-medium">
               📍 {deal.city}
             </span>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </BaseModal>
   );

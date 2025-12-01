@@ -226,9 +226,9 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                 <div
                     className={`fixed inset-0 modal-backdrop z-40 transition-opacity duration-300 ease-in-out md:hidden ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                     onClick={toggleMenu}
-                    aria-hidden={!isMenuOpen}
                     role="dialog"
                     aria-modal="true"
+                    inert={!isMenuOpen ? '' : undefined}
                 >
                     <div
                         ref={menuRef}

@@ -94,20 +94,10 @@ const FeaturedDealCard: React.FC<FeaturedDealCardProps> = ({
 
               {/* City Location */}
               {vendor?.city && (
-                <p className="text-xs text-gray-200 font-medium mb-2">
+                <p className="text-xs text-gray-200 font-medium mb-4">
                   {vendor.city}
                 </p>
               )}
-
-              {/* Terms if present */}
-              {deal.terms && (
-              <p className="text-xs text-gray-200 font-medium italic mb-4 border-t border-gray-300/50 pt-2 line-clamp-2">
-                <span className="text-xs font-bold uppercase tracking-wide">
-                  Terms:
-                </span>{' '}
-                {deal.terms}
-              </p>
-            )}
 
             {/* Action Buttons - Always visible, full width on mobile */}
             <div className="flex flex-col gap-2 sm:gap-3">

@@ -1,6 +1,9 @@
 import React from 'react';
+import { useTheme } from './ThemeContext';
 
 const LoadingScreen: React.FC = () => {
+  const { theme } = useTheme();
+  const logo = theme === 'light' ? '/Images/logo-sand.png' : '/Images/logo-ocean.png';
 
   return (
     <div className="fixed inset-0 z-50 bg-bg-primary flex items-center justify-center">
@@ -17,8 +20,12 @@ const LoadingScreen: React.FC = () => {
 
       {/* Center content */}
       <div className="flex flex-col items-center gap-6">
-        {/* Logo skeleton */}
-        <div className="w-16 h-16 rounded-lg bg-bg-card animate-pulse" />
+        {/* Logo */}
+        <img 
+          src={logo} 
+          alt="Holiday Pass Logo" 
+          className="w-16 h-16 object-contain"
+        />
         
         {/* Text */}
         <div className="text-center">

@@ -61,6 +61,12 @@ const RedemptionConfirmationModal: React.FC<RedemptionConfirmationModalProps> = 
           <p className="font-display font-bold text-lg text-accent-primary">{dealOffer}</p>
         </div>
 
+        <div className="bg-bg-secondary/50 rounded-lg p-3 mb-6 border-l-2 border-accent-primary">
+          <p className="text-xs sm:text-sm text-text-secondary">
+            <span className="font-semibold text-text-primary">Tip:</span> Check the deal terms in "Learn More" before confirming to understand any restrictions or requirements.
+          </p>
+        </div>
+
         <p className="text-sm text-text-secondary mb-6">
           Once redeemed, you won't be able to redeem this deal again. Make sure you're ready to use it.
         </p>
