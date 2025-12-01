@@ -33,7 +33,7 @@ const DealsCategoryFilter: React.FC<DealsCategoryFilterProps> = ({
           {subtitle}
         </h3>
       )}
-      <p className="text-3xl md:text-4xl font-display font-black text-accent-primary mb-4 md:mb-6">
+      <p className="text-3xl md:text-4xl font-display font-black text-action-primary mb-4 md:mb-6">
         {title}
       </p>
       <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto mb-8 md:mb-10">

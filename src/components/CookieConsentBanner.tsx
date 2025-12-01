@@ -43,7 +43,7 @@ const CookieConsentBanner: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1">
-              <p className="text-sm font-semibold text-text-primary mb-2">
+              <p className="text-sm font-semibold text-action-primary mb-2">
                 🍪 We Use Cookies
               </p>
               <p className="text-xs text-text-secondary mb-3">

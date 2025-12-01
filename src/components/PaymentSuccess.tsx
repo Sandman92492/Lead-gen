@@ -34,7 +34,7 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({ onClose }) => {
           </svg>
         </div>
 
-        <h1 className="text-4xl font-display font-black text-accent-primary mb-3">
+        <h1 className="text-4xl font-display font-black text-action-primary mb-3">
           Payment Successful!
         </h1>
 

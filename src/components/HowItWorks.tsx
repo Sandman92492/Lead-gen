@@ -22,7 +22,7 @@ const HowItWorks: React.FC = () => {
         <section id="how-it-works" className="py-20 md:py-32 bg-bg-card">
             <div className="container mx-auto px-4 sm:px-6">
                 <div className="max-w-3xl mx-auto text-center mb-16 scroll-reveal">
-                    <h1 className="text-4xl md:text-5xl font-display font-black text-accent-primary mb-4 md:mb-6">Howzit Work?</h1>
+                    <h1 className="text-4xl md:text-5xl font-display font-black text-action-primary mb-4 md:mb-6">Howzit Work?</h1>
                     <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">No printing. No paper coupons. Discover hidden gems and save instantly on your phone.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">

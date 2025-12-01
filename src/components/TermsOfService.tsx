@@ -36,7 +36,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({ onClose }) => {
         </button>
 
         <div className="mb-6">
-          <h1 className="text-3xl font-display font-black text-accent-primary mb-4">
+          <h1 className="text-3xl font-display font-black text-action-primary mb-4">
             Terms of Service
           </h1>
           <p className="text-text-secondary text-sm">
@@ -46,14 +46,14 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({ onClose }) => {
 
         <div className="space-y-6 text-text-primary overflow-y-auto max-h-[60vh]">
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">1. Legal Entity & Acceptance</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">1. Legal Entity & Acceptance</h2>
             <p>
               These Terms of Service ("Terms") constitute a legally binding agreement between you ("User") and Matthew Santillan trading as Port Alfred Holiday Pass ("the Provider"). By purchasing or using the pass, you agree to these terms.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">2. The Service (Platform Only)</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">2. The Service (Platform Only)</h2>
             <p className="mb-3">
               The Port Alfred Holiday Pass is a digital marketing voucher platform. We provide access to discounts offered by third-party businesses ("Vendors").
             </p>
@@ -64,7 +64,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">3. Pass Validity & Rules</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">3. Pass Validity & Rules</h2>
             <ul className="list-disc pl-5 space-y-1">
               <li><strong>Validity:</strong> 1 December 2025 – 31 January 2026</li>
               <li><strong>Expiry:</strong> The pass automatically expires on 31 Jan 2026. Unused deals are forfeited</li>
@@ -75,7 +75,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">4. Payments & Refunds (CPA & ECTA)</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">4. Payments & Refunds (CPA & ECTA)</h2>
             <div className="space-y-3">
               <div>
                 <h3 className="font-semibold mb-2">Cooling-Off Period</h3>
@@ -97,7 +97,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">5. Limitation of Liability (Important)</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">5. Limitation of Liability (Important)</h2>
             <p className="mb-3">To the fullest extent permitted by South African law:</p>
             <ul className="list-disc pl-5 space-y-1">
               <li><strong>Indemnity:</strong> You agree to indemnify Matthew Santillan (t/a Port Alfred Holiday Pass) against any claims arising from your use of the Vendor services</li>
@@ -107,7 +107,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">6. User Conduct</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">6. User Conduct</h2>
             <p className="mb-3">You agree not to:</p>
             <ul className="list-disc pl-5 space-y-1">
               <li>Attempt to duplicate, screenshot, or forge the digital pass</li>
@@ -117,7 +117,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">7. Governing Law & Domicilium</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">7. Governing Law & Domicilium</h2>
             <p className="mb-3">
               These terms are governed by the laws of the Republic of South Africa.
             </p>
@@ -128,7 +128,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">8. Contact</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">8. Contact</h2>
             <p>
               <strong>Email:</strong> portalfredholidaypass@gmail.com <br />
               <strong>WhatsApp:</strong> 079 956 9040

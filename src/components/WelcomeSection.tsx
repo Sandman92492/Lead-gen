@@ -43,7 +43,7 @@ const WelcomeSection: React.FC<WelcomeSectionProps> = ({ variant = 'intro' }) =>
               <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">
                 {current.tag}
               </h2>
-              <h1 className="text-4xl md:text-5xl font-display font-black text-text-primary mb-4 md:mb-6">
+              <h1 className="text-4xl md:text-5xl font-display font-black text-action-primary mb-4 md:mb-6">
                 {current.heading}
               </h1>
               <div className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">

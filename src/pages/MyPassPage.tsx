@@ -49,7 +49,7 @@ const MyPassPage: React.FC<MyPassPageProps> = ({ pass, redeemedDeals, onViewPass
       />
 
       <section className="max-w-4xl mx-auto px-4 sm:px-6 py-12 bg-bg-primary">
-         <h2 className="text-2xl sm:text-3xl font-display font-black text-text-primary mb-6">
+         <h2 className="text-2xl sm:text-3xl font-display font-black text-action-primary mb-6">
            Redemption History
          </h2>
          {redeemedDealsDetails.length === 0 ? (

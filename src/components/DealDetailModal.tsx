@@ -23,7 +23,7 @@ const DealDetailModal: React.FC<DealDetailModalProps> = ({
       <div className="space-y-6">
         {/* Deal Name */}
         <div>
-          <h2 className="text-2xl sm:text-3xl font-display font-black text-text-primary mb-1">
+          <h2 className="text-2xl sm:text-3xl font-display font-black text-action-primary mb-1">
             {deal.name}
           </h2>
           {vendor && (

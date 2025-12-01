@@ -100,7 +100,7 @@ const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
             </svg>
           </div>
 
-          <h2 className="text-2xl font-display font-black text-accent-primary mb-2">
+          <h2 className="text-2xl font-display font-black text-action-primary mb-2">
             Vendor Verification
           </h2>
 
@@ -119,7 +119,7 @@ const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-text-primary mb-2">
+            <label className="block text-sm font-medium text-action-primary mb-2">
               4-Digit PIN
             </label>
             <input

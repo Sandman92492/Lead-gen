@@ -13,7 +13,7 @@ const Testimonials: React.FC = () => {
       <div className="container mx-auto px-4 sm:px-6">
          <div className="text-center mb-16 scroll-reveal">
           <h3 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">Hear It From Your Fellow Holiday-Makers</h3>
-          <p className="text-4xl md:text-5xl font-display font-black text-accent-primary mb-4 md:mb-6">What Our Pass Holders Are Saying</p>
+          <p className="text-4xl md:text-5xl font-display font-black text-action-primary mb-4 md:mb-6">What Our Pass Holders Are Saying</p>
           <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto mb-8 md:mb-10">Real stories from holidaymakers who've discovered amazing deals across Port Alfred</p>
          </div>
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

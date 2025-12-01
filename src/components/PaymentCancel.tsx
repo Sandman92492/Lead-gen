@@ -26,7 +26,7 @@ const PaymentCancel: React.FC<PaymentCancelProps> = ({ onClose }) => {
           </svg>
         </div>
 
-        <h1 className="text-4xl font-display font-black text-text-primary mb-3">
+        <h1 className="text-4xl font-display font-black text-action-primary mb-3">
           Payment Cancelled
         </h1>
 

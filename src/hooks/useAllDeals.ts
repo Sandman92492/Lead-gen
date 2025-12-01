@@ -10,8 +10,8 @@ export const useAllDeals = () => {
   const { data: deals = [], isLoading, error } = useQuery({
     queryKey: ['deals'],
     queryFn: () => getAllDeals(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+    staleTime: 5 * 1000, // 5 seconds (dev mode for testing)
+    gcTime: 10 * 1000, // 10 seconds (dev mode for testing)
   });
 
   return { deals, isLoading, error: error ? (error as Error).message : null };

@@ -46,7 +46,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
       <section className="bg-bg-primary pt-8 md:pt-16 pb-4 md:pb-12">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center scroll-reveal">
-            <h1 className="text-3xl md:text-4xl font-display font-black text-text-primary mb-3">
+            <h1 className="text-3xl md:text-4xl font-display font-black text-action-primary mb-3">
               Welcome back, {userName || 'Member'}
             </h1>
             <p className="text-lg md:text-xl text-text-secondary mb-6">
@@ -144,7 +144,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
               <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 text-center">
                  Featured Offer
                 </h2>
-              <p className="text-3xl md:text-4xl font-display font-black text-accent-primary mb-8 text-center">
+              <p className="text-3xl md:text-4xl font-display font-black text-action-primary mb-8 text-center">
                 Don't Miss Out
               </p>
 
@@ -183,7 +183,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
       <section className="bg-bg-primary py-8 md:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-display font-black text-text-primary mb-6">
+            <h2 className="text-2xl md:text-3xl font-display font-black text-action-primary mb-6">
               Ready to explore more?
             </h2>
             <Button

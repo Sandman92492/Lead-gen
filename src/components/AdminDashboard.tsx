@@ -582,7 +582,7 @@ const AdminDashboard: React.FC = () => {
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-4xl font-display font-black text-text-primary mb-2">
+                    <h1 className="text-4xl font-display font-black text-action-primary mb-2">
                         Admin Dashboard
                     </h1>
                     <p className="text-text-secondary">Manage vendors and deals</p>
@@ -644,7 +644,7 @@ const AdminDashboard: React.FC = () => {
                             <form onSubmit={handleAddVendor} className="space-y-0">
                                 <FormSection icon="📝" title="Basic Info" description="Name & category">
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-2">
+                                        <label className="block text-xs font-medium text-action-primary mb-2">
                                             Venue Name <span className="text-urgency-high">*</span>
                                         </label>
                                         <input
@@ -658,7 +658,7 @@ const AdminDashboard: React.FC = () => {
 
                                     <div className="grid grid-cols-2 gap-2">
                                         <div>
-                                            <label className="block text-xs font-medium text-text-primary mb-1">
+                                            <label className="block text-xs font-medium text-action-primary mb-1">
                                                 Category
                                             </label>
                                             <select
@@ -677,7 +677,7 @@ const AdminDashboard: React.FC = () => {
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-medium text-text-primary mb-1">
+                                            <label className="block text-xs font-medium text-action-primary mb-1">
                                                 City
                                             </label>
                                             <input
@@ -691,7 +691,7 @@ const AdminDashboard: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Address
                                         </label>
                                         <input
@@ -706,7 +706,7 @@ const AdminDashboard: React.FC = () => {
 
                                 <FormSection icon="🔐" title="Auth" description="Email & PIN">
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Email <span className="text-urgency-high">*</span>
                                         </label>
                                         <input
@@ -719,7 +719,7 @@ const AdminDashboard: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             PIN (4 digits) <span className="text-urgency-high">*</span>
                                         </label>
                                         <div className="flex items-center gap-2">
@@ -744,7 +744,7 @@ const AdminDashboard: React.FC = () => {
 
                                 <FormSection icon="📞" title="Contact" description="Optional details">
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Phone
                                         </label>
                                         <input
@@ -757,7 +757,7 @@ const AdminDashboard: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Maps Link
                                         </label>
                                         <input
@@ -772,7 +772,7 @@ const AdminDashboard: React.FC = () => {
 
                                 <FormSection icon="🖼️" title="Images" description="Logo & photos">
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Logo
                                         </label>
                                         <input
@@ -786,7 +786,7 @@ const AdminDashboard: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Photos (URLs)
                                         </label>
                                         <textarea
@@ -910,7 +910,7 @@ const AdminDashboard: React.FC = () => {
                             <form onSubmit={handleAddDeal} className="space-y-0">
                                 <FormSection icon="🏪" title="Offer" description="Vendor & description">
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Vendor <span className="text-urgency-high">*</span>
                                         </label>
                                         <select
@@ -928,7 +928,7 @@ const AdminDashboard: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Name <span className="text-urgency-high">*</span>
                                         </label>
                                         <input
@@ -941,7 +941,7 @@ const AdminDashboard: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Offer <span className="text-urgency-high">*</span>
                                         </label>
                                         <textarea
@@ -954,7 +954,7 @@ const AdminDashboard: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Marketing Copy
                                         </label>
                                         <textarea
@@ -970,7 +970,7 @@ const AdminDashboard: React.FC = () => {
                                 <FormSection icon="💰" title="Details" description="Value & location">
                                     <div className="grid grid-cols-2 gap-2">
                                         <div>
-                                            <label className="block text-xs font-medium text-text-primary mb-1">
+                                            <label className="block text-xs font-medium text-action-primary mb-1">
                                                 Savings (R)
                                             </label>
                                             <input
@@ -982,7 +982,7 @@ const AdminDashboard: React.FC = () => {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-medium text-text-primary mb-1">
+                                            <label className="block text-xs font-medium text-action-primary mb-1">
                                                 Category
                                             </label>
                                             <select
@@ -1003,7 +1003,7 @@ const AdminDashboard: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             City
                                         </label>
                                         <input
@@ -1016,7 +1016,7 @@ const AdminDashboard: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Terms
                                         </label>
                                         <textarea
@@ -1031,7 +1031,7 @@ const AdminDashboard: React.FC = () => {
 
                                 <FormSection icon="🖼️" title="Images" description="Main & carousel">
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Main Image
                                         </label>
                                         <input
@@ -1045,7 +1045,7 @@ const AdminDashboard: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-medium text-text-primary mb-1">
+                                        <label className="block text-xs font-medium text-action-primary mb-1">
                                             Carousel (URLs)
                                         </label>
                                         <textarea
@@ -1183,7 +1183,7 @@ const AdminDashboard: React.FC = () => {
                                 <div className="grid gap-6 lg:grid-cols-2">
                                     {/* Pass Purchases by Type */}
                                     <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                        <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+                                        <h3 className="text-lg font-bold text-action-primary mb-4 flex items-center gap-2">
                                             🎫 Pass Purchases by Type
                                         </h3>
                                         <div className="space-y-3">
@@ -1205,7 +1205,7 @@ const AdminDashboard: React.FC = () => {
 
                                     {/* Most Redeemed Deals */}
                                     <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                        <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+                                        <h3 className="text-lg font-bold text-action-primary mb-4 flex items-center gap-2">
                                             🏆 Most Redeemed Deals
                                         </h3>
                                         <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -1232,7 +1232,7 @@ const AdminDashboard: React.FC = () => {
 
                                 {/* Recent Purchases */}
                                 <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                    <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+                                    <h3 className="text-lg font-bold text-action-primary mb-4 flex items-center gap-2">
                                         👥 Recent Pass Purchases
                                     </h3>
                                     <div className="overflow-x-auto">
@@ -1272,7 +1272,7 @@ const AdminDashboard: React.FC = () => {
 
                                 {/* Redemption Details */}
                                 <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                    <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+                                    <h3 className="text-lg font-bold text-action-primary mb-4 flex items-center gap-2">
                                         📜 Recent Redemptions
                                     </h3>
                                     <div className="overflow-x-auto">

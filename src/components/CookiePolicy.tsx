@@ -36,7 +36,7 @@ const CookiePolicy: React.FC<CookiePolicyProps> = ({ onClose }) => {
         </button>
 
         <div className="mb-6">
-          <h1 className="text-3xl font-display font-black text-accent-primary mb-4">
+          <h1 className="text-3xl font-display font-black text-action-primary mb-4">
             Cookie Policy
           </h1>
           <p className="text-text-secondary text-sm">
@@ -46,7 +46,7 @@ const CookiePolicy: React.FC<CookiePolicyProps> = ({ onClose }) => {
 
         <div className="space-y-6 text-text-primary overflow-y-auto max-h-[60vh]">
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">1. What Are Cookies?</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">1. What Are Cookies?</h2>
             <p>
               Cookies are small text files stored on your device when you visit our website or app.
               They help us remember your preferences and improve your experience.
@@ -54,7 +54,7 @@ const CookiePolicy: React.FC<CookiePolicyProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">2. Types of Cookies We Use</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">2. Types of Cookies We Use</h2>
             <div className="space-y-3">
               <div>
                 <h3 className="font-semibold mb-1">Essential Cookies (Required)</h3>
@@ -88,7 +88,7 @@ const CookiePolicy: React.FC<CookiePolicyProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">3. Third-Party Cookies</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">3. Third-Party Cookies</h2>
             <ul className="list-disc pl-5 space-y-1">
               <li><strong>Firebase (Google):</strong> Auth & analytics - Privacy: https://firebase.google.com/support/privacy</li>
               <li><strong>Yoco (Payments):</strong> Payment processing - Privacy: https://yoco.com/privacy</li>
@@ -97,7 +97,7 @@ const CookiePolicy: React.FC<CookiePolicyProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">4. Your Cookie Rights</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">4. Your Cookie Rights</h2>
             <p className="mb-3">Under POPIA, you have the right to:</p>
             <ul className="list-disc pl-5 space-y-1">
               <li>Accept or reject non-essential cookies</li>
@@ -111,7 +111,7 @@ const CookiePolicy: React.FC<CookiePolicyProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">5. How to Control Cookies</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">5. How to Control Cookies</h2>
             <p className="mb-2"><strong>In your browser:</strong></p>
             <ul className="list-disc pl-5 space-y-1 text-sm mb-4">
               <li>Chrome: Settings → Privacy and security → Clear browsing data</li>
@@ -126,7 +126,7 @@ const CookiePolicy: React.FC<CookiePolicyProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">6. POPIA Compliance</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">6. POPIA Compliance</h2>
             <p>
               We comply with POPIA Section 12 (notification) by disclosing cookies in this policy
               and obtaining your consent via our banner on first visit.
@@ -134,7 +134,7 @@ const CookiePolicy: React.FC<CookiePolicyProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">7. Questions?</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">7. Questions?</h2>
             <p>
               Contact us at:<br />
               <strong>Email:</strong> portalfredholidaypass@gmail.com <br />

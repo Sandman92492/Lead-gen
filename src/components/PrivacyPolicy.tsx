@@ -36,7 +36,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onClose }) => {
         </button>
 
         <div className="mb-6">
-          <h1 className="text-3xl font-display font-black text-accent-primary mb-4">
+          <h1 className="text-3xl font-display font-black text-action-primary mb-4">
             Privacy Policy
           </h1>
           <p className="text-text-secondary text-sm">
@@ -46,14 +46,14 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onClose }) => {
 
         <div className="space-y-6 text-text-primary overflow-y-auto max-h-[60vh]">
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">1. Introduction</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">1. Introduction</h2>
             <p>
               This Privacy Policy governs the collection and use of personal data by Matthew Santillan t/a Holiday Pass ("we", "us", "our"). We operate the Holiday Pass digital application.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">2. Information We Collect</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">2. Information We Collect</h2>
             <div className="space-y-2">
               <p className="font-semibold">Information you provide:</p>
               <ul className="list-disc pl-5 space-y-1">
@@ -71,7 +71,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">3. How We Use Your Information</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">3. How We Use Your Information</h2>
             <p className="mb-3">We use your data to:</p>
             <ul className="list-disc pl-5 space-y-1">
               <li>Create your digital pass and verify ownership</li>
@@ -83,7 +83,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">4. Data Protection & Payment Security</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">4. Data Protection & Payment Security</h2>
             <p className="mb-3">
               Your personal data is stored securely using Google Firebase (Cloud Firestore). We use industry-standard encryption.
             </p>
@@ -94,7 +94,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">5. Data Sharing</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">5. Data Sharing</h2>
             <p className="mb-3">
               We do not sell your data. We share data only with:
             </p>
@@ -106,7 +106,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">6. POPIA Compliance (South Africa)</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">6. POPIA Compliance (South Africa)</h2>
             <p className="mb-3">
               As a South African resident, your rights under the Protection of Personal Information Act (POPIA) are respected.
             </p>
@@ -120,14 +120,14 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">7. Data Breach Notification</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">7. Data Breach Notification</h2>
             <p>
               In the unlikely event of a data breach, we will notify the Information Regulator and affected users within reasonable time frames as mandated by POPIA Section 22.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-accent-primary mb-3">8. Contact Us</h2>
+            <h2 className="text-xl font-bold text-action-primary mb-3">8. Contact Us</h2>
             <p>
               For questions about these terms, contact the Management Team (Matthew Santillan & Tasmin Milne) at: <br />
               <strong>Email:</strong> portalfredholidaypass@gmail.com <br />

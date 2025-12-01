@@ -57,7 +57,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
                         </svg>
                     </div>
 
-                    <h2 className="text-3xl font-display font-black text-accent-primary mb-2">
+                    <h2 className="text-3xl font-display font-black text-action-primary mb-2">
                         You're All Set! 🎉
                     </h2>
                     <p className="text-text-secondary text-lg">
@@ -67,7 +67,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
 
                 {/* How to use steps */}
                 <div className="bg-bg-primary rounded-xl p-6 mb-6">
-                    <h3 className="font-bold text-lg text-text-primary mb-4">
+                    <h3 className="font-bold text-lg text-action-primary mb-4">
                         How to redeem your deals:
                     </h3>
                     <ol className="space-y-4">
@@ -117,7 +117,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
                             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                         </svg>
                         <div className="flex-1">
-                            <p className="font-semibold text-sm text-text-primary mb-1">Pro Tip:</p>
+                            <p className="font-semibold text-sm text-action-primary mb-1">Pro Tip:</p>
                             <p className="text-xs text-text-secondary">
                                 Check deal terms before visiting. Some deals may have restrictions like specific days or times.
                             </p>

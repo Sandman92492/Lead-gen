@@ -45,7 +45,7 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
       <section className="bg-bg-primary pt-8 md:pt-16 pb-4 md:pb-12">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto text-center scroll-reveal">
-            <h1 className="text-3xl md:text-4xl font-display font-black text-text-primary mb-3">
+            <h1 className="text-3xl md:text-4xl font-display font-black text-action-primary mb-3">
               Welcome, {userName || 'Friend'}
             </h1>
             <p className="text-lg md:text-xl text-text-secondary mb-6">
@@ -66,10 +66,13 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
           <div className="max-w-2xl mx-auto">
             <div className="bg-action-primary rounded-2xl p-6 sm:p-8 md:p-12 shadow-xl scroll-reveal">
               <h2 className="text-2xl md:text-3xl font-display font-black text-white mb-3">
-                Unlock Your Holiday Survival Kit
+                Support Local. Save Big.
               </h2>
               <p className="text-lg text-white/90 mb-4">
-                Don't pay peak season prices. One payment gives you unlimited access to deals at Outdoor Focus, Chef Pantry, and more until Jan 31st. Use one deal, and you break even.
+                Unlock exclusive savings across town. Support independent businesses and give 25% back to the Soup Kitchen with every purchase.
+              </p>
+              <p className="text-sm text-white/80 italic mb-8">
+                Pays for itself in just one use.
               </p>
               
               {/* Price Display */}

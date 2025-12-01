@@ -27,7 +27,7 @@ import ToastContainer from './components/ToastContainer.tsx';
 import AdminDashboard from './components/AdminDashboard.tsx';
 import CookieConsentBanner from './components/CookieConsentBanner.tsx';
 import ScrollToTopButton from './components/ScrollToTopButton.tsx';
-// import { SWUpdatePrompt } from './components/SWUpdatePrompt.tsx';
+import { UpdateBanner } from './components/UpdateBanner.tsx';
 
 import { PassType } from './types.ts';
 import { signOut } from './services/authService';
@@ -333,9 +333,9 @@ const App: React.FC = () => {
 
   return (
     <div>
+      <UpdateBanner />
       <CookieConsentBanner />
       <ScrollToTopButton />
-      {/* <SWUpdatePrompt /> */}
       <ToastContainer />
       {isLoading && <LoadingScreen />}
 

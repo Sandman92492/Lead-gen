@@ -107,7 +107,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
                         ))}
                     </div>
                     {images.length > 1 && (
-                        <p className="text-xs text-white/70 font-medium drop-shadow-md mt-1.5 px-2">
+                        <p className="text-xs sm:text-sm text-white/70 font-medium drop-shadow-md mt-1.5 px-2 whitespace-nowrap">
                             Use arrows to view images
                         </p>
                     )}

@@ -43,7 +43,7 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass }) => {
                     <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">
                         Select Your Plan
                     </h2>
-                    <h1 className="text-4xl md:text-5xl font-display font-black text-text-primary mb-4 md:mb-6">Support Local Port Alfred</h1>
+                    <h1 className="text-4xl md:text-5xl font-display font-black text-action-primary mb-4 md:mb-6">Support Local Port Alfred</h1>
                     <p className="text-lg md:text-xl text-text-secondary mb-8 md:mb-10">Get great deals while discovering and supporting the businesses that make our town thrive.</p>
                 </div>
 

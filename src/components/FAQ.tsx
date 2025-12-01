@@ -36,7 +36,7 @@ const FAQ: React.FC = () => {
       <div className="container mx-auto px-4 sm:px-6">
          <div className="text-center mb-16 scroll-reveal">
           <h3 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">Got Questions?</h3>
-          <p className="text-4xl md:text-5xl font-display font-black text-accent-primary mb-4 md:mb-6">We've Got Answers</p>
+          <p className="text-4xl md:text-5xl font-display font-black text-action-primary mb-4 md:mb-6">We've Got Answers</p>
           <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto mb-8 md:mb-10">Find answers to everything you need to know about the Holiday Pass</p>
          </div>
          <div className="max-w-3xl mx-auto space-y-4">

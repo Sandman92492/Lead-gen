@@ -25,7 +25,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({ passHolderName, onViewPass,
       <div className="container mx-auto px-4 sm:px-6">
          <div className="max-w-2xl mx-auto scroll-reveal">
             <div className="bg-bg-primary p-6 sm:p-8 rounded-xl border-4 border-action-primary shadow-lg flex flex-col items-center text-center">
-             <h2 className="text-2xl font-display font-black text-accent-primary mb-8">Your Digital Pass</h2>
+             <h2 className="text-2xl font-display font-black text-action-primary mb-8">Your Digital Pass</h2>
              <button 
                onClick={onViewPass} 
                className="w-48 h-auto aspect-[9/16] bg-action-primary rounded-2xl p-4 flex flex-col justify-between items-center text-white border-2 border-value-highlight shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-value-highlight mb-8"

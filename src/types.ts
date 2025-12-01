@@ -11,7 +11,7 @@ export interface Vendor {
   email: string;
   phone: string;
   pin: string; // 4-digit PIN (stored as string)
-  category: 'restaurant' | 'activity' | 'shopping';
+  category: 'restaurant' | 'activity' | 'shopping' | 'lifestyle';
   city: string; // e.g. "Port Alfred", "Cape Town", "Durban"
   address?: string; // Full address for Google Maps
   mapsUrl?: string; // Google Maps directions link
@@ -30,7 +30,7 @@ export interface Deal {
   savings?: number; // Numeric savings amount (e.g. 150 for "Save R150+")
   gmapsQuery?: string; // Fallback: if no vendor address, use this for directions
   terms?: string;
-  category?: 'restaurant' | 'activity' | 'shopping'; // For filtering
+  category?: 'restaurant' | 'activity' | 'shopping' | 'lifestyle'; // For filtering
   city?: string; // City where deal is available
   featured?: boolean; // Mark as featured (shows in hero section)
   sortOrder?: number; // Display order (1-10) for featured deals, used as secondary sort

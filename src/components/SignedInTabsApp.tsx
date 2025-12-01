@@ -7,7 +7,7 @@ import ProfilePage from '../pages/ProfilePage';
 import { HomeIcon, PassIcon, DealsIcon, ProfileIcon } from './TabIcons';
 import { PassInfo } from '../context/AuthContext';
 import { PassType } from '../types';
-import { useSwipeGesture } from '../hooks/useSwipeGesture';
+
 import { haptics } from '../utils/haptics';
 
 interface SignedInTabsAppProps {
@@ -99,23 +99,10 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
         { id: 'profile', label: 'Profile', path: '/profile', icon: <ProfileIcon /> },
     ], [hasPass]);
 
-    // Swipe navigation between tabs
     const currentTabIndex = useMemo(() => {
         return tabs.findIndex(tab => tab.path === location.pathname);
     }, [tabs, location.pathname]);
 
-    useSwipeGesture(contentRef.current, {
-        onSwipeLeft: () => {
-            if (currentTabIndex < tabs.length - 1) {
-                navigate(tabs[currentTabIndex + 1].path);
-            }
-        },
-        onSwipeRight: () => {
-            if (currentTabIndex > 0) {
-                navigate(tabs[currentTabIndex - 1].path);
-            }
-        },
-    });
 
     return (
         <>

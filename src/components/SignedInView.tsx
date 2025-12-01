@@ -17,7 +17,7 @@ const SignedInView: React.FC<SignedInViewProps> = ({
     <main>
       <section className="py-12 sm:py-16 bg-bg-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h1 className="text-4xl sm:text-5xl font-display font-black text-text-primary mb-4">
+          <h1 className="text-4xl sm:text-5xl font-display font-black text-action-primary mb-4">
             Browse All Deals
           </h1>
           <p className="text-lg text-text-secondary mb-8">

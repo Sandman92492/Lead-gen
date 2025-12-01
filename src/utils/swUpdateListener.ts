@@ -5,6 +5,28 @@
  */
 
 let pendingRegistration: ServiceWorkerRegistration | null = null;
+let currentRegistration: ServiceWorkerRegistration | null = null;
+
+/**
+ * Manually trigger an update check (useful for testing)
+ */
+export function checkForUpdatesNow() {
+  if (currentRegistration) {
+    currentRegistration.update().catch(() => {
+      // Silent fail
+    });
+  } else {
+    // Try to get registration
+    navigator.serviceWorker.getRegistration().then((reg) => {
+      if (reg) {
+        currentRegistration = reg;
+        reg.update().catch(() => {
+          // Silent fail
+        });
+      }
+    });
+  }
+}
 
 /**
  * Listen for service worker updates
@@ -21,12 +43,29 @@ export function initSWUpdateListener() {
       return;
     }
 
+    currentRegistration = registration;
+
     // Check for updates every 60 seconds
     setInterval(() => {
       registration?.update().catch(() => {
         // Silent fail
       });
     }, 60000);
+
+    // Also check when page becomes visible or focused
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        registration?.update().catch(() => {
+          // Silent fail
+        });
+      }
+    });
+
+    window.addEventListener('focus', () => {
+      registration?.update().catch(() => {
+        // Silent fail
+      });
+    });
 
     // Listen for new waiting service worker
     registration.addEventListener('updatefound', () => {
@@ -48,12 +87,6 @@ export function initSWUpdateListener() {
               new CustomEvent('swupdate', { detail: registration })
             );
           }
-        }
-
-        // New SW is activated
-        if (newWorker.state === 'activated') {
-          // Optionally reload to use new version immediately
-          // window.location.reload();
         }
       });
     });
@@ -77,6 +110,17 @@ export function acceptSWUpdate() {
         refreshed = true;
       }
     });
+    
+    // Fallback: reload after 2 seconds if controller doesn't change
+    setTimeout(() => {
+      if (!refreshed) {
+        window.location.reload();
+        refreshed = true;
+      }
+    }, 2000);
+  } else {
+    // No waiting worker, just reload
+    window.location.reload();
   }
 }
 

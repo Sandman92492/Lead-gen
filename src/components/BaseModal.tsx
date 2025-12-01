@@ -65,7 +65,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
         {/* Title (optional) */}
         {title && (
-          <h2 className="text-2xl sm:text-3xl font-display font-black text-accent-primary mb-4">
+          <h2 className="text-2xl sm:text-3xl font-display font-black text-action-primary mb-4">
             {title}
           </h2>
         )}

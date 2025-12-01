@@ -41,7 +41,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userEmail, userPhotoURL, onSi
 
             {/* Profile Info */}
             <div className="text-center sm:text-left flex-1">
-              <h1 className="text-3xl sm:text-4xl font-display font-black text-text-primary mb-2">
+              <h1 className="text-3xl sm:text-4xl font-display font-black text-action-primary mb-2">
                 Welcome, {firstName}
               </h1>
               <p className="text-text-secondary text-sm mb-4">{userEmail}</p>
@@ -58,7 +58,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userEmail, userPhotoURL, onSi
       <section className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
         {/* Account Details */}
         <div className="bg-bg-card rounded-xl border border-border-subtle p-6 sm:p-8 mb-6">
-          <h2 className="text-xl font-display font-bold text-text-primary mb-6 flex items-center gap-2">
+          <h2 className="text-xl font-display font-bold text-action-primary mb-6 flex items-center gap-2">
             <svg className="w-5 h-5 text-action-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -90,7 +90,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userEmail, userPhotoURL, onSi
 
         {/* Support & Resources */}
         <div className="bg-bg-card rounded-xl border border-border-subtle p-6 sm:p-8 mb-6">
-          <h2 className="text-xl font-display font-bold text-text-primary mb-6 flex items-center gap-2">
+          <h2 className="text-xl font-display font-bold text-action-primary mb-6 flex items-center gap-2">
             <svg className="w-5 h-5 text-action-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>

@@ -34,7 +34,7 @@ const PopiaCompliance: React.FC<PopiaComplianceProps> = ({ onClose }) => {
           </svg>
         </button>
 
-        <h2 className="text-2xl font-display font-black text-accent-primary mb-4">
+        <h2 className="text-2xl font-display font-black text-action-primary mb-4">
           POPIA Compliance
         </h2>
 
@@ -49,14 +49,14 @@ const PopiaCompliance: React.FC<PopiaComplianceProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h4 className="font-semibold text-accent-primary mb-2">1. Collection and Processing of Personal Information</h4>
+            <h4 className="font-semibold text-action-primary mb-2">1. Collection and Processing of Personal Information</h4>
             <p className="text-sm text-text-secondary">
               We collect and process your personal information, including but not limited to your name, email address, and payment details, to provide you with our holiday pass services.
             </p>
           </section>
 
           <section>
-            <h4 className="font-semibold text-accent-primary mb-2">2. Purpose of Processing</h4>
+            <h4 className="font-semibold text-action-primary mb-2">2. Purpose of Processing</h4>
             <p className="text-sm text-text-secondary">
               Your personal information is processed for the following purposes:
             </p>
@@ -70,28 +70,28 @@ const PopiaCompliance: React.FC<PopiaComplianceProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h4 className="font-semibold text-accent-primary mb-2">3. Legal Basis for Processing</h4>
+            <h4 className="font-semibold text-action-primary mb-2">3. Legal Basis for Processing</h4>
             <p className="text-sm text-text-secondary">
               We process your personal information based on your explicit consent, which you provide by checking this box during account creation.
             </p>
           </section>
 
           <section>
-            <h4 className="font-semibold text-accent-primary mb-2">4. Data Security</h4>
+            <h4 className="font-semibold text-action-primary mb-2">4. Data Security</h4>
             <p className="text-sm text-text-secondary">
               We implement appropriate technical and organizational measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction.
             </p>
           </section>
 
           <section>
-            <h4 className="font-semibold text-accent-primary mb-2">5. Data Retention</h4>
+            <h4 className="font-semibold text-action-primary mb-2">5. Data Retention</h4>
             <p className="text-sm text-text-secondary">
               We retain your personal information for as long as necessary to provide our services and fulfill our legal obligations. When you request account deletion, we will remove your personal information in accordance with POPIA requirements.
             </p>
           </section>
 
           <section>
-            <h4 className="font-semibold text-accent-primary mb-2">6. Your Rights</h4>
+            <h4 className="font-semibold text-action-primary mb-2">6. Your Rights</h4>
             <p className="text-sm text-text-secondary">
               Under POPIA, you have the right to:
             </p>
@@ -105,14 +105,14 @@ const PopiaCompliance: React.FC<PopiaComplianceProps> = ({ onClose }) => {
           </section>
 
           <section>
-            <h4 className="font-semibold text-accent-primary mb-2">7. Contact Information</h4>
+            <h4 className="font-semibold text-action-primary mb-2">7. Contact Information</h4>
             <p className="text-sm text-text-secondary">
               If you have any questions about how we handle your personal information or wish to exercise your rights under POPIA, please contact us at support@holidaypass.com.
             </p>
           </section>
 
           <section>
-            <h4 className="font-semibold text-accent-primary mb-2">8. Consent Confirmation</h4>
+            <h4 className="font-semibold text-action-primary mb-2">8. Consent Confirmation</h4>
             <p className="text-sm text-text-secondary">
               By checking the POPIA Compliance checkbox, you explicitly confirm that you have read and understood this notice, and you consent to the collection and processing of your personal information as described above.
             </p>
