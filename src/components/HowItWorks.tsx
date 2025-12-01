@@ -6,7 +6,7 @@ const HowItWorks: React.FC = () => {
     const steps = [
         {
             title: 'Get the Pass',
-            description: 'One secure payment gives you unlimited access to all deals from Dec 1st to Jan 31st.',
+            description: 'One secure payment gives you access to all deals from Dec 1st to Jan 31st.',
         },
         {
             title: 'Flash Your Phone',
