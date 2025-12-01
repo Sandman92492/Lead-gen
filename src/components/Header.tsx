@@ -228,7 +228,7 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                     onClick={toggleMenu}
                     role="dialog"
                     aria-modal="true"
-                    inert={!isMenuOpen ? '' : undefined}
+                    {...(!isMenuOpen && { inert: '' })}
                 >
                     <div
                         ref={menuRef}
