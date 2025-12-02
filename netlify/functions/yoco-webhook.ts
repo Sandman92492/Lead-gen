@@ -95,19 +95,24 @@ const handler: Handler = async (event: any) => {
     }
 
     try {
-        const signature = event.headers['webhook-signature'] || '';
-        const webhookId = event.headers['webhook-id'] || '';
-        const timestamp = event.headers['webhook-timestamp'] || '';
-        // Use rawBody if available (Netlify provides this for signature verification)
-        const payload = (event as any).rawBody || event.body || '';
+         const signature = event.headers['webhook-signature'] || '';
+         const webhookId = event.headers['webhook-id'] || '';
+         const timestamp = event.headers['webhook-timestamp'] || '';
+         // Use rawBody if available (Netlify provides this for signature verification)
+         const payload = (event as any).rawBody || event.body || '';
 
-        // Verify webhook signature
-        if (!verifyWebhook(payload, signature, webhookId, timestamp)) {
-            return {
-                statusCode: 401,
-                body: JSON.stringify({ error: 'Unauthorized' }),
-            };
-        }
+         console.log('Webhook received:', { webhookId, timestamp, signaturePresent: !!signature });
+
+         // Verify webhook signature
+         if (!verifyWebhook(payload, signature, webhookId, timestamp)) {
+             console.error('Webhook signature verification failed');
+             return {
+                 statusCode: 401,
+                 body: JSON.stringify({ error: 'Unauthorized' }),
+             };
+         }
+         
+         console.log('Webhook signature verified successfully');
 
         const yocoEvent = JSON.parse(payload) as YocoEvent;
 
@@ -138,11 +143,14 @@ const handler: Handler = async (event: any) => {
 
         // Only handle succeeded payments
         if (yocoEvent.type !== 'payment.succeeded' || yocoEvent.payload.status !== 'succeeded') {
+            console.log('Webhook event not payment.succeeded:', { type: yocoEvent.type, status: yocoEvent.payload.status });
             return {
                 statusCode: 200,
                 body: JSON.stringify({ received: true }),
             };
         }
+        
+        console.log('Processing payment.succeeded event');
 
         const { passType, userEmail, passHolderName, userId } = yocoEvent.payload.metadata || {};
 
