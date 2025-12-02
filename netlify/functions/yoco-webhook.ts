@@ -38,6 +38,9 @@ const verifyWebhook = (payload: string, signature: string, webhookId: string, ti
         return false;
     }
 
+    console.log('Signature verification - YOCO_SIGNING_SECRET present:', !!YOCO_SIGNING_SECRET);
+    console.log('Signature verification - Secret length:', YOCO_SIGNING_SECRET.length);
+
     // Yoco sends signature as "v1,<base64-hash>" (may have multiple separated by space)
     const signatureList = signature.split(' ');
     const receivedSignature = signatureList[0]; // Take first one
@@ -49,9 +52,11 @@ const verifyWebhook = (payload: string, signature: string, webhookId: string, ti
     }
 
     const receivedHash = parts[1];
+    console.log('Received hash:', receivedHash.substring(0, 20) + '...');
     
     // Signed content is: webhook-id.webhook-timestamp.raw-body
     const signedContent = `${webhookId}.${timestamp}.${payload}`;
+    console.log('Signed content:', signedContent.substring(0, 50) + '...');
     
     // Secret is stored as whsec_<base64>, extract and decode the base64 part
     const secretBytes = Buffer.from(YOCO_SIGNING_SECRET, 'utf-8');
@@ -59,6 +64,9 @@ const verifyWebhook = (payload: string, signature: string, webhookId: string, ti
     const hmac = createHmac('sha256', secretBytes);
     hmac.update(signedContent);
     const expectedHash = hmac.digest('base64');
+
+    console.log('Expected hash:', expectedHash.substring(0, 20) + '...');
+    console.log('Hash match:', receivedHash === expectedHash);
 
     return receivedHash === expectedHash;
 };
