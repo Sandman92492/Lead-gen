@@ -156,7 +156,9 @@ const handler: Handler = async (event: any) => {
          
          // Use transaction for atomic duplicate check + create
          const result = await firestoreDb.runTransaction(async (transaction: any) => {
-             // Check if a pass already exists for this payment (atomically within transaction)
+             // IMPORTANT: All reads must happen BEFORE any writes in a Firestore transaction
+             
+             // Read 1: Check if a pass already exists for this payment
              const existingPassQuery = await transaction.get(
                  firestoreDb
                      .collection('passes')
@@ -164,6 +166,11 @@ const handler: Handler = async (event: any) => {
                      .limit(1)
              );
              
+             // Read 2: Read pricing doc before any writes
+             const pricingRef = firestoreDb.collection('config').doc('pricing');
+             const pricingDoc = await transaction.get(pricingRef);
+             
+             // Check for duplicate
              if (!existingPassQuery.empty) {
                  const existingPass = existingPassQuery.docs[0].data();
                  console.log('Duplicate payment detected. paymentRef:', paymentId, 'existing passId:', existingPass.passId);
@@ -184,7 +191,8 @@ const handler: Handler = async (event: any) => {
                  console.log('Using fixed Jan 31 expiry date:', expiryDate.toISOString());
              }
              
-             // Create pass document in transaction
+             // NOW perform all writes
+             // Write 1: Create pass document in transaction
              const passRef = firestoreDb.collection('passes').doc(passId);
              transaction.set(passRef, {
                  passId,
@@ -200,10 +208,7 @@ const handler: Handler = async (event: any) => {
                  purchasePrice: Math.round(yocoEvent.payload.amount / 100), // Convert cents to Rands
              });
              
-             // Increment pass count in config/pricing (atomically in same transaction)
-             const pricingRef = firestoreDb.collection('config').doc('pricing');
-             const pricingDoc = await transaction.get(pricingRef);
-             
+             // Write 2: Increment pass count in config/pricing (atomically in same transaction)
              if (pricingDoc.exists) {
                  transaction.update(pricingRef, {
                      currentPassCount: admin.firestore.FieldValue.increment(1),
