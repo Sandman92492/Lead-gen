@@ -24,11 +24,13 @@ const handler = async (event) => {
             };
         }
         // Get base URL from environment or construct from request headers
+        console.log('SITE_URL env:', process.env.SITE_URL);
+        console.log('Headers host:', event.headers.host);
         const baseUrl = process.env.SITE_URL ||
             (event.headers.host ? `https://${event.headers.host}` : 'https://localhost:3000');
+        console.log('Final baseUrl being used:', baseUrl);
         console.log('Checkout request:', { amount, passType, userEmail, passHolderName });
         console.log('YOCO_SECRET_KEY first 10 chars:', YOCO_SECRET_KEY.substring(0, 10));
-        console.log('SITE_URL:', baseUrl);
         const requestBody = {
             amount: Math.round(amount), // Yoco expects amount in cents
             currency: 'ZAR',
@@ -43,6 +45,12 @@ const handler = async (event) => {
                 userId,
             },
         };
+        console.log('Yoco redirect URLs being sent:', {
+            returnUrl: requestBody.returnUrl,
+            successUrl: requestBody.successUrl,
+            failureUrl: requestBody.failureUrl,
+            cancelUrl: requestBody.cancelUrl,
+        });
         // Create checkout via Yoco API
         const response = await fetch('https://payments.yoco.com/api/checkouts', {
             method: 'POST',

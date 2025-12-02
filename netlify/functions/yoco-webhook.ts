@@ -151,70 +151,85 @@ const handler: Handler = async (event: any) => {
              };
          }
 
-         // Create pass in Firestore
+         // Create pass in Firestore using a transaction to prevent duplicate creates from concurrent webhooks
          const firestoreDb = initFirebase();
          
-         // Check if a pass already exists for this payment (prevent duplicates from webhook retries)
-         const existingPassQuery = await firestoreDb
-             .collection('passes')
-             .where('paymentRef', '==', paymentId)
-            .limit(1)
-            .get();
-        
-        if (!existingPassQuery.empty) {
-            const existingPass = existingPassQuery.docs[0].data();
-            console.log('Duplicate payment detected. paymentRef:', paymentId, 'existing passId:', existingPass.passId);
+         // Use transaction for atomic duplicate check + create
+         const result = await firestoreDb.runTransaction(async (transaction: any) => {
+             // Check if a pass already exists for this payment (atomically within transaction)
+             const existingPassQuery = await transaction.get(
+                 firestoreDb
+                     .collection('passes')
+                     .where('paymentRef', '==', paymentId)
+                     .limit(1)
+             );
+             
+             if (!existingPassQuery.empty) {
+                 const existingPass = existingPassQuery.docs[0].data();
+                 console.log('Duplicate payment detected. paymentRef:', paymentId, 'existing passId:', existingPass.passId);
+                 return { isDuplicate: true, passId: existingPass.passId };
+             }
+             
+             // Generate new pass ID
+             const passId = 'PAHP-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+             
+             let expiryDate: Date;
+             if (passType === 'annual') {
+                 expiryDate = new Date();
+                 expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+             } else {
+                 // Holiday pass: valid until Jan 31, 2026 23:59:59 South African Time (UTC+2)
+                 // Midnight UTC+2 on Jan 31 = 22:00 UTC on Jan 31
+                 expiryDate = new Date('2026-01-31T22:00:00Z');
+                 console.log('Using fixed Jan 31 expiry date:', expiryDate.toISOString());
+             }
+             
+             // Create pass document in transaction
+             const passRef = firestoreDb.collection('passes').doc(passId);
+             transaction.set(passRef, {
+                 passId,
+                 passHolderName,
+                 email: userEmail,
+                 passType,
+                 passStatus: 'paid',
+                 expiryDate: expiryDate.toISOString(),
+                 userId,
+                 createdAt: new Date().toISOString(),
+                 paymentRef: yocoEvent.payload.id,
+                 paymentStatus: 'completed',
+                 purchasePrice: Math.round(yocoEvent.payload.amount / 100), // Convert cents to Rands
+             });
+             
+             // Increment pass count in config/pricing (atomically in same transaction)
+             const pricingRef = firestoreDb.collection('config').doc('pricing');
+             const pricingDoc = await transaction.get(pricingRef);
+             
+             if (pricingDoc.exists) {
+                 transaction.update(pricingRef, {
+                     currentPassCount: admin.firestore.FieldValue.increment(1),
+                     lastUpdated: new Date().toISOString(),
+                 });
+             } else {
+                 transaction.set(pricingRef, {
+                     currentPassCount: 1,
+                     lastUpdated: new Date().toISOString(),
+                 });
+             }
+             
+             return { isDuplicate: false, passId };
+         });
+
+         if (result.isDuplicate) {
             return {
                 statusCode: 200,
-                body: JSON.stringify({ received: true, passId: existingPass.passId, isDuplicate: true }),
+                body: JSON.stringify({ received: true, passId: result.passId, isDuplicate: true }),
             };
-        }
-        
-        const passId = 'PAHP-' + Math.random().toString(36).substring(2, 9).toUpperCase();
-
-         let expiryDate: Date;
-         if (passType === 'annual') {
-             expiryDate = new Date();
-             expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-         } else {
-             // Holiday pass: valid until Jan 31, 2026 23:59:59 South African Time (UTC+2)
-             // Midnight UTC+2 on Jan 31 = 22:00 UTC on Jan 31
-             expiryDate = new Date('2026-01-31T22:00:00Z');
-             console.log('Using fixed Jan 31 expiry date:', expiryDate.toISOString());
          }
 
-        await firestoreDb.collection('passes').doc(passId).set({
-            passId,
-            passHolderName,
-            email: userEmail,
-            passType,
-            passStatus: 'paid',
-            expiryDate: expiryDate.toISOString(),
-            userId,
-            createdAt: new Date().toISOString(),
-            paymentRef: yocoEvent.payload.id,
-            paymentStatus: 'completed',
-            purchasePrice: Math.round(yocoEvent.payload.amount / 100), // Convert cents to Rands
-        });
-
-        // Atomically increment pass count in config/pricing for dynamic pricing
-        // Using admin.firestore.FieldValue.increment() prevents race conditions with concurrent payments
-        const pricingRef = firestoreDb.collection('config').doc('pricing');
-        await pricingRef.update({
-            currentPassCount: admin.firestore.FieldValue.increment(1),
-            lastUpdated: new Date().toISOString(),
-        }).catch(async () => {
-            // If document doesn't exist, create it with increment
-            await pricingRef.set({
-                currentPassCount: 1,
-                lastUpdated: new Date().toISOString(),
-            }, { merge: true });
-        });
-
-        return {
+         return {
             statusCode: 200,
-            body: JSON.stringify({ received: true, passId }),
-        };
+            body: JSON.stringify({ received: true, passId: result.passId }),
+         };
     } catch (error) {
         console.error('Webhook processing error:', error instanceof Error ? error.message : String(error));
         console.error('Full error:', error);

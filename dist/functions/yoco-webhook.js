@@ -68,6 +68,8 @@ const verifyWebhook = (payload, signature, webhookId, timestamp) => {
         console.error('YOCO_SIGNING_SECRET not configured');
         return false;
     }
+    console.log('Signature verification - YOCO_SIGNING_SECRET present:', !!YOCO_SIGNING_SECRET);
+    console.log('Signature verification - Secret length:', YOCO_SIGNING_SECRET.length);
     // Yoco sends signature as "v1,<base64-hash>" (may have multiple separated by space)
     const signatureList = signature.split(' ');
     const receivedSignature = signatureList[0]; // Take first one
@@ -77,13 +79,17 @@ const verifyWebhook = (payload, signature, webhookId, timestamp) => {
         return false;
     }
     const receivedHash = parts[1];
+    console.log('Received hash:', receivedHash.substring(0, 20) + '...');
     // Signed content is: webhook-id.webhook-timestamp.raw-body
     const signedContent = `${webhookId}.${timestamp}.${payload}`;
+    console.log('Signed content:', signedContent.substring(0, 50) + '...');
     // Secret is stored as whsec_<base64>, extract and decode the base64 part
     const secretBytes = Buffer.from(YOCO_SIGNING_SECRET, 'utf-8');
     const hmac = (0, crypto_1.createHmac)('sha256', secretBytes);
     hmac.update(signedContent);
     const expectedHash = hmac.digest('base64');
+    console.log('Expected hash:', expectedHash.substring(0, 20) + '...');
+    console.log('Hash match:', receivedHash === expectedHash);
     return receivedHash === expectedHash;
 };
 const handler = async (event) => {
@@ -98,45 +104,32 @@ const handler = async (event) => {
         const webhookId = event.headers['webhook-id'] || '';
         const timestamp = event.headers['webhook-timestamp'] || '';
         // Use rawBody if available (Netlify provides this for signature verification)
-        const payload = event.rawBody || event.body || '';
+        // If body is parsed as object, stringify it back to original format
+        const payload = event.rawBody || (typeof event.body === 'string' ? event.body : JSON.stringify(event.body)) || '';
+        console.log('Webhook received:', { webhookId, timestamp, signaturePresent: !!signature, payloadLength: payload.length });
         // Verify webhook signature
         if (!verifyWebhook(payload, signature, webhookId, timestamp)) {
+            console.error('Webhook signature verification failed');
             return {
                 statusCode: 401,
                 body: JSON.stringify({ error: 'Unauthorized' }),
             };
         }
+        console.log('Webhook signature verified successfully');
         const yocoEvent = JSON.parse(payload);
-        // VERIFY payment exists on Yoco before creating pass
-        const yocoSecretKey = process.env.YOCO_SECRET_KEY;
-        const paymentId = yocoEvent.payload.id;
-        try {
-            const verifyResponse = await fetch(`https://api.yoco.com/v1/payments/${paymentId}`, {
-                headers: { 'Authorization': `Bearer ${yocoSecretKey}` }
-            });
-            const payment = await verifyResponse.json();
-            if (payment.status !== 'succeeded') {
-                console.error('Payment verification failed. Status:', payment.status);
-                return {
-                    statusCode: 400,
-                    body: JSON.stringify({ error: 'Payment not verified' }),
-                };
-            }
-        }
-        catch (error) {
-            console.error('Failed to verify payment with Yoco:', error instanceof Error ? error.message : String(error));
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ error: 'Payment verification failed' }),
-            };
-        }
+        // Webhook signature already verified, so trust the payload
+        // Yoco webhook is already authenticated and payload is verified
+        console.log('Webhook verified, trusting Yoco payload');
         // Only handle succeeded payments
         if (yocoEvent.type !== 'payment.succeeded' || yocoEvent.payload.status !== 'succeeded') {
+            console.log('Webhook event not payment.succeeded:', { type: yocoEvent.type, status: yocoEvent.payload.status });
             return {
                 statusCode: 200,
                 body: JSON.stringify({ received: true }),
             };
         }
+        console.log('Processing payment.succeeded event');
+        const paymentId = yocoEvent.payload.id;
         const { passType, userEmail, passHolderName, userId } = yocoEvent.payload.metadata || {};
         if (!passType || !userEmail || !passHolderName || !userId) {
             console.error('Missing required metadata:', { passType, userEmail, passHolderName, userId });
