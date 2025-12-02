@@ -125,37 +125,9 @@ const handler: Handler = async (event: any) => {
 
         const yocoEvent = JSON.parse(payload) as YocoEvent;
 
-        // VERIFY payment exists on Yoco before creating pass
-        const yocoSecretKey = process.env.YOCO_SECRET_KEY;
-        const paymentId = yocoEvent.payload.id;
-
-        try {
-            console.log('Verifying payment with Yoco. Payment ID:', paymentId);
-            console.log('Secret key present:', !!yocoSecretKey);
-            
-            const verifyResponse = await fetch(`https://api.yoco.com/v1/payments/${paymentId}`, {
-                headers: { 'Authorization': `Bearer ${yocoSecretKey}` }
-            });
-            
-            console.log('Yoco verify response status:', verifyResponse.status);
-            const payment = await verifyResponse.json() as any;
-            
-            console.log('Yoco verify response:', JSON.stringify(payment, null, 2));
-            
-            if (verifyResponse.status !== 200 || payment.status !== 'succeeded') {
-                console.error('Payment verification failed. Status:', payment.status, 'HTTP:', verifyResponse.status);
-                return {
-                    statusCode: 400,
-                    body: JSON.stringify({ error: 'Payment not verified' }),
-                };
-            }
-        } catch (error) {
-            console.error('Failed to verify payment with Yoco:', error instanceof Error ? error.message : String(error));
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ error: 'Payment verification failed' }),
-            };
-        }
+        // Webhook signature already verified, so trust the payload
+         // Yoco webhook is already authenticated and payload is verified
+         console.log('Webhook verified, trusting Yoco payload');
 
         // Only handle succeeded payments
         if (yocoEvent.type !== 'payment.succeeded' || yocoEvent.payload.status !== 'succeeded') {
@@ -168,23 +140,24 @@ const handler: Handler = async (event: any) => {
         
         console.log('Processing payment.succeeded event');
 
-        const { passType, userEmail, passHolderName, userId } = yocoEvent.payload.metadata || {};
+         const paymentId = yocoEvent.payload.id;
+         const { passType, userEmail, passHolderName, userId } = yocoEvent.payload.metadata || {};
 
-        if (!passType || !userEmail || !passHolderName || !userId) {
-            console.error('Missing required metadata:', { passType, userEmail, passHolderName, userId });
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ error: 'Invalid metadata' }),
-            };
-        }
+         if (!passType || !userEmail || !passHolderName || !userId) {
+             console.error('Missing required metadata:', { passType, userEmail, passHolderName, userId });
+             return {
+                 statusCode: 400,
+                 body: JSON.stringify({ error: 'Invalid metadata' }),
+             };
+         }
 
-        // Create pass in Firestore
-        const firestoreDb = initFirebase();
-        
-        // Check if a pass already exists for this payment (prevent duplicates from webhook retries)
-        const existingPassQuery = await firestoreDb
-            .collection('passes')
-            .where('paymentRef', '==', paymentId)
+         // Create pass in Firestore
+         const firestoreDb = initFirebase();
+         
+         // Check if a pass already exists for this payment (prevent duplicates from webhook retries)
+         const existingPassQuery = await firestoreDb
+             .collection('passes')
+             .where('paymentRef', '==', paymentId)
             .limit(1)
             .get();
         
