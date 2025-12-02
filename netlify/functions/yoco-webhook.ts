@@ -8,7 +8,7 @@ import { createHmac } from 'crypto';
 // Decode the base64 part to get the actual key
 const rawSecret = process.env.YOCO_SIGNING_SECRET?.trim() || '';
 const YOCO_SIGNING_SECRET = rawSecret.startsWith('whsec_') 
-  ? Buffer.from(rawSecret.substring(6), 'base64').toString('utf-8')
+  ? Buffer.from(rawSecret.substring(6), 'base64')
   : rawSecret;
 const FIREBASE_PRIVATE_KEY = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
@@ -59,7 +59,12 @@ const verifyWebhook = (payload: string, signature: string, webhookId: string, ti
     console.log('Signed content:', signedContent.substring(0, 50) + '...');
     
     // Secret is stored as whsec_<base64>, extract and decode the base64 part
-    const secretBytes = Buffer.from(YOCO_SIGNING_SECRET, 'utf-8');
+    let secretBytes: Buffer;
+    if (Buffer.isBuffer(YOCO_SIGNING_SECRET)) {
+        secretBytes = YOCO_SIGNING_SECRET;
+    } else {
+        secretBytes = Buffer.from(YOCO_SIGNING_SECRET, 'utf-8');
+    }
     
     const hmac = createHmac('sha256', secretBytes);
     hmac.update(signedContent);
