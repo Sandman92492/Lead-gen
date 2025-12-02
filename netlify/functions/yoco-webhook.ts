@@ -99,9 +99,10 @@ const handler: Handler = async (event: any) => {
          const webhookId = event.headers['webhook-id'] || '';
          const timestamp = event.headers['webhook-timestamp'] || '';
          // Use rawBody if available (Netlify provides this for signature verification)
-         const payload = (event as any).rawBody || event.body || '';
+         // If body is parsed as object, stringify it back to original format
+         const payload = (event as any).rawBody || (typeof event.body === 'string' ? event.body : JSON.stringify(event.body)) || '';
 
-         console.log('Webhook received:', { webhookId, timestamp, signaturePresent: !!signature });
+         console.log('Webhook received:', { webhookId, timestamp, signaturePresent: !!signature, payloadLength: payload.length });
 
          // Verify webhook signature
          if (!verifyWebhook(payload, signature, webhookId, timestamp)) {
