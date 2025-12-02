@@ -34,7 +34,7 @@ Root cause: Payment verification endpoint was returning 401 errors. Removed paym
 - Connected repo: main branch
 - YOCO_SECRET_KEY: sk_live_* (live key)
 - YOCO_SIGNING_SECRET: whsec_* (live webhook secret)
-- SITE_URL: https://holidaypass.live/
+- SITE_URL: [production-domain]
 
 **Staging (portalfredholidaypassbeta.netlify.app)**:
 - Connected repo: staging branch
