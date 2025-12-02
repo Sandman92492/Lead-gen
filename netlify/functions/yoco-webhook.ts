@@ -130,13 +130,20 @@ const handler: Handler = async (event: any) => {
         const paymentId = yocoEvent.payload.id;
 
         try {
+            console.log('Verifying payment with Yoco. Payment ID:', paymentId);
+            console.log('Secret key present:', !!yocoSecretKey);
+            
             const verifyResponse = await fetch(`https://api.yoco.com/v1/payments/${paymentId}`, {
                 headers: { 'Authorization': `Bearer ${yocoSecretKey}` }
             });
+            
+            console.log('Yoco verify response status:', verifyResponse.status);
             const payment = await verifyResponse.json() as any;
             
-            if (payment.status !== 'succeeded') {
-                console.error('Payment verification failed. Status:', payment.status);
+            console.log('Yoco verify response:', JSON.stringify(payment, null, 2));
+            
+            if (verifyResponse.status !== 200 || payment.status !== 'succeeded') {
+                console.error('Payment verification failed. Status:', payment.status, 'HTTP:', verifyResponse.status);
                 return {
                     statusCode: 400,
                     body: JSON.stringify({ error: 'Payment not verified' }),
