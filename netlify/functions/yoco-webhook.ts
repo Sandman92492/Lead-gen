@@ -183,10 +183,11 @@ const handler: Handler = async (event: any) => {
             };
         }
 
-        // Create pass in Firestore
+        // Initialize Firestore first
         const firestoreDb = initFirebase();
 
         // Check if a pass already exists for this payment (prevent duplicates from webhook retries)
+        // Do this READ operation first, before any writes
         const existingPassQuery = await firestoreDb
             .collection('passes')
             .where('paymentRef', '==', paymentId)
@@ -230,17 +231,21 @@ const handler: Handler = async (event: any) => {
         });
 
         // Atomically increment pass count in config/pricing for dynamic pricing
+        // We use a direct update with FieldValue.increment which is atomic and doesn't require a transaction
         const pricingRef = firestoreDb.collection('config').doc('pricing');
-        await pricingRef.update({
-            currentPassCount: admin.firestore.FieldValue.increment(1),
-            lastUpdated: new Date().toISOString(),
-        }).catch(async () => {
-            // If document doesn't exist, create it
+        try {
+            await pricingRef.update({
+                currentPassCount: admin.firestore.FieldValue.increment(1),
+                lastUpdated: new Date().toISOString(),
+            });
+        } catch (err) {
+            // If document doesn't exist (error code 5), create it
+            console.log('Pricing config not found, creating new one...');
             await pricingRef.set({
                 currentPassCount: 1,
                 lastUpdated: new Date().toISOString(),
             }, { merge: true });
-        });
+        }
 
         return {
             statusCode: 200,
