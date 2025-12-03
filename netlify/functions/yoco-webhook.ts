@@ -112,24 +112,35 @@ const handler: Handler = async (event: any) => {
         const webhookId = event.headers['webhook-id'] || '';
         const timestamp = event.headers['webhook-timestamp'] || '';
 
-        console.log('Request details:', {
-            isBase64Encoded: event.isBase64Encoded,
-            contentType: event.headers['content-type'],
-            hasRawBody: !!(event as any).rawBody
-        });
+        // Enhanced Debug Logging
+        console.log('--- Webhook Request Debug Info ---');
+        console.log('Headers:', JSON.stringify(event.headers, null, 2));
+        console.log('Is Base64 Encoded:', event.isBase64Encoded);
 
         // Get the raw body for signature verification
         let payload = (event as any).rawBody;
+        let decodedPayload = '';
+
         if (!payload) {
             if (event.isBase64Encoded) {
-                payload = Buffer.from(event.body, 'base64').toString('utf-8');
+                console.log('Body is Base64 encoded, decoding...');
+                decodedPayload = Buffer.from(event.body, 'base64').toString('utf-8');
+                payload = decodedPayload;
             } else {
+                console.log('Body is not Base64 encoded');
                 payload = typeof event.body === 'string' ? event.body : JSON.stringify(event.body);
             }
         }
 
         // Ensure payload is a string
         payload = payload || '';
+
+        console.log('Payload Length:', payload.length);
+        console.log('Payload Preview (first 100 chars):', payload.substring(0, 100));
+        if (decodedPayload) {
+            console.log('Decoded Payload Preview:', decodedPayload.substring(0, 100));
+        }
+        console.log('--- End Debug Info ---');
 
         console.log('Webhook received:', { webhookId, timestamp, signaturePresent: !!signature, payloadLength: payload.length });
 
