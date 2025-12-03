@@ -17,7 +17,6 @@ interface SuperHomeScreenProps {
   passExpiryDate?: string;
 
   // Interactions
-  onDealClick?: (deal: Deal) => void;
   onRedeemClick?: (dealName: string) => void;
 }
 
@@ -40,7 +39,6 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
   pass,
   dealsByCategory = [],
   redeemedDeals = [],
-  onDealClick,
   onRedeemClick,
   passExpiryDate,
 }) => {
@@ -162,7 +160,6 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
             emoji={category.emoji}
             deals={category.deals}
             redeemedDeals={redeemedDeals}
-            onDealClick={onDealClick}
             onRedeemClick={onRedeemClick}
             description={undefined}
             hasPass={!!pass}

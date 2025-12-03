@@ -7,7 +7,6 @@ interface HorizontalCategoryRowProps {
   emoji: string;
   deals: Deal[];
   redeemedDeals?: string[];
-  onDealClick?: (deal: Deal) => void;
   onRedeemClick?: (dealName: string) => void;
   description?: string;
   hasPass?: boolean;
@@ -27,7 +26,6 @@ const HorizontalCategoryRow: React.FC<HorizontalCategoryRowProps> = ({
   emoji,
   deals,
   redeemedDeals = [],
-  onDealClick,
   onRedeemClick,
   description,
   hasPass,

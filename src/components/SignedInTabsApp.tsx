@@ -163,10 +163,6 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
                             onRedeemClick={onRedeemClick}
                             dealsByCategory={dealsByCategory}
                             useSuperHome={true}
-                            onDealClick={(deal) => {
-                                // TODO: Open deal detail modal
-                                console.log('Deal clicked:', deal.name);
-                            }}
                         />
                     } />
                     <Route path="/deals" element={

@@ -16,7 +16,6 @@ interface HomePageProps {
   onRedeemClick?: (dealName: string) => void;
   dealsByCategory?: { category: string; emoji: string; deals: Deal[] }[];
   useSuperHome?: boolean;
-  onDealClick?: (deal: Deal) => void;
 }
 
 const HomePage: React.FC<HomePageProps> = ({
@@ -30,20 +29,18 @@ const HomePage: React.FC<HomePageProps> = ({
   onRedeemClick,
   dealsByCategory = [],
   useSuperHome = false,
-  onDealClick,
 }) => {
   // Show SuperHomeScreen for pass users if feature flag is enabled
   if (hasPass && useSuperHome) {
     return (
       <SuperHomeScreen
-        userName={userName}
-        userPhotoURL={userPhotoURL}
-        pass={pass}
-        dealsByCategory={dealsByCategory}
-        redeemedDeals={redeemedDeals}
-        onDealClick={onDealClick}
-        onRedeemClick={onRedeemClick}
-      />
+         userName={userName}
+         userPhotoURL={userPhotoURL}
+         pass={pass}
+         dealsByCategory={dealsByCategory}
+         redeemedDeals={redeemedDeals}
+         onRedeemClick={onRedeemClick}
+       />
     );
   }
 

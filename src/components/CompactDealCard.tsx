@@ -128,7 +128,7 @@ const CompactDealCard: React.FC<CompactDealCardProps> = ({
         hasPass={hasPass}
         isRedeemed={isRedeemed}
         passExpiryDate={passExpiryDate}
-        onRedeemClick={(dealName) => {
+        onRedeemClick={(_dealName) => {
           // Close detail modal first
           setIsDetailModalOpen(false);
           // Then trigger redemption after a delay
