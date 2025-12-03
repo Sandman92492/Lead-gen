@@ -79,7 +79,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({ onClose }) => {
             <div className="space-y-3">
               <div>
                 <h3 className="font-semibold mb-2">Cooling-Off Period</h3>
-                <p>In terms of the Electronic Communications and Transactions Act (ECTA), you are entitled to cancel your purchase within 7 days of payment, provided no deals have been redeemed.</p>
+                <p>In terms of the Electronic Communications and Transactions Act (ECTA), you are entitled to cancel your purchase within 14 days of payment, provided no deals have been redeemed.</p>
               </div>
               <div>
                 <h3 className="font-semibold mb-2">Refund Process</h3>
@@ -87,7 +87,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({ onClose }) => {
               </div>
               <div>
                 <h3 className="font-semibold mb-2">Non-Refundable</h3>
-                <p>Once a single deal has been redeemed, or after the 7-day cooling-off period, the pass is non-refundable.</p>
+                <p>Once a single deal has been redeemed, or after the 14-day cooling-off period, the pass is non-refundable.</p>
               </div>
               <div>
                 <h3 className="font-semibold mb-2">Vendor Availability</h3>

@@ -7,7 +7,7 @@ interface VipDashboardProps {
   onSeeAllDeals?: () => void;
 }
 
-const VipDashboard: React.FC<VipDashboardProps> = ({ passHolderName, onViewPass, onSeeAllDeals }) => {
+const VipDashboard: React.FC<VipDashboardProps> = ({ onViewPass, onSeeAllDeals }) => {
 
   const scrollToDeals = () => {
     if (onSeeAllDeals) {
@@ -31,12 +31,14 @@ const VipDashboard: React.FC<VipDashboardProps> = ({ passHolderName, onViewPass,
                className="w-48 h-auto aspect-[9/16] bg-action-primary rounded-2xl p-4 flex flex-col justify-between items-center text-white border-2 border-value-highlight shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-value-highlight mb-8"
                aria-label="View your digital pass"
              >
-                 <div className="font-display font-black text-sm text-value-highlight">PAHP</div>
-                 <div className="text-center">
-                   <p className="text-urgency-high text-xs font-semibold">PASS HOLDER</p>
-                   <p className="font-display text-lg font-bold text-white break-words">{passHolderName}</p>
+                 <div className="w-16 h-16 flex items-center justify-center">
+                   <img 
+                     src="/Images/logo-sand.svg"
+                     alt="Port Alfred Holiday Pass Logo"
+                     className="w-full h-full object-contain"
+                   />
                  </div>
-                 <div className="w-3 h-3 rounded-full bg-urgency-high animate-live-pulse" />
+                 <p className="text-urgency-high text-xs font-semibold">TAP TO VIEW PASS</p>
              </button>
              <div className="flex flex-col sm:flex-row gap-4 w-full">
                <Button onClick={onViewPass} variant="primary" className="flex-1">View My Pass</Button>

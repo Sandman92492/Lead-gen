@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PassInfo } from '../context/AuthContext';
 import { Deal } from '../types';
 import Pass from './Pass';
@@ -42,6 +43,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
   onRedeemClick,
   passExpiryDate,
 }) => {
+  const navigate = useNavigate();
   const [isPassModalOpen, setIsPassModalOpen] = useState(false);
 
   if (!pass) {
@@ -70,18 +72,25 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
 
             {/* Profile Icon - Mobile Only */}
             {userPhotoURL ? (
-              <img
-                src={userPhotoURL}
-                alt={userName}
-                className="w-12 h-12 rounded-full object-cover border-2 border-action-primary shadow-lg md:hidden"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
+              <button
+                onClick={() => navigate('/profile')}
+                className="w-12 h-12 rounded-full object-cover border-2 border-action-primary shadow-lg md:hidden hover:shadow-xl transition-shadow"
+                aria-label="Go to profile"
+              >
+                <img
+                  src={userPhotoURL}
+                  alt={userName}
+                  className="w-full h-full rounded-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </button>
             ) : (
               <button
+                onClick={() => navigate('/profile')}
                 className="w-12 h-12 rounded-full bg-gradient-to-br from-action-primary to-action-primary/60 flex items-center justify-center text-white font-bold text-lg hover:shadow-lg transition-shadow md:hidden"
-                aria-label="Profile"
+                aria-label="Go to profile"
               >
                 {userName.charAt(0).toUpperCase()}
               </button>
@@ -93,18 +102,16 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
       {/* ==================== HERO: PASS CARD ==================== */}
       <section className="py-8 md:py-12">
         <div className="container-px container mx-auto px-4">
-          <div className="max-w-6xl mx-auto flex flex-col items-center">
+          <div className="max-w-6xl mx-auto w-full flex flex-col items-center">
             {/* Pass Card - Tappable for Verification */}
-            <div className="scroll-reveal">
+            <div className="w-full scroll-reveal">
               <button
                 onClick={() => setIsPassModalOpen(true)}
-                className="w-full md:max-w-md h-52 bg-action-primary rounded-2xl p-4 flex flex-col justify-between items-center text-white border-2 border-value-highlight shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-value-highlight"
+                className="w-full h-52 bg-action-primary rounded-2xl p-4 flex flex-col justify-between items-center text-white border-2 border-value-highlight shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-value-highlight"
                 aria-label="View your digital pass"
               >
                 <div />
-                <div className="text-center">
-                  <p className="font-semibold text-sm text-value-highlight">Your exclusive pass</p>
-                </div>
+                <p className="text-value-highlight text-sm font-semibold">TAP TO VIEW PASS</p>
                 <div className="w-3 h-3 rounded-full bg-urgency-high animate-live-pulse" />
               </button>
 

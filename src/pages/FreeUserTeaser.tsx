@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getPassPrice, getPassFeatures } from '../utils/pricing';
 import { PassFeatures } from '../types';
-import { useAllDeals } from '../hooks/useAllDeals';
 
 interface FreUserTeaserProps {
   userName?: string;
   onSelectPass?: () => void;
 }
 
-const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }) => {
+const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ onSelectPass }) => {
+  const navigate = useNavigate();
   const [passPrice, setPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
   const [_features, setFeatures] = useState<PassFeatures>({
     description: 'Discover and support Port Alfred\'s best local venues while enjoying great deals and authentic experiences.',
@@ -17,8 +18,6 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
     feature3: 'Enjoy verified savings and great experiences',
     venueCount: 70
   });
-  const [totalSavings, setTotalSavings] = useState(0);
-  const { deals } = useAllDeals();
 
   useEffect(() => {
     const loadData = async () => {
@@ -30,36 +29,10 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
     loadData();
   }, []);
 
-  // Calculate total savings from all deals, rounded down to nearest hundred
-  useEffect(() => {
-    if (deals.length > 0) {
-      const total = deals.reduce((sum, deal) => sum + (deal.savings || 0), 0);
-      const roundedTotal = Math.floor(total / 100) * 100;
-      setTotalSavings(roundedTotal);
-    }
-  }, [deals]);
+
 
   return (
     <main className="pb-24 sm:pb-0">
-      {/* Welcome Header */}
-      <section className="bg-bg-primary pt-8 md:pt-16 pb-4 md:pb-12">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="max-w-3xl mx-auto text-center scroll-reveal">
-            <h1 className="text-3xl md:text-4xl font-display font-black text-action-primary mb-3">
-              Welcome, {userName || 'Friend'}
-            </h1>
-            <p className="text-lg md:text-xl text-text-secondary mb-6">
-              You are one step away from unlocking R{totalSavings.toLocaleString()}+ in local savings.
-            </p>
-            
-            {/* Status Badge */}
-            <div className="inline-block px-4 py-2 bg-urgency-high/20 rounded-full border-2 border-urgency-high">
-              <span className="text-urgency-high font-bold text-sm">🔴 Status: Pass Inactive</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Main CTA - Prominent Card */}
       <section className="bg-bg-primary py-6 md:py-16">
         <div className="container mx-auto px-4 sm:px-6">
@@ -98,6 +71,20 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ userName, onSelectPass }
                 Get My Pass Now (R{passPrice.price}) →
               </button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Browse All Deals Section */}
+      <section className="bg-bg-primary py-6 md:py-16">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="max-w-2xl mx-auto">
+            <button
+              onClick={() => navigate('/deals')}
+              className="w-full bg-action-primary text-white font-bold text-lg py-4 px-6 rounded-lg hover:bg-action-primary/90 transition-all duration-300 shadow-lg"
+            >
+              Browse All Deals
+            </button>
           </div>
         </div>
       </section>

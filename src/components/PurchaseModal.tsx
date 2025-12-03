@@ -109,21 +109,21 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, passType
       title={`Get Your ${passType.charAt(0).toUpperCase() + passType.slice(1)} Pass!`}
       maxWidth="md"
     >
-      <p className="text-text-secondary mb-6 text-sm sm:text-base">Enter your details to personalize and purchase your pass.</p>
+      <p className="text-text-secondary mb-4 sm:mb-6 text-xs sm:text-base">Enter your details to personalize and purchase your pass.</p>
            
       {/* Trust Signals */}
-      <div className="mb-6 space-y-1 text-xs sm:text-sm text-text-secondary">
+      <div className="mb-4 sm:mb-6 space-y-1 text-xs text-text-secondary">
         <p>• Secure payment with Yoco</p>
         <p>• SSL encrypted and secure</p>
-        <p>• 14-day money-back guarantee</p>
+        <p>• 14-day cooling-off period (no deals redeemed)</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 text-left">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 text-left">
         {/* Section 1: Your Details */}
         <div>
-          <h3 className="text-xs sm:text-sm font-bold text-action-primary mb-3">1. YOUR DETAILS</h3>
-          <p className="text-xs text-text-secondary mb-3">This name will be displayed on your pass</p>
-          <div className="space-y-3">
+          <h3 className="text-xs font-bold text-action-primary mb-2 sm:mb-3">1. YOUR DETAILS</h3>
+          <p className="text-xs text-text-secondary mb-2 sm:mb-3">This name will be displayed on your pass</p>
+          <div className="space-y-2 sm:space-y-3">
             <FormInput
               type="text"
               value={name}
@@ -147,9 +147,9 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, passType
 
         {/* Section 2: Payment Method */}
         <div>
-          <h3 className="text-xs sm:text-sm font-bold text-action-primary mb-4">2. PROCEED TO PAYMENT</h3>
+          <h3 className="text-xs font-bold text-action-primary mb-3 sm:mb-4">2. PROCEED TO PAYMENT</h3>
 
-          <div className="text-xs sm:text-sm text-text-secondary mb-6">
+          <div className="text-xs text-text-secondary mb-4 sm:mb-6">
             You will be redirected to Yoco's secure payment page to complete your purchase. We accept card, Apple Pay, and Google Pay.
           </div>
           
@@ -160,7 +160,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, passType
       </form>
 
       {/* Footer Trust Info */}
-      <div className="mt-6 pt-4 border-t border-border-subtle text-xs text-text-secondary space-y-1">
+      <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-border-subtle text-xs text-text-secondary space-y-1">
         <p>Your payment is processed by Yoco, South Africa's leading payment processor.</p>
         <p>We never store your card details. Your data is encrypted and secure.</p>
       </div>

@@ -1,5 +1,4 @@
 import React from 'react';
-import WelcomeSection from './WelcomeSection';
 import DealsShowcase from './DealsShowcase';
 import FullDealList from './FullDealList';
 import Button from './Button';
@@ -28,8 +27,6 @@ const SignedInView: React.FC<SignedInViewProps> = ({
           </Button>
         </div>
       </section>
-
-      <WelcomeSection variant="welcome" />
 
       <DealsShowcase hasPass={false} onRedeemClick={onRedeemClick} redeemedDeals={[]} />
       <FullDealList hasPass={false} onRedeemClick={onRedeemClick} redeemedDeals={[]} />

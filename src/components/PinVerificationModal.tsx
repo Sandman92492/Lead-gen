@@ -100,10 +100,6 @@ const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
             </svg>
           </div>
 
-          <h2 className="text-2xl font-display font-black text-action-primary mb-2">
-            Vendor Verification
-          </h2>
-
           <p className="text-text-secondary mb-4">
             Please ask the staff to enter their 4-digit PIN to verify this redemption.
           </p>
