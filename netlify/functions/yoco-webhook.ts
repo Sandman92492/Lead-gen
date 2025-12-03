@@ -4,12 +4,13 @@ import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { createHmac } from 'crypto';
 
-// Yoco signing secret format: whsec_<base64-encoded-key>
-// Decode the base64 part to get the actual key
-const rawSecret = process.env.YOCO_SIGNING_SECRET?.trim() || '';
-const YOCO_SIGNING_SECRET = rawSecret.startsWith('whsec_')
-    ? Buffer.from(rawSecret.substring(6), 'base64')
-    : rawSecret;
+// Yoco signing secret - read fresh on each request to avoid stale warm instance issues
+const getSigningSecret = () => {
+    const rawSecret = process.env.YOCO_SIGNING_SECRET?.trim() || '';
+    return rawSecret.startsWith('whsec_')
+        ? Buffer.from(rawSecret.substring(6), 'base64')
+        : rawSecret;
+};
 const FIREBASE_PRIVATE_KEY = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
 const FIREBASE_CLIENT_EMAIL = process.env.FIREBASE_CLIENT_EMAIL;
@@ -33,13 +34,15 @@ const initFirebase = () => {
 
 // Verify webhook signature using HMAC
 const verifyWebhook = (payload: string, signature: string, webhookId: string, timestamp: string): boolean => {
-    if (!YOCO_SIGNING_SECRET) {
+    const signingSecret = getSigningSecret();
+    
+    if (!signingSecret) {
         console.error('YOCO_SIGNING_SECRET not configured');
         return false;
     }
 
-    console.log('Signature verification - YOCO_SIGNING_SECRET present:', !!YOCO_SIGNING_SECRET);
-    console.log('Signature verification - Secret length:', YOCO_SIGNING_SECRET.length);
+    console.log('Signature verification - YOCO_SIGNING_SECRET present:', !!signingSecret);
+    console.log('Signature verification - Secret length:', signingSecret.length);
 
     // Yoco sends signature as "v1,<base64-hash>" (may have multiple separated by space)
     const signatureList = signature.split(' ');
@@ -58,8 +61,8 @@ const verifyWebhook = (payload: string, signature: string, webhookId: string, ti
     const signedContent = `${webhookId}.${timestamp}.${payload}`;
     console.log('Signed content:', signedContent.substring(0, 50) + '...');
 
-    // YOCO_SIGNING_SECRET is already a Buffer from initial extraction
-    const hmac = createHmac('sha256', YOCO_SIGNING_SECRET);
+    // signingSecret is already a Buffer from getSigningSecret()
+    const hmac = createHmac('sha256', signingSecret);
     hmac.update(signedContent);
     const expectedHash = hmac.digest('base64');
 
