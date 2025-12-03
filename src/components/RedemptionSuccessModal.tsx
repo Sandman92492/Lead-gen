@@ -35,7 +35,7 @@ const RedemptionSuccessModal: React.FC<RedemptionSuccessModalProps> = ({
     });
 
     return (
-        <BaseModal isOpen={isOpen} onClose={onClose} maxWidth="md" showCloseButton>
+        <BaseModal isOpen={isOpen} onClose={onClose} maxWidth="md" showCloseButton zIndex={60}>
             <div className="text-center space-y-6">
                 {/* Large checkmark */}
                 <div className="flex justify-center">

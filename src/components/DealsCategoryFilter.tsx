@@ -41,10 +41,10 @@ const DealsCategoryFilter: React.FC<DealsCategoryFilterProps> = ({
       </p>
 
       {categories.length > 0 && (
-        <div className="flex justify-center gap-2 flex-wrap">
+        <div className="flex justify-center gap-3 flex-wrap">
           <button
             onClick={() => onCategoryChange(null)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${selectedCategory === null ? 'bg-action-primary text-white' : 'bg-bg-card border border-border-subtle text-text-secondary hover:brightness-110'}`}
+            className={`px-5 py-3 rounded-full font-semibold transition-all border-2 ${selectedCategory === null ? 'bg-action-primary text-white border-action-primary shadow-lg shadow-action-primary/30' : 'bg-bg-card border-border-subtle text-text-secondary hover:border-action-primary/40 hover:shadow-md'}`}
           >
             All Categories
           </button>
@@ -55,7 +55,7 @@ const DealsCategoryFilter: React.FC<DealsCategoryFilterProps> = ({
               <button
                 key={cat}
                 onClick={() => onCategoryChange(cat)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all border-2 ${isSelected ? `${colors.bg} ${colors.border} ${colors.text}` : `${colors.bg} ${colors.border} ${colors.text} opacity-60 hover:opacity-100`}`}
+                className={`px-5 py-3 rounded-full font-semibold transition-all border-2 ${isSelected ? `${colors.bg} ${colors.border} ${colors.text} shadow-lg` : `${colors.bg} ${colors.border} ${colors.text} opacity-60 hover:opacity-100`}`}
               >
                 {cat.charAt(0).toUpperCase() + cat.slice(1)}
               </button>

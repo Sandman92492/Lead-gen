@@ -74,14 +74,14 @@ const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
 
   if (vendorLoading && isOpen) {
     return (
-      <BaseModal isOpen={isOpen} onClose={onCancel}>
+      <BaseModal isOpen={isOpen} onClose={onCancel} zIndex={60}>
         <p className="text-text-secondary text-center">Loading vendor information...</p>
       </BaseModal>
     );
   }
 
   return (
-    <BaseModal isOpen={isOpen} onClose={onCancel} title="Vendor Verification" showCloseButton>
+    <BaseModal isOpen={isOpen} onClose={onCancel} title="Vendor Verification" showCloseButton zIndex={60}>
       <div className="text-center">
           <div className="mb-4 inline-flex items-center justify-center w-12 h-12 bg-action-primary/20 rounded-full">
             <svg

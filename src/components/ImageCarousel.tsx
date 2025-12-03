@@ -67,7 +67,10 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
             {showArrows && images.length > 1 && (
                 <>
                     <button
-                        onClick={prevSlide}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            prevSlide();
+                        }}
                         className="absolute left-2 sm:left-3 top-2 sm:top-3 text-white p-2 sm:p-3 
                             transition-all duration-300 z-20 opacity-70 hover:opacity-100 active:scale-95"
                         aria-label="Previous image"
@@ -78,7 +81,10 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
                     </button>
 
                     <button
-                        onClick={nextSlide}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            nextSlide();
+                        }}
                         className="absolute right-2 sm:right-3 top-2 sm:top-3 text-white p-2 sm:p-3 
                             transition-all duration-300 z-20 opacity-70 hover:opacity-100 active:scale-95"
                         aria-label="Next image"

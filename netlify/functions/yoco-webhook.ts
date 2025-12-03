@@ -58,15 +58,8 @@ const verifyWebhook = (payload: string, signature: string, webhookId: string, ti
     const signedContent = `${webhookId}.${timestamp}.${payload}`;
     console.log('Signed content:', signedContent.substring(0, 50) + '...');
 
-    // Secret is stored as whsec_<base64>, extract and decode the base64 part
-    let secretBytes: Buffer;
-    if (Buffer.isBuffer(YOCO_SIGNING_SECRET)) {
-        secretBytes = YOCO_SIGNING_SECRET;
-    } else {
-        secretBytes = Buffer.from(YOCO_SIGNING_SECRET, 'utf-8');
-    }
-
-    const hmac = createHmac('sha256', secretBytes);
+    // YOCO_SIGNING_SECRET is already a Buffer from initial extraction
+    const hmac = createHmac('sha256', YOCO_SIGNING_SECRET);
     hmac.update(signedContent);
     const expectedHash = hmac.digest('base64');
 

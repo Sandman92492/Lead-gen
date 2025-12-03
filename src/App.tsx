@@ -165,15 +165,13 @@ const App: React.FC = () => {
   }, []);
 
   // Build tabs array for signed-in users
-  const tabs = useMemo(() => {
-    const hasPass = userState === 'signed-in-with-pass' && pass !== null;
-    return [
-      { id: 'home', label: 'Home', path: '/home' },
-      { id: 'deals', label: 'Deals', path: '/deals' },
-      ...(hasPass ? [{ id: 'pass', label: 'My Pass', path: '/pass' }] : []),
-      { id: 'profile', label: 'Profile', path: '/profile' },
-    ];
-  }, [userState, pass]);
+   const tabs = useMemo(() => {
+     return [
+       { id: 'home', label: 'Home', path: '/home' },
+       { id: 'deals', label: 'Deals', path: '/deals' },
+       { id: 'profile', label: 'Profile', path: '/profile' },
+     ];
+   }, []);
 
   const handleActivatePass = async (pId: string, primaryName: string, _pOneName: string | null) => {
     if (!user?.email) {

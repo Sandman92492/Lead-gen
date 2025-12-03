@@ -33,7 +33,7 @@ const RedemptionConfirmationModal: React.FC<RedemptionConfirmationModalProps> = 
   };
 
   return (
-    <BaseModal isOpen={isOpen} onClose={onCancel} title="Redeem Deal?" showCloseButton>
+    <BaseModal isOpen={isOpen} onClose={onCancel} title="Redeem Deal?" showCloseButton zIndex={60}>
       <div className="text-center">
         <div className="mb-4 inline-flex items-center justify-center w-12 h-12 bg-action-primary/20 rounded-full">
           <svg
@@ -59,12 +59,6 @@ const RedemptionConfirmationModal: React.FC<RedemptionConfirmationModalProps> = 
         <div className="bg-bg-primary border border-accent-primary/30 rounded-lg p-4 mb-6">
           <p className="text-sm text-text-secondary mb-2">{dealName}</p>
           <p className="font-display font-bold text-lg text-accent-primary">{dealOffer}</p>
-        </div>
-
-        <div className="bg-bg-secondary/50 rounded-lg p-3 mb-6 border-l-2 border-accent-primary">
-          <p className="text-xs sm:text-sm text-text-secondary">
-            <span className="font-semibold text-text-primary">Tip:</span> Check the deal terms in "Learn More" before confirming to understand any restrictions or requirements.
-          </p>
         </div>
 
         <p className="text-sm text-text-secondary mb-6">

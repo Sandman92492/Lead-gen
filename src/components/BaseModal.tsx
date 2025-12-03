@@ -8,6 +8,7 @@ interface BaseModalProps {
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl'; // Default sm
   showCloseButton?: boolean;
   closeButtonPosition?: 'top-right' | 'bottom'; // Default top-right
+  zIndex?: number; // Default 50 (z-50)
 }
 
 const BaseModal: React.FC<BaseModalProps> = ({
@@ -18,6 +19,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
   maxWidth = 'sm',
   showCloseButton = true,
   closeButtonPosition = 'top-right',
+  zIndex = 50,
 }) => {
   if (!isOpen) return null;
 
@@ -30,7 +32,8 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-bg-primary/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto"
+      className="fixed inset-0 bg-bg-primary/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto transition-opacity duration-200"
+      style={{ zIndex }}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -71,7 +74,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
         )}
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(100vh-100px)]">
+        <div>
           {children}
         </div>
 

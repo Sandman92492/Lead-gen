@@ -42,7 +42,7 @@ const crypto_1 = require("crypto");
 // Decode the base64 part to get the actual key
 const rawSecret = process.env.YOCO_SIGNING_SECRET?.trim() || '';
 const YOCO_SIGNING_SECRET = rawSecret.startsWith('whsec_')
-    ? Buffer.from(rawSecret.substring(6), 'base64').toString('utf-8')
+    ? Buffer.from(rawSecret.substring(6), 'base64')
     : rawSecret;
 const FIREBASE_PRIVATE_KEY = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
@@ -83,9 +83,8 @@ const verifyWebhook = (payload, signature, webhookId, timestamp) => {
     // Signed content is: webhook-id.webhook-timestamp.raw-body
     const signedContent = `${webhookId}.${timestamp}.${payload}`;
     console.log('Signed content:', signedContent.substring(0, 50) + '...');
-    // Secret is stored as whsec_<base64>, extract and decode the base64 part
-    const secretBytes = Buffer.from(YOCO_SIGNING_SECRET, 'utf-8');
-    const hmac = (0, crypto_1.createHmac)('sha256', secretBytes);
+    // YOCO_SIGNING_SECRET is already a Buffer from initial extraction
+    const hmac = (0, crypto_1.createHmac)('sha256', YOCO_SIGNING_SECRET);
     hmac.update(signedContent);
     const expectedHash = hmac.digest('base64');
     console.log('Expected hash:', expectedHash.substring(0, 20) + '...');
@@ -103,9 +102,32 @@ const handler = async (event) => {
         const signature = event.headers['webhook-signature'] || '';
         const webhookId = event.headers['webhook-id'] || '';
         const timestamp = event.headers['webhook-timestamp'] || '';
-        // Use rawBody if available (Netlify provides this for signature verification)
-        // If body is parsed as object, stringify it back to original format
-        const payload = event.rawBody || (typeof event.body === 'string' ? event.body : JSON.stringify(event.body)) || '';
+        // Enhanced Debug Logging
+        console.log('--- Webhook Request Debug Info ---');
+        console.log('Headers:', JSON.stringify(event.headers, null, 2));
+        console.log('Is Base64 Encoded:', event.isBase64Encoded);
+        // Get the raw body for signature verification
+        let payload = event.rawBody;
+        let decodedPayload = '';
+        if (!payload) {
+            if (event.isBase64Encoded) {
+                console.log('Body is Base64 encoded, decoding...');
+                decodedPayload = Buffer.from(event.body, 'base64').toString('utf-8');
+                payload = decodedPayload;
+            }
+            else {
+                console.log('Body is not Base64 encoded');
+                payload = typeof event.body === 'string' ? event.body : JSON.stringify(event.body);
+            }
+        }
+        // Ensure payload is a string
+        payload = payload || '';
+        console.log('Payload Length:', payload.length);
+        console.log('Payload Preview (first 100 chars):', payload.substring(0, 100));
+        if (decodedPayload) {
+            console.log('Decoded Payload Preview:', decodedPayload.substring(0, 100));
+        }
+        console.log('--- End Debug Info ---');
         console.log('Webhook received:', { webhookId, timestamp, signaturePresent: !!signature, payloadLength: payload.length });
         // Verify webhook signature
         if (!verifyWebhook(payload, signature, webhookId, timestamp)) {
@@ -138,9 +160,10 @@ const handler = async (event) => {
                 body: JSON.stringify({ error: 'Invalid metadata' }),
             };
         }
-        // Create pass in Firestore
+        // Initialize Firestore first
         const firestoreDb = initFirebase();
         // Check if a pass already exists for this payment (prevent duplicates from webhook retries)
+        // Do this READ operation first, before any writes
         const existingPassQuery = await firestoreDb
             .collection('passes')
             .where('paymentRef', '==', paymentId)
@@ -180,18 +203,22 @@ const handler = async (event) => {
             purchasePrice: Math.round(yocoEvent.payload.amount / 100), // Convert cents to Rands
         });
         // Atomically increment pass count in config/pricing for dynamic pricing
-        // Using admin.firestore.FieldValue.increment() prevents race conditions with concurrent payments
+        // We use a direct update with FieldValue.increment which is atomic and doesn't require a transaction
         const pricingRef = firestoreDb.collection('config').doc('pricing');
-        await pricingRef.update({
-            currentPassCount: admin.firestore.FieldValue.increment(1),
-            lastUpdated: new Date().toISOString(),
-        }).catch(async () => {
-            // If document doesn't exist, create it with increment
+        try {
+            await pricingRef.update({
+                currentPassCount: admin.firestore.FieldValue.increment(1),
+                lastUpdated: new Date().toISOString(),
+            });
+        }
+        catch (err) {
+            // If document doesn't exist (error code 5), create it
+            console.log('Pricing config not found, creating new one...');
             await pricingRef.set({
                 currentPassCount: 1,
                 lastUpdated: new Date().toISOString(),
             }, { merge: true });
-        });
+        }
         return {
             statusCode: 200,
             body: JSON.stringify({ received: true, passId }),

@@ -92,9 +92,6 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
                 </button>
 
                 <header className="text-center relative z-10 mb-6">
-                    <h2 className="text-xs md:text-sm font-semibold text-brand-yellow uppercase tracking-widest mb-4">
-                        Your Exclusive Pass
-                    </h2>
                     <div className="mx-auto mb-6 w-20 h-20 flex-shrink-0 rounded-2xl p-2" aria-label="Port Alfred Holiday Pass Logo Icon">
                         <img 
                           src={theme === 'dark' ? '/Images/logo-ocean.svg' : '/Images/logo-sand.svg'} 
