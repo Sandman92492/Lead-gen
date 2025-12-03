@@ -109,6 +109,7 @@ const handler: Handler = async (event: any) => {
         console.log('--- Webhook Request Debug Info ---');
         console.log('Headers:', JSON.stringify(event.headers, null, 2));
         console.log('Is Base64 Encoded:', event.isBase64Encoded);
+        console.log('typeof event.body:', typeof event.body);
 
         // Get the raw body for signature verification
         let payload = (event as any).rawBody;
