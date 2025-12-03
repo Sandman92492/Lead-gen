@@ -7,9 +7,9 @@ import { createHmac } from 'crypto';
 // Yoco signing secret format: whsec_<base64-encoded-key>
 // Decode the base64 part to get the actual key
 const rawSecret = process.env.YOCO_SIGNING_SECRET?.trim() || '';
-const YOCO_SIGNING_SECRET = rawSecret.startsWith('whsec_') 
-  ? Buffer.from(rawSecret.substring(6), 'base64')
-  : rawSecret;
+const YOCO_SIGNING_SECRET = rawSecret.startsWith('whsec_')
+    ? Buffer.from(rawSecret.substring(6), 'base64')
+    : rawSecret;
 const FIREBASE_PRIVATE_KEY = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
 const FIREBASE_CLIENT_EMAIL = process.env.FIREBASE_CLIENT_EMAIL;
@@ -45,7 +45,7 @@ const verifyWebhook = (payload: string, signature: string, webhookId: string, ti
     const signatureList = signature.split(' ');
     const receivedSignature = signatureList[0]; // Take first one
     const parts = receivedSignature.split(',');
-    
+
     if (parts.length !== 2 || parts[0] !== 'v1') {
         console.error('Invalid signature format:', signature);
         return false;
@@ -53,11 +53,11 @@ const verifyWebhook = (payload: string, signature: string, webhookId: string, ti
 
     const receivedHash = parts[1];
     console.log('Received hash:', receivedHash.substring(0, 20) + '...');
-    
+
     // Signed content is: webhook-id.webhook-timestamp.raw-body
     const signedContent = `${webhookId}.${timestamp}.${payload}`;
     console.log('Signed content:', signedContent.substring(0, 50) + '...');
-    
+
     // Secret is stored as whsec_<base64>, extract and decode the base64 part
     let secretBytes: Buffer;
     if (Buffer.isBuffer(YOCO_SIGNING_SECRET)) {
@@ -65,7 +65,7 @@ const verifyWebhook = (payload: string, signature: string, webhookId: string, ti
     } else {
         secretBytes = Buffer.from(YOCO_SIGNING_SECRET, 'utf-8');
     }
-    
+
     const hmac = createHmac('sha256', secretBytes);
     hmac.update(signedContent);
     const expectedHash = hmac.digest('base64');
@@ -108,31 +108,47 @@ const handler: Handler = async (event: any) => {
     }
 
     try {
-         const signature = event.headers['webhook-signature'] || '';
-         const webhookId = event.headers['webhook-id'] || '';
-         const timestamp = event.headers['webhook-timestamp'] || '';
-         // Use rawBody if available (Netlify provides this for signature verification)
-         // If body is parsed as object, stringify it back to original format
-         const payload = (event as any).rawBody || (typeof event.body === 'string' ? event.body : JSON.stringify(event.body)) || '';
+        const signature = event.headers['webhook-signature'] || '';
+        const webhookId = event.headers['webhook-id'] || '';
+        const timestamp = event.headers['webhook-timestamp'] || '';
 
-         console.log('Webhook received:', { webhookId, timestamp, signaturePresent: !!signature, payloadLength: payload.length });
+        console.log('Request details:', {
+            isBase64Encoded: event.isBase64Encoded,
+            contentType: event.headers['content-type'],
+            hasRawBody: !!(event as any).rawBody
+        });
 
-         // Verify webhook signature
-         if (!verifyWebhook(payload, signature, webhookId, timestamp)) {
-             console.error('Webhook signature verification failed');
-             return {
-                 statusCode: 401,
-                 body: JSON.stringify({ error: 'Unauthorized' }),
-             };
-         }
-         
-         console.log('Webhook signature verified successfully');
+        // Get the raw body for signature verification
+        let payload = (event as any).rawBody;
+        if (!payload) {
+            if (event.isBase64Encoded) {
+                payload = Buffer.from(event.body, 'base64').toString('utf-8');
+            } else {
+                payload = typeof event.body === 'string' ? event.body : JSON.stringify(event.body);
+            }
+        }
+
+        // Ensure payload is a string
+        payload = payload || '';
+
+        console.log('Webhook received:', { webhookId, timestamp, signaturePresent: !!signature, payloadLength: payload.length });
+
+        // Verify webhook signature
+        if (!verifyWebhook(payload, signature, webhookId, timestamp)) {
+            console.error('Webhook signature verification failed');
+            return {
+                statusCode: 401,
+                body: JSON.stringify({ error: 'Unauthorized' }),
+            };
+        }
+
+        console.log('Webhook signature verified successfully');
 
         const yocoEvent = JSON.parse(payload) as YocoEvent;
 
         // Webhook signature already verified, so trust the payload
-         // Yoco webhook is already authenticated and payload is verified
-         console.log('Webhook verified, trusting Yoco payload');
+        // Yoco webhook is already authenticated and payload is verified
+        console.log('Webhook verified, trusting Yoco payload');
 
         // Only handle succeeded payments
         if (yocoEvent.type !== 'payment.succeeded' || yocoEvent.payload.status !== 'succeeded') {
@@ -142,53 +158,53 @@ const handler: Handler = async (event: any) => {
                 body: JSON.stringify({ received: true }),
             };
         }
-        
+
         console.log('Processing payment.succeeded event');
 
-         const paymentId = yocoEvent.payload.id;
-         const { passType, userEmail, passHolderName, userId } = yocoEvent.payload.metadata || {};
+        const paymentId = yocoEvent.payload.id;
+        const { passType, userEmail, passHolderName, userId } = yocoEvent.payload.metadata || {};
 
-         if (!passType || !userEmail || !passHolderName || !userId) {
-             console.error('Missing required metadata:', { passType, userEmail, passHolderName, userId });
-             return {
-                 statusCode: 400,
-                 body: JSON.stringify({ error: 'Invalid metadata' }),
-             };
-         }
+        if (!passType || !userEmail || !passHolderName || !userId) {
+            console.error('Missing required metadata:', { passType, userEmail, passHolderName, userId });
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: 'Invalid metadata' }),
+            };
+        }
 
-         // Create pass in Firestore
-         const firestoreDb = initFirebase();
-         
-         // Check if a pass already exists for this payment (prevent duplicates from webhook retries)
-         const existingPassQuery = await firestoreDb
-             .collection('passes')
-             .where('paymentRef', '==', paymentId)
-             .limit(1)
-             .get();
-         
-         if (!existingPassQuery.empty) {
+        // Create pass in Firestore
+        const firestoreDb = initFirebase();
+
+        // Check if a pass already exists for this payment (prevent duplicates from webhook retries)
+        const existingPassQuery = await firestoreDb
+            .collection('passes')
+            .where('paymentRef', '==', paymentId)
+            .limit(1)
+            .get();
+
+        if (!existingPassQuery.empty) {
             const existingPass = existingPassQuery.docs[0].data();
             console.log('Duplicate payment detected. paymentRef:', paymentId, 'existing passId:', existingPass.passId);
             return {
                 statusCode: 200,
                 body: JSON.stringify({ received: true, passId: existingPass.passId, isDuplicate: true }),
             };
-         }
-         
-         const passId = 'PAHP-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+        }
 
-         let expiryDate: Date;
-         if (passType === 'annual') {
-             expiryDate = new Date();
-             expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-         } else {
-             // Holiday pass: valid until Jan 31, 2026 23:59:59 South African Time (UTC+2)
-             // Midnight UTC+2 on Jan 31 = 22:00 UTC on Jan 31
-             expiryDate = new Date('2026-01-31T22:00:00Z');
-             console.log('Using fixed Jan 31 expiry date:', expiryDate.toISOString());
-         }
+        const passId = 'PAHP-' + Math.random().toString(36).substring(2, 9).toUpperCase();
 
-         await firestoreDb.collection('passes').doc(passId).set({
+        let expiryDate: Date;
+        if (passType === 'annual') {
+            expiryDate = new Date();
+            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+        } else {
+            // Holiday pass: valid until Jan 31, 2026 23:59:59 South African Time (UTC+2)
+            // Midnight UTC+2 on Jan 31 = 22:00 UTC on Jan 31
+            expiryDate = new Date('2026-01-31T22:00:00Z');
+            console.log('Using fixed Jan 31 expiry date:', expiryDate.toISOString());
+        }
+
+        await firestoreDb.collection('passes').doc(passId).set({
             passId,
             passHolderName,
             email: userEmail,
@@ -200,25 +216,25 @@ const handler: Handler = async (event: any) => {
             paymentRef: yocoEvent.payload.id,
             paymentStatus: 'completed',
             purchasePrice: Math.round(yocoEvent.payload.amount / 100), // Convert cents to Rands
-         });
+        });
 
-         // Atomically increment pass count in config/pricing for dynamic pricing
-         const pricingRef = firestoreDb.collection('config').doc('pricing');
-         await pricingRef.update({
+        // Atomically increment pass count in config/pricing for dynamic pricing
+        const pricingRef = firestoreDb.collection('config').doc('pricing');
+        await pricingRef.update({
             currentPassCount: admin.firestore.FieldValue.increment(1),
             lastUpdated: new Date().toISOString(),
-         }).catch(async () => {
+        }).catch(async () => {
             // If document doesn't exist, create it
             await pricingRef.set({
                 currentPassCount: 1,
                 lastUpdated: new Date().toISOString(),
             }, { merge: true });
-         });
+        });
 
-         return {
+        return {
             statusCode: 200,
             body: JSON.stringify({ received: true, passId }),
-         };
+        };
     } catch (error) {
         console.error('Webhook processing error:', error instanceof Error ? error.message : String(error));
         console.error('Full error:', error);
