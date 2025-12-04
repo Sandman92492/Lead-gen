@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FAQS } from '../constants.tsx';
 import { highlightPrices } from '../utils/formatting';
+import { getPassFeatures } from '../utils/pricing';
 
 interface FaqHeaderRef {
   [key: number]: HTMLButtonElement | null;
@@ -8,6 +9,7 @@ interface FaqHeaderRef {
 
 const FAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [venueCount, setVenueCount] = useState(70); // Default fallback
   const faqHeaderRefs = useRef<FaqHeaderRef>({});
   const prevIndexRef = useRef<number | null>(0);
 
@@ -25,11 +27,30 @@ const FAQ: React.FC = () => {
     prevIndexRef.current = openIndex;
   }, [openIndex]);
 
+  // Fetch venue count from Firestore
+  useEffect(() => {
+    const loadVenueCount = async () => {
+      try {
+        const features = await getPassFeatures();
+        if (features.venueCount) {
+          setVenueCount(features.venueCount);
+        }
+      } catch {
+        // Keep default value on error
+      }
+    };
+    loadVenueCount();
+  }, []);
+
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  const renderAnswer = (answer: string) => highlightPrices(answer);
+  const renderAnswer = (answer: string) => {
+    // Replace {{VENUE_COUNT}} with actual count
+    let processedAnswer = answer.replace(/{{VENUE_COUNT}}/g, venueCount.toString());
+    return highlightPrices(processedAnswer);
+  };
 
   return (
     <section id="faq" className="py-20 md:py-32 bg-bg-primary">

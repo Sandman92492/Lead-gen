@@ -97,7 +97,15 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
     // Add border on scroll
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 10);
+            // Show sticky CTA after scrolling past How It Works section
+            const howItWorksSection = document.getElementById('how-it-works');
+            if (howItWorksSection) {
+                const sectionBottom = howItWorksSection.offsetTop + howItWorksSection.offsetHeight;
+                setIsScrolled(window.scrollY > sectionBottom);
+            } else {
+                // Fallback: trigger after scrolling past hero (90vh)
+                setIsScrolled(window.scrollY > (window.innerHeight * 0.9));
+            }
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
@@ -173,19 +181,21 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                             {isAuthenticated ? (
                                 <>
                                     <Button onClick={onButtonClick} variant="primary" size="sm" className="whitespace-nowrap">{buttonText}</Button>
-                                    {userPhotoURL ? (
-                                        <img
+                                    <div className="relative w-10 h-10">
+                                        <div className="absolute inset-0 rounded-full bg-action-primary flex items-center justify-center text-white font-semibold text-sm">
+                                          {userEmail?.charAt(0).toUpperCase()}
+                                        </div>
+                                        {userPhotoURL && (
+                                          <img
                                             src={userPhotoURL}
                                             alt={userEmail || 'User profile'}
-                                            className="w-10 h-10 rounded-full object-cover border-2 border-action-primary"
+                                            className="absolute inset-0 w-10 h-10 rounded-full object-cover border-2 border-action-primary"
                                             onError={(e) => {
-                                                (e.target as HTMLImageElement).style.display = 'none';
+                                              (e.target as HTMLImageElement).style.display = 'none';
                                             }}
-                                        />
-                                    ) : null}
-                                    {!userPhotoURL && (
-                                        <div className="w-10 h-10 rounded-full bg-action-primary flex items-center justify-center text-text-primary font-semibold text-xs">{userEmail?.charAt(0).toUpperCase()}</div>
-                                    )}
+                                          />
+                                        )}
+                                      </div>
                                     <Button onClick={onSignOutClick} variant="outline" size="sm" className="whitespace-nowrap">Sign Out</Button>
                                 </>
                             ) : (
@@ -202,6 +212,24 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                         <ThemeToggleButton />
                     </div>
                 </div>
+                {/* Sticky CTA bar - shows when scrolled for non-authenticated users */}
+                {!isAuthenticated && (
+                    <div className={`border-t border-border-subtle bg-bg-card/95 backdrop-blur-sm transition-all duration-500 ease-out ${
+                        isScrolled ? 'max-h-16 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
+                    }`}>
+                        <div className="container mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-3">
+                            <p className="text-sm text-text-secondary hidden sm:block">
+                                <span className="font-semibold text-text-primary">Holiday Pass</span> – Unlock exclusive local deals
+                            </p>
+                            <p className="text-sm text-text-secondary sm:hidden">
+                                <span className="font-semibold text-text-primary">Get the Pass</span>
+                            </p>
+                            <Button onClick={onButtonClick} variant="primary" size="sm" className="flex-shrink-0">
+                                {buttonText}
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </header>
 
             {/* Mobile Menu Bar - Bottom Trigger (only for free users) */}
@@ -259,19 +287,21 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                                 {isAuthenticated ? (
                                     <>
                                         <div className="flex items-center gap-3 mb-6 px-2 py-2">
-                                            {userPhotoURL ? (
-                                                <img
+                                            <div className="relative w-12 h-12 flex-shrink-0">
+                                                <div className="absolute inset-0 rounded-full bg-action-primary flex items-center justify-center text-white font-semibold text-lg">
+                                                  {userEmail?.charAt(0).toUpperCase()}
+                                                </div>
+                                                {userPhotoURL && (
+                                                  <img
                                                     src={userPhotoURL}
                                                     alt={userEmail || 'User profile'}
-                                                    className="w-12 h-12 rounded-full object-cover border-2 border-action-primary flex-shrink-0"
+                                                    className="absolute inset-0 w-12 h-12 rounded-full object-cover border-2 border-action-primary"
                                                     onError={(e) => {
-                                                        (e.target as HTMLImageElement).style.display = 'none';
+                                                      (e.target as HTMLImageElement).style.display = 'none';
                                                     }}
-                                                />
-                                            ) : null}
-                                            {!userPhotoURL && (
-                                                <div className="w-12 h-12 rounded-full bg-action-primary flex items-center justify-center text-text-primary font-semibold text-lg flex-shrink-0">{userEmail?.charAt(0).toUpperCase()}</div>
-                                            )}
+                                                  />
+                                                )}
+                                              </div>
                                             <span className="text-text-primary text-sm font-semibold truncate">{userEmail}</span>
                                         </div>
                                         <div className="space-y-4">

@@ -53,7 +53,7 @@ const CompactDealCard: React.FC<CompactDealCardProps> = ({
       {/* Card Container - Use div instead of button to avoid nesting buttons inside ImageCarousel */}
       <div
         onClick={handleCardClick}
-        className={`${isInGrid ? 'w-full max-w-xs' : 'flex-shrink-0 w-60'} cursor-pointer group rounded-lg focus-within:ring-2 focus-within:ring-action-primary`}
+        className={`${isInGrid ? 'w-full max-w-48' : 'flex-shrink-0 w-60'} cursor-pointer group rounded-lg focus-within:ring-2 focus-within:ring-action-primary`}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {

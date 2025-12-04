@@ -3,7 +3,7 @@ import { PassInfo } from '../context/AuthContext';
 import { useAllDeals } from '../hooks/useAllDeals';
 import { useTotalSavings } from '../hooks/useTotalSavings';
 import Button from '../components/Button';
-import FeaturedDealCard from '../components/FeaturedDealCard';
+import CompactDealCard from '../components/CompactDealCard';
 
 interface VipDashboardProps {
   userName?: string;
@@ -148,17 +148,19 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
                 Don't Miss Out
               </p>
 
-              {/* Featured Deal Card - Reuse existing component */}
-              <div className="scroll-reveal">
-                <FeaturedDealCard
-                  deal={todaysFeatured}
-                  index={0}
-                  hasPass={true}
-                  isRedeemed={isRedeemed || false}
-                  passExpiryDate={passInfo.expiryDate}
-                  onRedeemClick={onRedeemClick}
-                  cardHeight="h-96"
-                />
+              {/* Featured Deal Card - Centered and appropriately sized */}
+              <div className="scroll-reveal flex justify-center">
+                <div className="w-full max-w-sm">
+                  <CompactDealCard
+                    deal={todaysFeatured}
+                    index={0}
+                    isRedeemed={isRedeemed || false}
+                    hasPass={true}
+                    passExpiryDate={passInfo.expiryDate}
+                    onClick={() => onRedeemClick?.(todaysFeatured.name)}
+                    isInGrid={true}
+                  />
+                </div>
               </div>
             </div>
           </div>

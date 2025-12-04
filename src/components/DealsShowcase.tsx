@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAllDeals } from '../hooks/useAllDeals';
-import FeaturedDealCard from './FeaturedDealCard';
+import CompactDealCard from './CompactDealCard';
 
 interface DealsShowcaseProps {
     hasPass: boolean;
@@ -13,11 +13,14 @@ interface DealsShowcaseProps {
 
 const DealsShowcase: React.FC<DealsShowcaseProps> = ({ hasPass, redeemedDeals = [], passExpiryDate, onRedeemClick, isFreeUser = false, onSignInClick }) => {
   const { deals: allDeals, isLoading } = useAllDeals();
-  let deals = allDeals.filter(deal => deal.featured);
   
-  // Limit to 3 deals for free users
+  let deals;
   if (isFreeUser) {
-    deals = deals.slice(0, 3);
+    // For free users: show top 4 deals by savings (from all deals, not just featured)
+    deals = [...allDeals].sort((a, b) => (b.savings || 0) - (a.savings || 0)).slice(0, 4);
+  } else {
+    // For other users: show featured deals
+    deals = allDeals.filter(deal => deal.featured);
   }
 
   const isRedeemed = (dealName: string) => redeemedDeals.includes(dealName);
@@ -29,10 +32,10 @@ const DealsShowcase: React.FC<DealsShowcaseProps> = ({ hasPass, redeemedDeals = 
           <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">
             Featured Deals
           </h2>
-          <p className="text-3xl md:text-4xl font-display font-black text-action-primary mb-4 md:mb-6">Discover & Save</p>
-           <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">
-             Connect with the heart of Port Alfred and surrounding areas by supporting the local people and establishments we love
-           </p>
+          <p className="text-3xl md:text-4xl font-display font-black text-action-primary mb-4 md:mb-6">Unlock These Deals</p>
+          <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">
+            Real savings at places locals actually go.
+          </p>
         </div>
 
         {isLoading && (
@@ -45,30 +48,27 @@ const DealsShowcase: React.FC<DealsShowcaseProps> = ({ hasPass, redeemedDeals = 
 
         {!isLoading && deals.length > 0 && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
               {deals.map((deal, index) => (
-                <FeaturedDealCard
+                <CompactDealCard
                   key={deal.name}
                   deal={deal}
                   index={index}
-                  hasPass={hasPass}
                   isRedeemed={isRedeemed(deal.name)}
+                  hasPass={hasPass}
                   passExpiryDate={passExpiryDate}
-                  onRedeemClick={onRedeemClick}
-                  cardHeight="h-96"
+                  onClick={() => onRedeemClick?.(deal.name)}
+                  isInGrid={true}
                 />
               ))}
             </div>
-            {isFreeUser && (
+            {isFreeUser && onSignInClick && (
                <div className="text-center mt-12">
-                 <p className="text-text-secondary mb-4">
-                   Ready to discover all Port Alfred has to offer? Sign in to explore all venues and deals.
-                 </p>
                  <button
                    onClick={onSignInClick}
-                   className="text-action-primary font-semibold hover:underline"
+                   className="bg-action-primary text-white font-semibold px-6 py-3 rounded-lg hover:bg-action-primary/90 transition-colors"
                  >
-                   Sign in to discover more
+                   Sign in to see all {allDeals.length} deals →
                  </button>
                </div>
              )}

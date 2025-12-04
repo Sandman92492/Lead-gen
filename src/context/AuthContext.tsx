@@ -70,8 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           } else {
             setPass(null);
           }
-        } catch (error) {
-          console.error('Failed to fetch user passes:', error);
+        } catch {
           setPass(null);
         }
       } else {

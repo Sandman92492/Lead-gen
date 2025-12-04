@@ -129,8 +129,8 @@ const App: React.FC = () => {
           const redemptions = await getRedemptionsByPass(pass.passId);
           const dealNames = redemptions.map(r => r.dealName);
           setRedeemedDeals(dealNames);
-        } catch (error) {
-          console.error('Failed to load redeemed deals:', error);
+        } catch {
+          // Silently fail - redemptions will be empty
         }
       }
     };
@@ -259,6 +259,11 @@ const App: React.FC = () => {
 
   const handleRedeemDeal = async (dealName: string, vendorId?: string, vendorName?: string) => {
     if (!pass?.passId) {
+      return;
+    }
+
+    // Double-check pass expiry (defense in depth)
+    if (pass.expiryDate && isPassExpired(pass.expiryDate)) {
       return;
     }
 

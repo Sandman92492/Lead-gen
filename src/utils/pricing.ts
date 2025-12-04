@@ -45,30 +45,6 @@ const getDefaultPrice = (): { price: number; cents: number; launchPricing: boole
 });
 
 /**
- * Increment pass count in Firestore config/pricing
- * Call this after successful payment
- */
-export const incrementPassCount = async (): Promise<void> => {
-  try {
-    const pricingRef = doc(db, 'config', 'pricing');
-    const pricingDoc = await getDoc(pricingRef);
-    const currentCount = pricingDoc.exists() ? (pricingDoc.data().currentPassCount || 0) : 0;
-    
-    // Use setDoc to update with new count
-    const { setDoc } = await import('firebase/firestore');
-    await setDoc(pricingRef, 
-      { 
-        currentPassCount: currentCount + 1,
-        lastUpdated: new Date().toISOString()
-      },
-      { merge: true } // Merge to preserve other fields
-    );
-  } catch (error) {
-    console.error('Error incrementing pass count:', error);
-  }
-};
-
-/**
  * Get pass features from Firestore config
  * Returns default features if not found in database
  */
@@ -97,3 +73,44 @@ const getDefaultPassFeatures = (): PassFeatures => ({
   feature3: 'Enjoy verified savings and great experiences',
   venueCount: 70
 });
+
+/**
+ * Get current pass count for social proof
+ */
+export const getPassCount = async (): Promise<number> => {
+  try {
+    const pricingDoc = await getDoc(doc(db, 'config', 'pricing'));
+    if (pricingDoc.exists()) {
+      return pricingDoc.data().currentPassCount || 0;
+    }
+    return 0;
+  } catch {
+    return 0;
+  }
+};
+
+/**
+ * Get launch pricing data including passes remaining at launch price
+ */
+export const getLaunchPricingData = async (): Promise<{
+  passCount: number;
+  launchThreshold: number;
+  passesRemaining: number;
+  isLaunchPricing: boolean;
+}> => {
+  try {
+    const pricingDoc = await getDoc(doc(db, 'config', 'pricing'));
+    if (pricingDoc.exists()) {
+      const data = pricingDoc.data();
+      const passCount = data.currentPassCount || 0;
+      const launchThreshold = data.launchThreshold || 50;
+      const passesRemaining = Math.max(0, launchThreshold - passCount);
+      const isLaunchPricing = passCount < launchThreshold;
+      
+      return { passCount, launchThreshold, passesRemaining, isLaunchPricing };
+    }
+    return { passCount: 0, launchThreshold: 50, passesRemaining: 50, isLaunchPricing: true };
+  } catch {
+    return { passCount: 0, launchThreshold: 50, passesRemaining: 50, isLaunchPricing: true };
+  }
+};

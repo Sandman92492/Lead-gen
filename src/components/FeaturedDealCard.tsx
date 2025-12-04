@@ -13,7 +13,7 @@ interface FeaturedDealCardProps {
   isRedeemed: boolean;
   passExpiryDate?: string; // Pass expiry date to check if expired
   onRedeemClick?: (dealName: string) => void;
-  cardHeight?: 'h-80' | 'h-96';
+  cardHeight?: 'h-72' | 'h-80' | 'h-96';
 }
 
 const FeaturedDealCard: React.FC<FeaturedDealCardProps> = ({

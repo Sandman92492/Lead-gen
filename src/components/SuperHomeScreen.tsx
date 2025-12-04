@@ -71,30 +71,25 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
             </div>
 
             {/* Profile Icon - Mobile Only */}
-            {userPhotoURL ? (
-              <button
-                onClick={() => navigate('/profile')}
-                className="w-12 h-12 rounded-full object-cover border-2 border-action-primary shadow-lg md:hidden hover:shadow-xl transition-shadow"
-                aria-label="Go to profile"
-              >
+            <button
+              onClick={() => navigate('/profile')}
+              className="relative w-12 h-12 md:hidden hover:shadow-xl transition-shadow"
+              aria-label="Go to profile"
+            >
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-action-primary to-action-primary/60 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                {userName.charAt(0).toUpperCase()}
+              </div>
+              {userPhotoURL && (
                 <img
                   src={userPhotoURL}
                   alt={userName}
-                  className="w-full h-full rounded-full object-cover"
+                  className="absolute inset-0 w-12 h-12 rounded-full object-cover border-2 border-action-primary shadow-lg"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
                 />
-              </button>
-            ) : (
-              <button
-                onClick={() => navigate('/profile')}
-                className="w-12 h-12 rounded-full bg-gradient-to-br from-action-primary to-action-primary/60 flex items-center justify-center text-white font-bold text-lg hover:shadow-lg transition-shadow md:hidden"
-                aria-label="Go to profile"
-              >
-                {userName.charAt(0).toUpperCase()}
-              </button>
-            )}
+              )}
+            </button>
           </div>
         </div>
       </header>

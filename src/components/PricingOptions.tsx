@@ -5,11 +5,12 @@ import { getPassPrice, getPassFeatures } from '../utils/pricing';
 
 interface PricingOptionsProps {
     onSelectPass?: (passType: PassType) => void;
+    passPrice?: { price: number; cents: number; launchPricing: boolean };
 }
 
-const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass }) => {
+const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice: propPassPrice }) => {
     const [isTestPaymentLoading, setIsTestPaymentLoading] = useState(false);
-    const [passPrice, setPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
+    const [localPassPrice, setLocalPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
     const [features, setFeatures] = useState<PassFeatures>({
         description: 'Discover and support Port Alfred\'s best local venues while enjoying great deals and authentic experiences.',
         feature1: 'Discover 70+ local venues and businesses',
@@ -18,16 +19,21 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass }) => {
         venueCount: 70
     });
 
-    // Load dynamic price and features on mount
+    // Use prop if provided, otherwise use local state
+    const passPrice = propPassPrice || localPassPrice;
+
+    // Load dynamic price and features on mount (only if not provided via props)
     useEffect(() => {
         const loadData = async () => {
-            const price = await getPassPrice();
+            if (!propPassPrice) {
+                const price = await getPassPrice();
+                setLocalPassPrice(price);
+            }
             const passFeatures = await getPassFeatures();
-            setPassPrice(price);
             setFeatures(passFeatures);
         };
         loadData();
-    }, []);
+    }, [propPassPrice]);
 
     const handleTestPayment = () => {
         if (onSelectPass) {

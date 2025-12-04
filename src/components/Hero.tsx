@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Button from './Button.tsx';
-import { getPassPrice } from '../utils/pricing';
+import { getPassPrice, getLaunchPricingData } from '../utils/pricing';
 import { useAllDeals } from '../hooks/useAllDeals';
 
 interface HeroProps {
@@ -11,22 +11,33 @@ interface HeroProps {
   passHolderName: string | null;
   onActivateClick: () => void;
   appStatus: 'loading' | 'validated' | 'guest';
+  passPrice?: number;
+  passCount?: number;
 }
 
-const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick: _onActivateClick, appStatus }) => {
-  const [passPrice, setPassPrice] = useState(199);
+const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick: _onActivateClick, appStatus, passPrice: propPassPrice, passCount = 0 }) => {
+  const [localPassPrice, setLocalPassPrice] = useState(199);
   const [totalSavings, setTotalSavings] = useState(1000);
+  const [launchData, setLaunchData] = useState<{ passesRemaining: number; isLaunchPricing: boolean } | null>(null);
   const { deals } = useAllDeals();
   const isLoading = appStatus === 'loading';
   const mainButtonText = isLoading ? 'Checking Pass...' : buttonText;
 
+  // Use prop if provided, otherwise fetch locally
+  const passPrice = propPassPrice ?? localPassPrice;
+
   useEffect(() => {
-    const loadPrice = async () => {
-      const price = await getPassPrice();
-      setPassPrice(price.price);
+    const loadData = async () => {
+      if (propPassPrice === undefined) {
+        const price = await getPassPrice();
+        setLocalPassPrice(price.price);
+      }
+      // Always fetch launch data for passes remaining
+      const launch = await getLaunchPricingData();
+      setLaunchData(launch);
     };
-    loadPrice();
-  }, []);
+    loadData();
+  }, [propPassPrice]);
 
   // Calculate total savings from all deals, rounded down to nearest hundred
   useEffect(() => {
@@ -55,21 +66,22 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
         <div className="absolute inset-0 bg-black/50 dark:bg-black/60 z-0"></div>
         <div className="container mx-auto px-4 sm:px-6 pt-24 md:pt-16 relative z-10 flex flex-col items-center">
            <div className="max-w-3xl mx-auto scroll-reveal">
-               <h2 className="text-sm md:text-base font-semibold text-white uppercase tracking-widest mb-4 md:mb-5 drop-shadow-sm flex items-center justify-center gap-2">
+               <h2 className="text-xs md:text-sm font-semibold text-white uppercase tracking-[0.25em] mb-3 md:mb-4 drop-shadow-sm flex items-center justify-center gap-2">
                    <svg className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                        <path d="M12 2C7.13 2 3 6.13 3 11c0 5.25 9 13 9 13s9-7.75 9-13c0-4.87-4.13-9-9-9zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                    </svg>
                    Port Alfred Holiday Pass
                </h2>
-               <h1 className="font-display text-white leading-tight mb-12 md:mb-16 drop-shadow-lg">
-                   <span className="block text-2xl md:text-4xl font-normal">Holiday Like a <span className="font-bold text-yellow-300">Local</span> on</span>
-                   <span className="block text-5xl md:text-7xl font-black">SA's Blue Flag Coast</span>
+               <h1 className="font-display text-white leading-tight mb-8 md:mb-10 drop-shadow-lg">
+                   <span className="block text-4xl md:text-5xl font-black">
+                     Holiday Like a <span className="text-yellow-300">Local.</span>
+                   </span>
                </h1>
-               <p className="text-lg md:text-xl text-white leading-relaxed mb-6 drop-shadow-lg max-w-2xl">
-                   Don't pay peak season prices. <span className="font-bold text-yellow-300">Pay Like a Local.</span> Unlock R{totalSavings.toLocaleString()}+ in exclusive savings at Port Alfred's best spots.
+               <p className="text-base md:text-lg text-white/90 leading-relaxed mb-6 drop-shadow-lg max-w-xl mx-auto">
+                   Skip tourist prices. Unlock R{totalSavings.toLocaleString()}+ in savings at Port Alfred's best spots.
                </p>
 
-               <div className="flex flex-col items-center gap-8">
+               <div className="flex flex-col items-center gap-6">
                   <Button 
                     variant="primary" 
                     size="lg"
@@ -79,6 +91,23 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
                   >
                       {isLoading ? mainButtonText : `Get the Pass – R${passPrice}`}
                   </Button>
+                  
+                  {/* Single combined social proof + urgency line */}
+                  <p className="text-white/80 text-xs md:text-sm drop-shadow-md">
+                    {passCount > 0 && (
+                      <span>
+                        Join <span className="font-semibold text-yellow-300">{passCount}+</span> locals saving
+                      </span>
+                    )}
+                    {passCount > 0 && launchData?.isLaunchPricing && launchData.passesRemaining > 0 && (
+                      <span className="mx-2">•</span>
+                    )}
+                    {launchData?.isLaunchPricing && launchData.passesRemaining > 0 && (
+                      <span className="text-yellow-300 font-semibold">
+                        Only {launchData.passesRemaining} left at R{passPrice}
+                      </span>
+                    )}
+                  </p>
                   
                   {/* Subtle scroll down arrow */}
                   <div className="mt-12 opacity-60" style={{ animation: 'gentle-bob 2.5s ease-in-out infinite' }}>

@@ -52,21 +52,21 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userEmail, userPhotoURL, onSi
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
             {/* Avatar */}
-            {userPhotoURL ? (
-              <img 
-                src={userPhotoURL} 
-                alt={userEmail || 'User profile'} 
-                className="w-16 h-16 sm:w-24 sm:h-24 rounded-full object-cover border-3 border-action-primary shadow-lg flex-shrink-0"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-            ) : null}
-            {!userPhotoURL && userEmail && (
-              <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-action-primary flex items-center justify-center text-bg-primary font-display font-extrabold text-2xl sm:text-4xl shadow-lg flex-shrink-0">
-                {userEmail.charAt(0).toUpperCase()}
+            <div className="relative w-16 h-16 sm:w-24 sm:h-24 flex-shrink-0">
+              <div className="absolute inset-0 rounded-full bg-action-primary flex items-center justify-center text-bg-primary font-display font-extrabold text-2xl sm:text-4xl shadow-lg">
+                {userEmail?.charAt(0).toUpperCase()}
               </div>
-            )}
+              {userPhotoURL && (
+                <img 
+                  src={userPhotoURL} 
+                  alt={userEmail || 'User profile'} 
+                  className="absolute inset-0 w-16 h-16 sm:w-24 sm:h-24 rounded-full object-cover border-3 border-action-primary shadow-lg"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              )}
+            </div>
 
             {/* Profile Info */}
             <div className="text-center sm:text-left flex-1 min-w-0">

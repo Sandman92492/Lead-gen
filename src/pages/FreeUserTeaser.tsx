@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPassPrice, getPassFeatures } from '../utils/pricing';
+import TrustBar from '../components/TrustBar';
+import { getPassPrice, getPassFeatures, getPassCount } from '../utils/pricing';
 import { PassFeatures } from '../types';
 
 interface FreUserTeaserProps {
@@ -11,7 +12,8 @@ interface FreUserTeaserProps {
 const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ onSelectPass }) => {
   const navigate = useNavigate();
   const [passPrice, setPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
-  const [_features, setFeatures] = useState<PassFeatures>({
+  const [passCount, setPassCount] = useState(0);
+  const [features, setFeatures] = useState<PassFeatures>({
     description: 'Discover and support Port Alfred\'s best local venues while enjoying great deals and authentic experiences.',
     feature1: 'Discover 70+ local venues and businesses',
     feature2: 'Support independent Port Alfred businesses',
@@ -21,10 +23,14 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ onSelectPass }) => {
 
   useEffect(() => {
     const loadData = async () => {
-      const price = await getPassPrice();
-      const passFeatures = await getPassFeatures();
+      const [price, passFeatures, count] = await Promise.all([
+        getPassPrice(),
+        getPassFeatures(),
+        getPassCount()
+      ]);
       setPassPrice(price);
       setFeatures(passFeatures);
+      setPassCount(count);
     };
     loadData();
   }, []);
@@ -70,10 +76,18 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ onSelectPass }) => {
               >
                 Get My Pass Now (R{passPrice.price}) →
               </button>
+              {passCount > 0 && (
+                <p className="text-white/80 text-sm text-center mt-4">
+                  Join {passCount}+ locals already saving
+                </p>
+              )}
             </div>
           </div>
         </div>
       </section>
+
+      {/* Trust & Proof Strip */}
+      <TrustBar venueCount={features.venueCount} />
 
       {/* Browse All Deals Section */}
       <section className="bg-bg-primary py-6 md:py-16">

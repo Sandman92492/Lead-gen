@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Deal } from '../types';
-import FeaturedDealCard from './FeaturedDealCard';
+import CompactDealCard from './CompactDealCard';
 import './CategoryDealScroller.css';
 
 interface CategoryDealScrollerProps {
@@ -81,17 +81,17 @@ const CategoryDealScroller: React.FC<CategoryDealScrollerProps> = ({
               )}
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
               {deals.map((deal, index) => (
                 <div key={deal.id || deal.name} className="scroll-reveal" style={{ transitionDelay: `${index * 100}ms` }}>
-                  <FeaturedDealCard
+                  <CompactDealCard
                     deal={deal}
                     index={index}
-                    hasPass={hasPass}
                     isRedeemed={redeemedDeals.includes(deal.name)}
+                    hasPass={hasPass}
                     passExpiryDate={passExpiryDate}
-                    onRedeemClick={onRedeemClick}
-                    cardHeight="h-96"
+                    onClick={() => onRedeemClick?.(deal.name)}
+                    isInGrid={true}
                   />
                 </div>
               ))}
@@ -125,14 +125,14 @@ const CategoryDealScroller: React.FC<CategoryDealScrollerProps> = ({
             <div className="flex gap-3 xs:gap-4 pb-4">
               {deals.map((deal, index) => (
                 <div key={deal.id || deal.name} className="flex-shrink-0 w-full" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}>
-                  <FeaturedDealCard
+                  <CompactDealCard
                     deal={deal}
                     index={index}
-                    hasPass={hasPass}
                     isRedeemed={redeemedDeals.includes(deal.name)}
+                    hasPass={hasPass}
                     passExpiryDate={passExpiryDate}
-                    onRedeemClick={onRedeemClick}
-                    cardHeight="h-80"
+                    onClick={() => onRedeemClick?.(deal.name)}
+                    isInGrid={false}
                   />
                 </div>
               ))}
