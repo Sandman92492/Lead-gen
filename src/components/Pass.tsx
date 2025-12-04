@@ -71,6 +71,26 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
                 <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: "url('data:image/svg+xml;utf8,<svg width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\"><filter id=\"noise\"><feTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"4\" seed=\"1\"/></filter><rect width=\"100\" height=\"100\" filter=\"url(%23noise)\" opacity=\"1\"/></svg>')" }} >
                 </div>
 
+                {/* Shine sweep animation */}
+                <div 
+                  className="absolute inset-0 pointer-events-none z-30 overflow-hidden"
+                >
+                  <div 
+                    className="absolute inset-0"
+                    style={{
+                      background: 'linear-gradient(105deg, transparent 0%, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%, transparent 100%)',
+                      animation: 'shine-sweep 0.6s ease-out forwards',
+                      transform: 'translateX(-100%)',
+                    }}
+                  />
+                </div>
+                <style>{`
+                  @keyframes shine-sweep {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(200%); }
+                  }
+                `}</style>
+
 
 
                 {passType === 'annual' && !passIsExpired && (
@@ -104,7 +124,7 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
                 </header>
 
                 <main className="text-center my-auto relative z-10 space-y-3">
-                    <p className="text-brand-red text-xs sm:text-sm font-semibold tracking-widest uppercase">Pass Holder</p>
+                    <p className="text-success text-xs sm:text-sm font-semibold tracking-widest uppercase">Pass Holder</p>
                     <p className="font-display text-3xl sm:text-4xl font-bold break-words text-brand-yellow drop-shadow-md">{name}</p>
                 </main>
 
@@ -112,36 +132,26 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
                      <div className="border-t-2 border-dashed border-brand-yellow/40"></div>
                      <div className="space-y-2 sm:space-y-3 text-center text-sm">
                          <div>
-                             <p className="text-brand-red text-xs font-semibold tracking-wider uppercase">Pass ID</p>
+                             <p className="text-success text-xs font-semibold tracking-wider uppercase">Pass ID</p>
                              <p className="font-mono text-xs text-brand-white/80 mt-0.5">{passId}</p>
                          </div>
                          <div>
-                             <p className="text-brand-red text-xs font-semibold tracking-wider uppercase">Valid Until</p>
+                             <p className="text-success text-xs font-semibold tracking-wider uppercase">Valid Until</p>
                              <p className="font-mono text-xs text-brand-white/80 mt-0.5">{formattedExpiryDate}</p>
                              <p className={`text-xs font-semibold mt-1 ${passIsExpired ? 'text-red-400' : 'text-brand-yellow'}`}>
                                  {expiryStatusMessage}
                              </p>
                          </div>
                      </div>
+                     {/* Simplified footer: clock + verified combined */}
                      <div className="pt-1 sm:pt-2">
-                         <div className="flex items-center justify-center gap-1 sm:gap-2" aria-live="off" title="Live verification indicator">
-                             <div className="w-2 h-2 rounded-full bg-brand-red animate-live-pulse" aria-hidden="true"></div>
-                             <p className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-wider text-brand-yellow">
+                         <div className="flex items-center justify-center gap-2" aria-live="off" title="Live verification indicator">
+                             <div className="w-2.5 h-2.5 rounded-full bg-success animate-live-pulse" aria-hidden="true"></div>
+                             <p className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold tracking-wider text-brand-yellow">
                                  {time.toLocaleTimeString('en-GB')}
                              </p>
-                             <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
-                                 <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                             </svg>
                          </div>
-                         <p className="text-center text-xs text-brand-white/50 mt-1 sm:mt-2">Show this screen to Redeem</p>
-                     </div>
-                     <div className="flex justify-center pt-1 sm:pt-3">
-                         <div className="flex items-center gap-1.5 bg-brand-white/10 backdrop-blur-sm px-2.5 py-1.5 rounded-md border border-brand-yellow/30">
-                             <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-brand-yellow" fill="currentColor" viewBox="0 0 20 20">
-                                 <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                             </svg>
-                             <span className="text-brand-yellow text-xs font-semibold uppercase tracking-wider">Verified</span>
-                         </div>
+                         <p className="text-center text-xs text-brand-white/60 mt-2">Show this screen to redeem</p>
                      </div>
                  </footer>
             </div>

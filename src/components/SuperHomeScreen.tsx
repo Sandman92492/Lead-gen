@@ -98,27 +98,49 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
       <section className="py-8 md:py-12">
         <div className="container-px container mx-auto px-4">
           <div className="max-w-6xl mx-auto w-full flex flex-col items-center">
-            {/* Pass Card - Tappable for Verification */}
+            {/* Pass Card - Premium Wallet Style */}
             <div className="w-full scroll-reveal">
               <button
                 onClick={() => setIsPassModalOpen(true)}
-                className="w-full h-52 bg-action-primary rounded-2xl p-4 flex flex-col justify-between items-center text-white border-2 border-value-highlight shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-value-highlight"
+                className="w-full h-52 rounded-2xl p-5 flex flex-col justify-between text-white shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-value-highlight/50 relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, #0077B6 0%, #00A8E8 50%, #0077B6 100%)',
+                }}
                 aria-label="View your digital pass"
               >
-                <div />
-                <p className="text-value-highlight text-sm font-semibold">TAP TO VIEW PASS</p>
-                <div className="w-3 h-3 rounded-full bg-urgency-high animate-live-pulse" />
-              </button>
+                {/* Subtle texture overlay */}
+                <div className="absolute inset-0 opacity-10" style={{
+                  backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+                }} />
+                
+                {/* Top row: empty left, chip right */}
+                <div className="flex justify-between items-start relative z-10">
+                  <div />
+                  {/* Gold chip icon */}
+                  <div className="w-10 h-7 rounded-md bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-600 shadow-sm flex items-center justify-center">
+                    <div className="w-6 h-4 border border-yellow-700/30 rounded-sm" />
+                  </div>
+                </div>
 
-              {/* Verification Hint */}
-              <p className="text-center text-sm text-text-secondary mt-4 font-semibold">
-                ✓ Valid until{' '}
-                {new Date(pass.expiryDate).toLocaleDateString('en-GB', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric',
-                })}
-              </p>
+                {/* Bottom section: pass info left, tap right */}
+                <div className="flex justify-between items-end relative z-10">
+                  <div className="text-left">
+                    <p className="text-xs uppercase tracking-[0.2em] text-white/70 mb-1">Holiday Pass</p>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-success animate-live-pulse" />
+                      <p className="text-sm text-white/90">
+                        Valid until{' '}
+                        {new Date(pass.expiryDate).toLocaleDateString('en-GB', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-value-highlight text-xs font-semibold uppercase tracking-wide">Tap →</p>
+                </div>
+              </button>
             </div>
           </div>
         </div>
