@@ -292,9 +292,30 @@ export const updateVendor = async (vendorId: string, updates: Partial<Vendor>) =
     }
 };
 
-// Delete vendor
-export const deleteVendor = async (vendorId: string) => {
+// Get count of deals for a vendor (for delete confirmation)
+export const getDealCountByVendor = async (vendorId: string): Promise<number> => {
     try {
+        const q = query(collection(db, 'deals'), where('vendorId', '==', vendorId));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.size;
+    } catch (error: any) {
+        console.error('Error getting deal count:', error);
+        return 0;
+    }
+};
+
+// Delete vendor with cascade delete of associated deals
+export const deleteVendor = async (vendorId: string, cascadeDeleteDeals: boolean = true) => {
+    try {
+        if (cascadeDeleteDeals) {
+            // First, delete all deals associated with this vendor
+            const q = query(collection(db, 'deals'), where('vendorId', '==', vendorId));
+            const querySnapshot = await getDocs(q);
+            const deletePromises = querySnapshot.docs.map(dealDoc => deleteDoc(dealDoc.ref));
+            await Promise.all(deletePromises);
+        }
+        
+        // Then delete the vendor
         await deleteDoc(doc(db, 'vendors', vendorId));
         return { success: true };
     } catch (error: any) {
@@ -531,6 +552,36 @@ export const getAllRedemptions = async (): Promise<RedemptionDocument[]> => {
     } catch (error: any) {
         console.error('Error getting all redemptions:', error);
         return [];
+    }
+};
+
+// Get count of redemptions for a pass (for delete confirmation)
+export const getRedemptionCountByPass = async (passId: string): Promise<number> => {
+    try {
+        const q = query(collection(db, 'redemptions'), where('passId', '==', passId));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.size;
+    } catch (error: any) {
+        console.error('Error getting redemption count:', error);
+        return 0;
+    }
+};
+
+// Delete pass with cascade delete of associated redemptions
+export const deletePass = async (passId: string) => {
+    try {
+        // First, delete all redemptions associated with this pass
+        const q = query(collection(db, 'redemptions'), where('passId', '==', passId));
+        const querySnapshot = await getDocs(q);
+        const deletePromises = querySnapshot.docs.map(redemptionDoc => deleteDoc(redemptionDoc.ref));
+        await Promise.all(deletePromises);
+        
+        // Then delete the pass
+        await deleteDoc(doc(db, 'passes', passId));
+        return { success: true };
+    } catch (error: any) {
+        console.error('Error deleting pass:', error);
+        return { success: false, error: error.message };
     }
 };
 

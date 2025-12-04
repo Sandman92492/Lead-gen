@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createVendor, getAllVendors, createDeal, getAllDeals, updateVendor, updateDeal, deleteVendor, deleteDeal, getAllPasses, getAllRedemptions } from '../services/firestoreService';
+import { createVendor, getAllVendors, createDeal, getAllDeals, updateVendor, updateDeal, deleteVendor, deleteDeal, getAllPasses, getAllRedemptions, getDealCountByVendor, deletePass, getRedemptionCountByPass } from '../services/firestoreService';
 import { deleteField } from 'firebase/firestore';
 import { Vendor, Deal } from '../types';
 import { PassDocument } from '../services/firestoreService';
@@ -7,6 +7,7 @@ import Button from './Button.tsx';
 import ImageCarousel from './ImageCarousel';
 import ContactDropdown from './ContactDropdown';
 import DealReorderPanel from './DealReorderPanel';
+import { getLaunchPricingData } from '../utils/pricing';
 
 // Image preview component
 const ImagePreview: React.FC<{ url?: string; alt: string }> = ({ url, alt }) => {
@@ -176,10 +177,14 @@ const DealCardPreview: React.FC<DealCardPreviewProps> = ({ deal, vendor, onEdit,
 
 const AdminDashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'vendors' | 'deals' | 'analytics'>('vendors');
+    const [activeVendorSection, setActiveVendorSection] = useState<'overview' | 'form' | 'list'>('list');
+    const [activeDealSection, setActiveDealSection] = useState<'overview' | 'reorder' | 'form' | 'list'>('list');
+    const [activeAnalyticsSection, setActiveAnalyticsSection] = useState<'summary' | 'purchases' | 'passes' | 'redemptions'>('summary');
     const [vendors, setVendors] = useState<Vendor[]>([]);
     const [deals, setDeals] = useState<Deal[]>([]);
     const [passes, setPasses] = useState<PassDocument[]>([]);
     const [redemptions, setRedemptions] = useState<any[]>([]);
+    const [configPassCount, setConfigPassCount] = useState<number>(0);
     const [isLoadingVendors, setIsLoadingVendors] = useState(false);
     const [isLoadingDeals, setIsLoadingDeals] = useState(false);
     const [isLoadingAnalytics, setIsLoadingAnalytics] = useState(false);
@@ -219,6 +224,70 @@ const AdminDashboard: React.FC = () => {
     const [dealSuccess, setDealSuccess] = useState('');
     const [editingDealId, setEditingDealId] = useState<string | null>(null);
 
+    // Search/filter state
+    const [vendorSearch, setVendorSearch] = useState('');
+    const [dealSearch, setDealSearch] = useState('');
+
+    // CSV Export functions
+    const exportPassesToCSV = () => {
+        const headers = ['Pass ID', 'Name', 'Email', 'Type', 'Status', 'Price (R)', 'Created', 'Expiry'];
+        const rows = passes.map(p => [
+            p.passId,
+            p.passHolderName,
+            p.email,
+            p.passType,
+            p.paymentStatus === 'completed' ? 'Paid' : p.passStatus === 'free' ? 'Free' : 'Pending',
+            p.purchasePrice || 0,
+            new Date(p.createdAt).toLocaleDateString(),
+            new Date(p.expiryDate).toLocaleDateString(),
+        ]);
+        downloadCSV([headers, ...rows], 'passes-export.csv');
+    };
+
+    const exportRedemptionsToCSV = () => {
+        const passIds = new Set(passes.map(p => p.passId));
+        const headers = ['Pass ID', 'Deal Name', 'Vendor', 'Date', 'Status'];
+        const rows = redemptions.map(r => {
+            const vendor = vendors.find(v => v.vendorId === r.vendorId);
+            const isOrphan = !passIds.has(r.passId);
+            return [
+                r.passId,
+                r.dealName,
+                vendor?.name || 'Unknown',
+                new Date(r.redeemedAt).toLocaleDateString(),
+                isOrphan ? 'Orphaned' : 'Valid',
+            ];
+        });
+        downloadCSV([headers, ...rows], 'redemptions-export.csv');
+    };
+
+    const downloadCSV = (data: (string | number)[][], filename: string) => {
+        const csvContent = data.map(row => 
+            row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+        ).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(link.href);
+    };
+
+    // Filtered lists
+    const filteredVendors = vendors.filter(v => 
+        v.name.toLowerCase().includes(vendorSearch.toLowerCase()) ||
+        v.email.toLowerCase().includes(vendorSearch.toLowerCase()) ||
+        v.city.toLowerCase().includes(vendorSearch.toLowerCase())
+    );
+    const filteredDeals = deals.filter(d => {
+        const vendor = vendors.find(v => v.vendorId === d.vendorId);
+        const searchLower = dealSearch.toLowerCase();
+        return d.name.toLowerCase().includes(searchLower) ||
+            d.offer.toLowerCase().includes(searchLower) ||
+            (d.city && d.city.toLowerCase().includes(searchLower)) ||
+            (vendor && vendor.name.toLowerCase().includes(searchLower));
+    });
+
     // Load vendors and deals on mount
     useEffect(() => {
         loadVendors();
@@ -253,10 +322,14 @@ const AdminDashboard: React.FC = () => {
     const loadAnalytics = async () => {
         setIsLoadingAnalytics(true);
         try {
-            const passesData = await getAllPasses();
-            const redemptionsData = await getAllRedemptions();
+            const [passesData, redemptionsData, pricingData] = await Promise.all([
+                getAllPasses(),
+                getAllRedemptions(),
+                getLaunchPricingData(),
+            ]);
             setPasses(passesData);
             setRedemptions(redemptionsData);
+            setConfigPassCount(pricingData.passCount);
         } catch (error) {
             console.error('Error loading analytics:', error);
         } finally {
@@ -398,15 +471,25 @@ const AdminDashboard: React.FC = () => {
     };
 
     const handleDeleteVendor = async (vendorId: string, vendorName: string) => {
-        if (!window.confirm(`Delete vendor "${vendorName}"? This cannot be undone.`)) {
+        // Get count of associated deals for confirmation message
+        const dealCount = await getDealCountByVendor(vendorId);
+        const confirmMessage = dealCount > 0
+            ? `Delete vendor "${vendorName}"?\n\n⚠️ This will also delete ${dealCount} associated deal${dealCount !== 1 ? 's' : ''}.\n\nThis cannot be undone.`
+            : `Delete vendor "${vendorName}"? This cannot be undone.`;
+        
+        if (!window.confirm(confirmMessage)) {
             return;
         }
 
         try {
             const result = await deleteVendor(vendorId);
             if (result.success) {
-                setVendorSuccess(`Vendor "${vendorName}" deleted successfully!`);
+                const successMsg = dealCount > 0
+                    ? `Vendor "${vendorName}" and ${dealCount} deal${dealCount !== 1 ? 's' : ''} deleted successfully!`
+                    : `Vendor "${vendorName}" deleted successfully!`;
+                setVendorSuccess(successMsg);
                 loadVendors();
+                loadDeals(); // Refresh deals list since we may have deleted some
             } else {
                 setVendorError(result.error || 'Failed to delete vendor');
             }
@@ -578,303 +661,428 @@ const AdminDashboard: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-bg-primary p-4 sm:p-6">
-            <div className="max-w-4xl mx-auto">
+        <div className="min-h-screen bg-bg-primary p-3 sm:p-4 lg:p-6">
+            <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-4xl font-display font-black text-action-primary mb-2">
+                <div className="mb-6 lg:mb-8">
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-black text-action-primary mb-1">
                         Admin Dashboard
                     </h1>
-                    <p className="text-text-secondary">Manage vendors and deals</p>
+                    <p className="text-sm text-text-secondary">Manage vendors, deals & analytics</p>
                 </div>
 
-                {/* Tabs */}
-                <div className="flex gap-4 mb-6 border-b border-border-subtle">
+                {/* Tabs - Scrollable on mobile */}
+                <div className="flex gap-1 sm:gap-4 mb-4 lg:mb-6 border-b border-border-subtle overflow-x-auto pb-px -mx-3 px-3 sm:mx-0 sm:px-0">
                     <button
                         onClick={() => setActiveTab('vendors')}
-                        className={`px-4 py-2 font-medium transition-colors ${activeTab === 'vendors'
+                        className={`px-3 sm:px-4 py-2 font-medium transition-colors whitespace-nowrap text-sm sm:text-base ${activeTab === 'vendors'
                             ? 'text-action-primary border-b-2 border-action-primary'
                             : 'text-text-secondary hover:text-text-primary'
                             }`}
                     >
-                        Vendors
+                        🏪 Vendors
                     </button>
                     <button
                         onClick={() => setActiveTab('deals')}
-                        className={`px-4 py-2 font-medium transition-colors ${activeTab === 'deals'
+                        className={`px-3 sm:px-4 py-2 font-medium transition-colors whitespace-nowrap text-sm sm:text-base ${activeTab === 'deals'
                             ? 'text-action-primary border-b-2 border-action-primary'
                             : 'text-text-secondary hover:text-text-primary'
                             }`}
                     >
-                        Deals
+                        🎁 Deals
                     </button>
                     <button
                         onClick={() => setActiveTab('analytics')}
-                        className={`px-4 py-2 font-medium transition-colors ${activeTab === 'analytics'
+                        className={`px-3 sm:px-4 py-2 font-medium transition-colors whitespace-nowrap text-sm sm:text-base ${activeTab === 'analytics'
                             ? 'text-action-primary border-b-2 border-action-primary'
                             : 'text-text-secondary hover:text-text-primary'
                             }`}
                     >
-                        Analytics
+                        📊 Analytics
                     </button>
                 </div>
 
                 {/* Vendors Tab */}
                 {activeTab === 'vendors' && (
-                    <div className="grid gap-8 lg:grid-cols-2">
-                        {/* Vendor Form - Sticky on desktop */}
-                        <div className="lg:sticky lg:top-24 lg:self-start">
-                            <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                <div className="flex items-center justify-between mb-6">
-                                    <div>
-                                         <h2 className="text-xl lg:text-lg font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                             🏪 {editingVendorId ? 'Edit' : 'Add'}
-                                         </h2>
-                                         <p className="text-xs lg:text-xs text-text-secondary mt-1">Vendor details</p>
-                                     </div>
-                                    {editingVendorId && (
-                                        <button
-                                            onClick={cancelEditVendor}
-                                            className="text-xs px-2 py-1 bg-border-subtle text-text-secondary hover:text-text-primary hover:bg-border-subtle/50 rounded-lg transition-colors"
-                                        >
-                                            ✕
-                                        </button>
-                                    )}
+                    <div className="flex flex-col lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6 gap-4">
+                        {/* Vendors sidebar (desktop) */}
+                        <aside className="hidden lg:block lg:sticky lg:top-4 self-start bg-bg-card rounded-xl border border-border-subtle p-3 text-sm space-y-1">
+                            <button
+                                onClick={() => setActiveVendorSection('overview')}
+                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                                    activeVendorSection === 'overview'
+                                        ? 'bg-action-primary text-white'
+                                        : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
+                                }`}
+                            >
+                                Overview
+                            </button>
+                            <button
+                                onClick={() => setActiveVendorSection('form')}
+                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                                    activeVendorSection === 'form'
+                                        ? 'bg-action-primary text-white'
+                                        : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
+                                }`}
+                            >
+                                Add / Edit Vendor
+                            </button>
+                            <button
+                                onClick={() => setActiveVendorSection('list')}
+                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                                    activeVendorSection === 'list'
+                                        ? 'bg-action-primary text-white'
+                                        : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
+                                }`}
+                            >
+                                Vendor List
+                            </button>
+                        </aside>
+
+                        <div className="flex flex-col gap-4 lg:gap-6">
+                            {/* Mobile section switcher */}
+                            <div className="lg:hidden sticky top-0 z-10 bg-bg-primary -mx-3 px-3 pt-1 pb-2">
+                                <div className="flex gap-2 overflow-x-auto text-xs">
+                                    <button
+                                        onClick={() => setActiveVendorSection('list')}
+                                        className={`px-3 py-1 rounded-full border text-xs whitespace-nowrap ${
+                                            activeVendorSection === 'list'
+                                                ? 'bg-action-primary text-white border-action-primary'
+                                                : 'bg-bg-card text-text-secondary border-border-subtle'
+                                        }`}
+                                    >
+                                        List
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveVendorSection('form')}
+                                        className={`px-3 py-1 rounded-full border text-xs whitespace-nowrap ${
+                                            activeVendorSection === 'form'
+                                                ? 'bg-action-primary text-white border-action-primary'
+                                                : 'bg-bg-card text-text-secondary border-border-subtle'
+                                        }`}
+                                    >
+                                        Form
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveVendorSection('overview')}
+                                        className={`px-3 py-1 rounded-full border text-xs whitespace-nowrap ${
+                                            activeVendorSection === 'overview'
+                                                ? 'bg-action-primary text-white border-action-primary'
+                                                : 'bg-bg-card text-text-secondary border-border-subtle'
+                                        }`}
+                                    >
+                                        Overview
+                                    </button>
                                 </div>
-                            <form onSubmit={handleAddVendor} className="space-y-0">
-                                <FormSection icon="📝" title="Basic Info" description="Name & category">
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-2">
-                                            Venue Name <span className="text-urgency-high">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={vendorForm.name}
-                                            onChange={(e) => setVendorForm({ ...vendorForm, name: e.target.value })}
-                                            placeholder="e.g., Brew Pub"
-                                            className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <label className="block text-xs font-medium text-action-primary mb-1">
-                                                Category
-                                            </label>
-                                            <select
-                                                value={vendorForm.category}
-                                                onChange={(e) =>
-                                                    setVendorForm({
-                                                        ...vendorForm,
-                                                        category: e.target.value as 'restaurant' | 'activity' | 'shopping',
-                                                    })
-                                                }
-                                                className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                            >
-                                                <option value="restaurant">🍽️ Restaurant</option>
-                                                <option value="activity">🎯 Activity</option>
-                                                <option value="shopping">🛍️ Shopping</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-medium text-action-primary mb-1">
-                                                City
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={vendorForm.city}
-                                                onChange={(e) => setVendorForm({ ...vendorForm, city: e.target.value })}
-                                                placeholder="Port Alfred"
-                                                className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Address
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={vendorForm.address}
-                                            onChange={(e) => setVendorForm({ ...vendorForm, address: e.target.value })}
-                                            placeholder="123 Main Street"
-                                            className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                    </div>
-                                </FormSection>
-
-                                <FormSection icon="🔐" title="Auth" description="Email & PIN">
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Email <span className="text-urgency-high">*</span>
-                                        </label>
-                                        <input
-                                            type="email"
-                                            value={vendorForm.email}
-                                            onChange={(e) => setVendorForm({ ...vendorForm, email: e.target.value })}
-                                            placeholder="contact@vendor.com"
-                                            className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            PIN (4 digits) <span className="text-urgency-high">*</span>
-                                        </label>
-                                        <div className="flex items-center gap-2">
-                                            <input
-                                                type="text"
-                                                value={vendorForm.pin}
-                                                onChange={(e) => {
-                                                    const val = e.target.value.replace(/\D/g, '').slice(0, 4);
-                                                    setVendorForm({ ...vendorForm, pin: val });
-                                                }}
-                                                placeholder="1234"
-                                                maxLength={4}
-                                                className="flex-1 px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary font-mono text-center tracking-widest"
-                                            />
-                                            {vendorForm.pin && vendorForm.pin.length === 4 && (
-                                                <span className="text-success font-bold">✓</span>
-                                            )}
-                                        </div>
-                                        <p className="text-xs text-text-secondary mt-1">Staff verification</p>
-                                    </div>
-                                </FormSection>
-
-                                <FormSection icon="📞" title="Contact" description="Optional details">
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Phone
-                                        </label>
-                                        <input
-                                            type="tel"
-                                            value={vendorForm.phone}
-                                            onChange={(e) => setVendorForm({ ...vendorForm, phone: e.target.value })}
-                                            placeholder="+27 123 456 789"
-                                            className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Maps Link
-                                        </label>
-                                        <input
-                                            type="url"
-                                            value={vendorForm.mapsUrl}
-                                            onChange={(e) => setVendorForm({ ...vendorForm, mapsUrl: e.target.value })}
-                                            placeholder="https://maps.google.com/?q=Venue"
-                                            className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                    </div>
-                                </FormSection>
-
-                                <FormSection icon="🖼️" title="Images" description="Logo & photos">
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Logo
-                                        </label>
-                                        <input
-                                            type="url"
-                                            value={vendorForm.imageUrl}
-                                            onChange={(e) => setVendorForm({ ...vendorForm, imageUrl: e.target.value })}
-                                            placeholder="https://example.com/logo.jpg"
-                                            className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                        <ImagePreview url={vendorForm.imageUrl} alt={vendorForm.name || 'Vendor logo'} />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Photos (URLs)
-                                        </label>
-                                        <textarea
-                                            value={vendorForm.images}
-                                            onChange={(e) => setVendorForm({ ...vendorForm, images: e.target.value })}
-                                            placeholder="https://example.com/photo1.jpg"
-                                            rows={2}
-                                            className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                    </div>
-                                </FormSection>
-
-                                {vendorError && (
-                                    <div className="mt-3 bg-urgency-high/10 border border-urgency-high rounded-lg p-2">
-                                        <p className="text-xs text-urgency-high font-medium">⚠️ {vendorError}</p>
-                                    </div>
-                                )}
-
-                                {vendorSuccess && (
-                                    <div className="mt-3 bg-success/10 border border-success rounded-lg p-2">
-                                        <p className="text-xs text-success font-medium">✓ {vendorSuccess}</p>
-                                    </div>
-                                )}
-
-                                <Button variant="primary" type="submit" className="w-full mt-4 text-sm">
-                                    {editingVendorId ? '💾 Update' : '➕ Add'}
-                                </Button>
-                            </form>
                             </div>
-                        </div>
 
-                        {/* Vendors List */}
-                        <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                            <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-                                 📋 Vendors <span className="text-sm font-normal text-text-secondary bg-border-subtle px-2 py-0.5 rounded-full">{vendors.length}</span>
-                             </h2>
-                            {isLoadingVendors ? (
-                                <p className="text-sm text-text-secondary">Loading...</p>
-                            ) : vendors.length === 0 ? (
-                                <div className="py-8 text-center">
-                                    <p className="text-sm text-text-secondary">No vendors</p>
+                            {/* Vendors sections */}
+                            {activeVendorSection === 'overview' && (
+                                <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                    <h2 className="text-base lg:text-lg font-display font-bold text-action-primary mb-3 lg:mb-4">
+                                        🏪 Vendor Overview
+                                    </h2>
+                                    <p className="text-xs text-text-secondary mb-2">
+                                        Quick snapshot of your vendors.
+                                    </p>
+                                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                                        <div className="bg-bg-primary rounded-lg border border-border-subtle p-3">
+                                            <p className="text-[11px] text-text-secondary">Total Vendors</p>
+                                            <p className="text-lg font-bold text-text-primary mt-1">{vendors.length}</p>
+                                        </div>
+                                        <div className="bg-bg-primary rounded-lg border border-border-subtle p-3">
+                                            <p className="text-[11px] text-text-secondary">With Images</p>
+                                            <p className="text-lg font-bold text-text-primary mt-1">
+                                                {vendors.filter(v => (v.imageUrl && v.imageUrl.trim()) || (v.images && v.images.length > 0)).length}
+                                            </p>
+                                        </div>
+                                        <div className="bg-bg-primary rounded-lg border border-border-subtle p-3">
+                                            <p className="text-[11px] text-text-secondary">Cities</p>
+                                            <p className="text-lg font-bold text-text-primary mt-1">
+                                                {Array.from(new Set(vendors.map(v => v.city))).filter(Boolean).length}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
-                            ) : (
-                                <div className="grid gap-3 auto-rows-max">
-                                    {vendors.map((vendor) => (
-                                        <div
-                                            key={vendor.vendorId}
-                                            className="bg-bg-primary rounded-lg p-3 border border-border-subtle hover:border-action-primary/50 hover:bg-bg-primary/80 transition-all group"
-                                        >
-                                            <div className="flex items-start justify-between gap-2">
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-1 flex-wrap mb-1">
-                                                        <p className="font-semibold text-sm text-text-primary">{vendor.name}</p>
-                                                        <span className="text-xs px-1.5 py-0.5 rounded font-medium bg-action-primary/20 text-action-primary">
-                                                            {vendor.category === 'restaurant' && '🍽️'}
-                                                            {vendor.category === 'activity' && '🎯'}
-                                                            {vendor.category === 'shopping' && '🛍️'}
-                                                        </span>
-                                                    </div>
-                                                    <p className="text-xs text-text-secondary truncate">{vendor.email}</p>
-                                                    <p className="text-xs text-value-highlight font-medium">📍 {vendor.city}</p>
+                            )}
+
+                            {activeVendorSection === 'form' && (
+                                <div className="lg:sticky lg:top-4 lg:self-start bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                    <div className="flex items-center justify-between mb-4 lg:mb-6">
+                                        <div>
+                                            <h2 className="text-lg font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                                🏪 {editingVendorId ? 'Edit Vendor' : 'Add Vendor'}
+                                            </h2>
+                                        </div>
+                                        {editingVendorId && (
+                                            <button
+                                                onClick={cancelEditVendor}
+                                                className="text-xs px-2 py-1 bg-border-subtle text-text-secondary hover:text-text-primary hover:bg-border-subtle/50 rounded-lg transition-colors"
+                                            >
+                                                ✕ Cancel
+                                            </button>
+                                        )}
+                                    </div>
+                                    <form onSubmit={handleAddVendor} className="space-y-0">
+                                        <FormSection icon="📝" title="Basic Info" description="Name & category">
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-2">
+                                                    Venue Name <span className="text-urgency-high">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={vendorForm.name}
+                                                    onChange={(e) => setVendorForm({ ...vendorForm, name: e.target.value })}
+                                                    placeholder="e.g., Brew Pub"
+                                                    className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <div>
+                                                    <label className="block text-xs font-medium text-action-primary mb-1">
+                                                        Category
+                                                    </label>
+                                                    <select
+                                                        value={vendorForm.category}
+                                                        onChange={(e) =>
+                                                            setVendorForm({
+                                                                ...vendorForm,
+                                                                category: e.target.value as 'restaurant' | 'activity' | 'shopping',
+                                                            })
+                                                        }
+                                                        className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                    >
+                                                        <option value="restaurant">🍽️ Restaurant</option>
+                                                        <option value="activity">🎯 Activity</option>
+                                                        <option value="shopping">🛍️ Shopping</option>
+                                                    </select>
                                                 </div>
-                                                <div className="flex gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <button
-                                                        onClick={() => {
-                                                            navigator.clipboard.writeText(vendor.pin);
-                                                        }}
-                                                        className="text-xs font-mono font-bold text-success bg-success/20 hover:bg-success/30 px-1.5 py-0.5 rounded whitespace-nowrap transition-colors"
-                                                        title="Copy PIN"
-                                                    >
-                                                        🔑 {vendor.pin}
-                                                    </button>
-                                                    <button
-                                                        onClick={() => startEditVendor(vendor)}
-                                                        className="text-xs bg-action-primary/20 text-action-primary hover:bg-action-primary/40 px-1.5 py-0.5 rounded transition-colors font-medium"
-                                                    >
-                                                        ✏️
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDeleteVendor(vendor.vendorId, vendor.name)}
-                                                        className="text-xs bg-urgency-high/20 text-urgency-high hover:bg-urgency-high/40 px-1.5 py-0.5 rounded transition-colors font-medium"
-                                                    >
-                                                        🗑️
-                                                    </button>
+                                                <div>
+                                                    <label className="block text-xs font-medium text-action-primary mb-1">
+                                                        City
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        value={vendorForm.city}
+                                                        onChange={(e) => setVendorForm({ ...vendorForm, city: e.target.value })}
+                                                        placeholder="Port Alfred"
+                                                        className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                    />
                                                 </div>
                                             </div>
+
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Address
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={vendorForm.address}
+                                                    onChange={(e) => setVendorForm({ ...vendorForm, address: e.target.value })}
+                                                    placeholder="123 Main Street"
+                                                    className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                            </div>
+                                        </FormSection>
+
+                                        <FormSection icon="🔐" title="Auth" description="Email & PIN">
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Email <span className="text-urgency-high">*</span>
+                                                </label>
+                                                <input
+                                                    type="email"
+                                                    value={vendorForm.email}
+                                                    onChange={(e) => setVendorForm({ ...vendorForm, email: e.target.value })}
+                                                    placeholder="contact@vendor.com"
+                                                    className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    PIN (4 digits) <span className="text-urgency-high">*</span>
+                                                </label>
+                                                <div className="flex items-center gap-2">
+                                                    <input
+                                                        type="text"
+                                                        value={vendorForm.pin}
+                                                        onChange={(e) => {
+                                                            const val = e.target.value.replace(/\D/g, '').slice(0, 4);
+                                                            setVendorForm({ ...vendorForm, pin: val });
+                                                        }}
+                                                        placeholder="1234"
+                                                        maxLength={4}
+                                                        className="flex-1 px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary font-mono text-center tracking-widest"
+                                                    />
+                                                    {vendorForm.pin && vendorForm.pin.length === 4 && (
+                                                        <span className="text-success font-bold">✓</span>
+                                                    )}
+                                                </div>
+                                                <p className="text-xs text-text-secondary mt-1">Staff verification</p>
+                                            </div>
+                                        </FormSection>
+
+                                        <FormSection icon="📞" title="Contact" description="Optional details">
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Phone
+                                                </label>
+                                                <input
+                                                    type="tel"
+                                                    value={vendorForm.phone}
+                                                    onChange={(e) => setVendorForm({ ...vendorForm, phone: e.target.value })}
+                                                    placeholder="+27 123 456 789"
+                                                    className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Maps Link
+                                                </label>
+                                                <input
+                                                    type="url"
+                                                    value={vendorForm.mapsUrl}
+                                                    onChange={(e) => setVendorForm({ ...vendorForm, mapsUrl: e.target.value })}
+                                                    placeholder="https://maps.google.com/?q=Venue"
+                                                    className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                            </div>
+                                        </FormSection>
+
+                                        <FormSection icon="🖼️" title="Images" description="Logo & photos">
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Logo
+                                                </label>
+                                                <input
+                                                    type="url"
+                                                    value={vendorForm.imageUrl}
+                                                    onChange={(e) => setVendorForm({ ...vendorForm, imageUrl: e.target.value })}
+                                                    placeholder="https://example.com/logo.jpg"
+                                                    className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                                <ImagePreview url={vendorForm.imageUrl} alt={vendorForm.name || 'Vendor logo'} />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Photos (URLs)
+                                                </label>
+                                                <textarea
+                                                    value={vendorForm.images}
+                                                    onChange={(e) => setVendorForm({ ...vendorForm, images: e.target.value })}
+                                                    placeholder="https://example.com/photo1.jpg"
+                                                    rows={2}
+                                                    className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                            </div>
+                                        </FormSection>
+
+                                        {vendorError && (
+                                            <div className="mt-3 bg-urgency-high/10 border border-urgency-high rounded-lg p-2">
+                                                <p className="text-xs text-urgency-high font-medium">⚠️ {vendorError}</p>
+                                            </div>
+                                        )}
+
+                                        {vendorSuccess && (
+                                            <div className="mt-3 bg-success/10 border border-success rounded-lg p-2">
+                                                <p className="text-xs text-success font-medium">✓ {vendorSuccess}</p>
+                                            </div>
+                                        )}
+
+                                        <Button variant="primary" type="submit" className="w-full mt-4 text-sm">
+                                            {editingVendorId ? '💾 Update' : '➕ Add'}
+                                        </Button>
+                                    </form>
+                                </div>
+                            )}
+
+                            {activeVendorSection === 'list' && (
+                                <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                    <div className="flex items-center justify-between gap-2 mb-3">
+                                        <h2 className="text-lg font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                            📋 Vendors{' '}
+                                            <span className="text-xs font-normal text-text-secondary bg-border-subtle px-2 py-0.5 rounded-full">
+                                                {filteredVendors.length}/{vendors.length}
+                                            </span>
+                                        </h2>
+                                        <button
+                                            onClick={() => loadVendors()}
+                                            disabled={isLoadingVendors}
+                                            className="px-2 py-1 text-xs font-medium bg-action-primary/20 text-action-primary hover:bg-action-primary/30 rounded-lg transition-colors disabled:opacity-50"
+                                        >
+                                            {isLoadingVendors ? '⏳' : '🔄'}
+                                        </button>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        value={vendorSearch}
+                                        onChange={(e) => setVendorSearch(e.target.value)}
+                                        placeholder="🔍 Search vendors..."
+                                        className="w-full px-3 py-2 mb-3 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                    />
+                                    {isLoadingVendors ? (
+                                        <div className="py-8 text-center">
+                                            <p className="text-sm text-text-secondary">Loading...</p>
                                         </div>
-                                    ))}
+                                    ) : filteredVendors.length === 0 ? (
+                                        <div className="py-8 text-center">
+                                            <p className="text-sm text-text-secondary">
+                                                {vendorSearch ? 'No matching vendors' : 'No vendors yet'}
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-2 max-h-[50vh] lg:max-h-[70vh] overflow-y-auto">
+                                            {filteredVendors.map((vendor) => (
+                                                <div
+                                                    key={vendor.vendorId}
+                                                    className="bg-bg-primary rounded-lg p-3 border border-border-subtle hover:border-action-primary/50 hover:bg-bg-primary/80 transition-all group"
+                                                >
+                                                    <div className="flex items-start justify-between gap-2">
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="flex items-center gap-1 flex-wrap mb-1">
+                                                                <p className="font-semibold text-sm text-text-primary">{vendor.name}</p>
+                                                                <span className="text-xs px-1.5 py-0.5 rounded font-medium bg-action-primary/20 text-action-primary">
+                                                                    {vendor.category === 'restaurant' && '🍽️'}
+                                                                    {vendor.category === 'activity' && '🎯'}
+                                                                    {vendor.category === 'shopping' && '🛍️'}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-xs text-text-secondary truncate">{vendor.email}</p>
+                                                            <p className="text-xs text-value-highlight font-medium">📍 {vendor.city}</p>
+                                                        </div>
+                                                        {/* Actions - always visible on mobile, hover on desktop */}
+                                                        <div className="flex gap-1 flex-shrink-0 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                                                            <button
+                                                                onClick={() => {
+                                                                    navigator.clipboard.writeText(vendor.pin);
+                                                                }}
+                                                                className="text-xs font-mono font-bold text-success bg-success/20 hover:bg-success/30 px-1.5 py-1 rounded whitespace-nowrap transition-colors"
+                                                                title="Copy PIN"
+                                                            >
+                                                                🔑 {vendor.pin}
+                                                            </button>
+                                                            <button
+                                                                onClick={() => startEditVendor(vendor)}
+                                                                className="text-xs bg-action-primary/20 text-action-primary hover:bg-action-primary/40 px-2 py-1 rounded transition-colors font-medium"
+                                                            >
+                                                                ✏️
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteVendor(vendor.vendorId, vendor.name)}
+                                                                className="text-xs bg-urgency-high/20 text-urgency-high hover:bg-urgency-high/40 px-2 py-1 rounded transition-colors font-medium"
+                                                            >
+                                                                🗑️
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -883,434 +1091,966 @@ const AdminDashboard: React.FC = () => {
 
                 {/* Deals Tab */}
                 {activeTab === 'deals' && (
-                    <div className="space-y-8">
-                        {/* Deal Reorder Panel - Full Width */}
-                        <DealReorderPanel deals={deals} onReorderComplete={loadDeals} />
+                    <div className="flex flex-col lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6 gap-4">
+                        {/* Deals sidebar (desktop) */}
+                        <aside className="hidden lg:block lg:sticky lg:top-4 self-start bg-bg-card rounded-xl border border-border-subtle p-3 text-sm space-y-1">
+                            <button
+                                onClick={() => setActiveDealSection('overview')}
+                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                                    activeDealSection === 'overview'
+                                        ? 'bg-action-primary text-white'
+                                        : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
+                                }`}
+                            >
+                                Overview
+                            </button>
+                            <button
+                                onClick={() => setActiveDealSection('reorder')}
+                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                                    activeDealSection === 'reorder'
+                                        ? 'bg-action-primary text-white'
+                                        : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
+                                }`}
+                            >
+                                Reorder / Featured
+                            </button>
+                            <button
+                                onClick={() => setActiveDealSection('form')}
+                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                                    activeDealSection === 'form'
+                                        ? 'bg-action-primary text-white'
+                                        : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
+                                }`}
+                            >
+                                Add / Edit Deal
+                            </button>
+                            <button
+                                onClick={() => setActiveDealSection('list')}
+                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                                    activeDealSection === 'list'
+                                        ? 'bg-action-primary text-white'
+                                        : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
+                                }`}
+                            >
+                                Deals List
+                            </button>
+                        </aside>
 
-                        <div className="grid gap-8 lg:grid-cols-2">
-                        {/* Deal Form - Sticky on desktop */}
-                        <div className="lg:sticky lg:top-24 lg:self-start">
-                            <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                <div className="flex items-center justify-between mb-6">
-                                    <div>
-                                         <h2 className="text-xl lg:text-lg font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                             🎁 {editingDealId ? 'Edit' : 'Add'}
-                                         </h2>
-                                         <p className="text-xs lg:text-xs text-text-secondary mt-1">Deal details</p>
-                                     </div>
-                                    {editingDealId && (
-                                        <button
-                                            onClick={cancelEditDeal}
-                                            className="text-xs px-2 py-1 bg-border-subtle text-text-secondary hover:text-text-primary hover:bg-border-subtle/50 rounded-lg transition-colors"
-                                        >
-                                            ✕
-                                        </button>
-                                    )}
+                        <div className="flex flex-col gap-4 lg:gap-6">
+                            {/* Mobile section switcher */}
+                            <div className="lg:hidden sticky top-0 z-10 bg-bg-primary -mx-3 px-3 pt-1 pb-2">
+                                <div className="flex gap-2 overflow-x-auto text-xs">
+                                    <button
+                                        onClick={() => setActiveDealSection('list')}
+                                        className={`px-3 py-1 rounded-full border text-xs whitespace-nowrap ${
+                                            activeDealSection === 'list'
+                                                ? 'bg-action-primary text-white border-action-primary'
+                                                : 'bg-bg-card text-text-secondary border-border-subtle'
+                                        }`}
+                                    >
+                                        List
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveDealSection('form')}
+                                        className={`px-3 py-1 rounded-full border text-xs whitespace-nowrap ${
+                                            activeDealSection === 'form'
+                                                ? 'bg-action-primary text-white border-action-primary'
+                                                : 'bg-bg-card text-text-secondary border-border-subtle'
+                                        }`}
+                                    >
+                                        Form
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveDealSection('reorder')}
+                                        className={`px-3 py-1 rounded-full border text-xs whitespace-nowrap ${
+                                            activeDealSection === 'reorder'
+                                                ? 'bg-action-primary text-white border-action-primary'
+                                                : 'bg-bg-card text-text-secondary border-border-subtle'
+                                        }`}
+                                    >
+                                        Reorder
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveDealSection('overview')}
+                                        className={`px-3 py-1 rounded-full border text-xs whitespace-nowrap ${
+                                            activeDealSection === 'overview'
+                                                ? 'bg-action-primary text-white border-action-primary'
+                                                : 'bg-bg-card text-text-secondary border-border-subtle'
+                                        }`}
+                                    >
+                                        Overview
+                                    </button>
                                 </div>
-                            <form onSubmit={handleAddDeal} className="space-y-0">
-                                <FormSection icon="🏪" title="Offer" description="Vendor & description">
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Vendor <span className="text-urgency-high">*</span>
-                                        </label>
-                                        <select
-                                            value={dealForm.vendorId}
-                                            onChange={(e) => setDealForm({ ...dealForm, vendorId: e.target.value })}
-                                            className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        >
-                                            <option value="">Select vendor...</option>
-                                            {vendors.map((vendor) => (
-                                                <option key={vendor.vendorId} value={vendor.vendorId}>
-                                                    {vendor.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Name <span className="text-urgency-high">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={dealForm.name}
-                                            onChange={(e) => setDealForm({ ...dealForm, name: e.target.value })}
-                                            placeholder="e.g., 2-for-1 Meals"
-                                            className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Offer <span className="text-urgency-high">*</span>
-                                        </label>
-                                        <textarea
-                                            value={dealForm.offer}
-                                            onChange={(e) => setDealForm({ ...dealForm, offer: e.target.value })}
-                                            placeholder="2-for-1 on Main Meals"
-                                            rows={2}
-                                            className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Marketing Copy
-                                        </label>
-                                        <textarea
-                                            value={dealForm.description}
-                                            onChange={(e) => setDealForm({ ...dealForm, description: e.target.value })}
-                                            placeholder="Get amazing meals at unbeatable prices..."
-                                            rows={2}
-                                            className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                    </div>
-                                </FormSection>
-
-                                <FormSection icon="💰" title="Details" description="Value & location">
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <label className="block text-xs font-medium text-action-primary mb-1">
-                                                Savings (R)
-                                            </label>
-                                            <input
-                                                type="number"
-                                                value={dealForm.savings}
-                                                onChange={(e) => setDealForm({ ...dealForm, savings: e.target.value })}
-                                                placeholder="150"
-                                                className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-medium text-action-primary mb-1">
-                                                Category
-                                            </label>
-                                            <select
-                                                value={dealForm.category}
-                                                onChange={(e) =>
-                                                    setDealForm({
-                                                        ...dealForm,
-                                                        category: e.target.value as 'restaurant' | 'activity' | 'shopping',
-                                                    })
-                                                }
-                                                className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                            >
-                                                <option value="restaurant">🍽️</option>
-                                                <option value="activity">🎯</option>
-                                                <option value="shopping">🛍️</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            City
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={dealForm.city}
-                                            onChange={(e) => setDealForm({ ...dealForm, city: e.target.value })}
-                                            placeholder="Port Alfred"
-                                            className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Terms
-                                        </label>
-                                        <textarea
-                                            value={dealForm.terms}
-                                            onChange={(e) => setDealForm({ ...dealForm, terms: e.target.value })}
-                                            placeholder="Valid Mon-Thu..."
-                                            rows={2}
-                                            className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                    </div>
-                                </FormSection>
-
-                                <FormSection icon="🖼️" title="Images" description="Main & carousel">
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Main Image
-                                        </label>
-                                        <input
-                                            type="url"
-                                            value={dealForm.imageUrl}
-                                            onChange={(e) => setDealForm({ ...dealForm, imageUrl: e.target.value })}
-                                            placeholder="https://example.com/deal.jpg"
-                                            className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                        <ImagePreview url={dealForm.imageUrl} alt={dealForm.name || 'Deal image'} />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-medium text-action-primary mb-1">
-                                            Carousel (URLs)
-                                        </label>
-                                        <textarea
-                                            value={dealForm.images}
-                                            onChange={(e) => setDealForm({ ...dealForm, images: e.target.value })}
-                                            placeholder="https://example.com/photo.jpg"
-                                            rows={2}
-                                            className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
-                                        />
-                                    </div>
-                                </FormSection>
-
-                                <FormSection icon="⭐" title="Promote" description="">
-                                    <div className="flex items-center gap-2 p-2 bg-value-highlight/10 rounded-lg border border-value-highlight/20">
-                                        <input
-                                            type="checkbox"
-                                            id="featured"
-                                            checked={dealForm.featured}
-                                            onChange={(e) => setDealForm({ ...dealForm, featured: e.target.checked })}
-                                            className="w-4 h-4 rounded border-border-subtle bg-bg-primary cursor-pointer accent-value-highlight"
-                                        />
-                                        <label htmlFor="featured" className="text-xs font-medium text-text-primary cursor-pointer flex-1">
-                                            Featured
-                                        </label>
-                                    </div>
-                                </FormSection>
-
-                                {dealError && (
-                                    <div className="mt-3 bg-urgency-high/10 border border-urgency-high rounded-lg p-2">
-                                        <p className="text-xs text-urgency-high font-medium">⚠️ {dealError}</p>
-                                    </div>
-                                )}
-
-                                {dealSuccess && (
-                                    <div className="mt-3 bg-success/10 border border-success rounded-lg p-2">
-                                        <p className="text-xs text-success font-medium">✓ {dealSuccess}</p>
-                                    </div>
-                                )}
-
-                                <Button variant="primary" type="submit" className="w-full mt-4 text-sm">
-                                    {editingDealId ? '💾 Update' : '➕ Add'}
-                                </Button>
-                            </form>
                             </div>
-                        </div>
 
-                        {/* Deals List */}
-                        <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                            <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-                                 📦 Deals <span className="text-sm font-normal text-text-secondary bg-border-subtle px-2 py-0.5 rounded-full">{deals.length}</span>
-                               </h2>
-                            {isLoadingDeals ? (
-                                <p className="text-sm text-text-secondary">Loading...</p>
-                            ) : deals.length === 0 ? (
-                                <div className="py-8 text-center">
-                                    <p className="text-sm text-text-secondary">No deals</p>
-                                </div>
-                            ) : (
-                                <div className="grid gap-3 auto-rows-max">
-                                    {deals.map((deal) => (
-                                        <DealCardPreview
-                                            key={deal.id}
-                                            deal={deal}
-                                            vendor={vendors.find(v => v.vendorId === deal.vendorId)}
-                                            onEdit={() => startEditDeal(deal)}
-                                            onDelete={() => handleDeleteDeal(deal.id, deal.name)}
-                                        />
-                                    ))}
+                            {/* Deals sections */}
+                            {activeDealSection === 'overview' && (
+                                <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                    <h2 className="text-base lg:text-lg font-display font-bold text-action-primary mb-3 lg:mb-4">
+                                        🎁 Deals Overview
+                                    </h2>
+                                    <p className="text-xs text-text-secondary mb-2">High-level view of your deals.</p>
+                                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                                        <div className="bg-bg-primary rounded-lg border border-border-subtle p-3">
+                                            <p className="text-[11px] text-text-secondary">Total Deals</p>
+                                            <p className="text-lg font-bold text-text-primary mt-1">{deals.length}</p>
+                                        </div>
+                                        <div className="bg-bg-primary rounded-lg border border-border-subtle p-3">
+                                            <p className="text-[11px] text-text-secondary">Featured</p>
+                                            <p className="text-lg font-bold text-text-primary mt-1">
+                                                {deals.filter(d => d.featured).length}
+                                            </p>
+                                        </div>
+                                        <div className="bg-bg-primary rounded-lg border border-border-subtle p-3">
+                                            <p className="text-[11px] text-text-secondary">Vendors</p>
+                                            <p className="text-lg font-bold text-text-primary mt-1">
+                                                {Array.from(new Set(deals.map(d => d.vendorId))).filter(Boolean).length}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
-                        </div>
+
+                            {activeDealSection === 'reorder' && (
+                                <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                    <DealReorderPanel deals={deals} onReorderComplete={loadDeals} />
+                                </div>
+                            )}
+
+                            {activeDealSection === 'form' && (
+                                <div className="lg:sticky lg:top-4 lg:self-start bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                    <div className="flex items-center justify-between mb-4 lg:mb-6">
+                                        <div>
+                                            <h2 className="text-lg font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                                🎁 {editingDealId ? 'Edit Deal' : 'Add Deal'}
+                                            </h2>
+                                        </div>
+                                        {editingDealId && (
+                                            <button
+                                                onClick={cancelEditDeal}
+                                                className="text-xs px-2 py-1 bg-border-subtle text-text-secondary hover:text-text-primary hover:bg-border-subtle/50 rounded-lg transition-colors"
+                                            >
+                                                ✕ Cancel
+                                            </button>
+                                        )}
+                                    </div>
+                                    <form onSubmit={handleAddDeal} className="space-y-0">
+                                        <FormSection icon="🏪" title="Offer" description="Vendor & description">
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Vendor <span className="text-urgency-high">*</span>
+                                                </label>
+                                                <select
+                                                    value={dealForm.vendorId}
+                                                    onChange={(e) => {
+                                                        const selectedVendor = vendors.find(v => v.vendorId === e.target.value);
+                                                        setDealForm({
+                                                            ...dealForm,
+                                                            vendorId: e.target.value,
+                                                            // Auto-sync city and category from vendor if not already set
+                                                            city: dealForm.city || selectedVendor?.city || '',
+                                                            category: dealForm.category || selectedVendor?.category || 'restaurant',
+                                                        });
+                                                    }}
+                                                    className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                >
+                                                    <option value="">Select vendor...</option>
+                                                    {vendors.map((vendor) => (
+                                                        <option key={vendor.vendorId} value={vendor.vendorId}>
+                                                            {vendor.name} ({vendor.city})
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Name <span className="text-urgency-high">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={dealForm.name}
+                                                    onChange={(e) => setDealForm({ ...dealForm, name: e.target.value })}
+                                                    placeholder="e.g., 2-for-1 Meals"
+                                                    className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Offer <span className="text-urgency-high">*</span>
+                                                </label>
+                                                <textarea
+                                                    value={dealForm.offer}
+                                                    onChange={(e) => setDealForm({ ...dealForm, offer: e.target.value })}
+                                                    placeholder="2-for-1 on Main Meals"
+                                                    rows={2}
+                                                    className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Marketing Copy
+                                                </label>
+                                                <textarea
+                                                    value={dealForm.description}
+                                                    onChange={(e) => setDealForm({ ...dealForm, description: e.target.value })}
+                                                    placeholder="Get amazing meals at unbeatable prices..."
+                                                    rows={2}
+                                                    className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                            </div>
+                                        </FormSection>
+
+                                        <FormSection icon="💰" title="Details" description="Value & location">
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <div>
+                                                    <label className="block text-xs font-medium text-action-primary mb-1">
+                                                        Savings (R)
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        value={dealForm.savings}
+                                                        onChange={(e) => setDealForm({ ...dealForm, savings: e.target.value })}
+                                                        placeholder="150"
+                                                        className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-medium text-action-primary mb-1">
+                                                        Category
+                                                    </label>
+                                                    <select
+                                                        value={dealForm.category}
+                                                        onChange={(e) =>
+                                                            setDealForm({
+                                                                ...dealForm,
+                                                                category: e.target.value as 'restaurant' | 'activity' | 'shopping',
+                                                            })
+                                                        }
+                                                        className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                    >
+                                                        <option value="restaurant">🍽️</option>
+                                                        <option value="activity">🎯</option>
+                                                        <option value="shopping">🛍️</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    City
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={dealForm.city}
+                                                    onChange={(e) => setDealForm({ ...dealForm, city: e.target.value })}
+                                                    placeholder="Port Alfred"
+                                                    className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Terms
+                                                </label>
+                                                <textarea
+                                                    value={dealForm.terms}
+                                                    onChange={(e) => setDealForm({ ...dealForm, terms: e.target.value })}
+                                                    placeholder="Valid Mon-Thu..."
+                                                    rows={2}
+                                                    className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                            </div>
+                                        </FormSection>
+
+                                        <FormSection icon="🖼️" title="Images" description="Main & carousel">
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Main Image
+                                                </label>
+                                                <input
+                                                    type="url"
+                                                    value={dealForm.imageUrl}
+                                                    onChange={(e) => setDealForm({ ...dealForm, imageUrl: e.target.value })}
+                                                    placeholder="https://example.com/deal.jpg"
+                                                    className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                                <ImagePreview url={dealForm.imageUrl} alt={dealForm.name || 'Deal image'} />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-medium text-action-primary mb-1">
+                                                    Carousel (URLs)
+                                                </label>
+                                                <textarea
+                                                    value={dealForm.images}
+                                                    onChange={(e) => setDealForm({ ...dealForm, images: e.target.value })}
+                                                    placeholder="https://example.com/photo.jpg"
+                                                    rows={2}
+                                                    className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                                />
+                                            </div>
+                                        </FormSection>
+
+                                        <FormSection icon="⭐" title="Promote" description="">
+                                            <div className="flex items-center gap-2 p-2 bg-value-highlight/10 rounded-lg border border-value-highlight/20">
+                                                <input
+                                                    type="checkbox"
+                                                    id="featured"
+                                                    checked={dealForm.featured}
+                                                    onChange={(e) => setDealForm({ ...dealForm, featured: e.target.checked })}
+                                                    className="w-4 h-4 rounded border-border-subtle bg-bg-primary cursor-pointer accent-value-highlight"
+                                                />
+                                                <label htmlFor="featured" className="text-xs font-medium text-text-primary cursor-pointer flex-1">
+                                                    Featured
+                                                </label>
+                                            </div>
+                                        </FormSection>
+
+                                        {dealError && (
+                                            <div className="mt-3 bg-urgency-high/10 border border-urgency-high rounded-lg p-2">
+                                                <p className="text-xs text-urgency-high font-medium">⚠️ {dealError}</p>
+                                            </div>
+                                        )}
+
+                                        {dealSuccess && (
+                                            <div className="mt-3 bg-success/10 border border-success rounded-lg p-2">
+                                                <p className="text-xs text-success font-medium">✓ {dealSuccess}</p>
+                                            </div>
+                                        )}
+
+                                        <Button variant="primary" type="submit" className="w-full mt-4 text-sm">
+                                            {editingDealId ? '💾 Update' : '➕ Add'}
+                                        </Button>
+                                    </form>
+                                </div>
+                            )}
+
+                            {activeDealSection === 'list' && (
+                                <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                    <div className="flex items-center justify-between gap-2 mb-3">
+                                        <h2 className="text-lg font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                            📦 Deals{' '}
+                                            <span className="text-xs font-normal text-text-secondary bg-border-subtle px-2 py-0.5 rounded-full">
+                                                {filteredDeals.length}/{deals.length}
+                                            </span>
+                                        </h2>
+                                        <button
+                                            onClick={() => loadDeals()}
+                                            disabled={isLoadingDeals}
+                                            className="px-2 py-1 text-xs font-medium bg-action-primary/20 text-action-primary hover:bg-action-primary/30 rounded-lg transition-colors disabled:opacity-50"
+                                        >
+                                            {isLoadingDeals ? '⏳' : '🔄'}
+                                        </button>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        value={dealSearch}
+                                        onChange={(e) => setDealSearch(e.target.value)}
+                                        placeholder="🔍 Search deals..."
+                                        className="w-full px-3 py-2 mb-3 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
+                                    />
+                                    {isLoadingDeals ? (
+                                        <div className="py-8 text-center">
+                                            <p className="text-sm text-text-secondary">Loading...</p>
+                                        </div>
+                                    ) : filteredDeals.length === 0 ? (
+                                        <div className="py-8 text-center">
+                                            <p className="text-sm text-text-secondary">
+                                                {dealSearch ? 'No matching deals' : 'No deals yet'}
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-2 max-h-[50vh] lg:max-h-[70vh] overflow-y-auto">
+                                            {filteredDeals.map((deal) => (
+                                                <DealCardPreview
+                                                    key={deal.id}
+                                                    deal={deal}
+                                                    vendor={vendors.find(v => v.vendorId === deal.vendorId)}
+                                                    onEdit={() => startEditDeal(deal)}
+                                                    onDelete={() => handleDeleteDeal(deal.id, deal.name)}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
 
                 {/* Analytics Tab */}
                 {activeTab === 'analytics' && (
-                    <div className="space-y-6">
-                        {isLoadingAnalytics ? (
-                            <p className="text-sm text-text-secondary">Loading analytics...</p>
-                        ) : (
-                            <>
-                                {/* Summary Cards */}
-                                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                                    {/* Total Passes */}
-                                    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <p className="text-xs sm:text-sm text-text-secondary font-medium">Total Passes</p>
-                                                <p className="text-2xl sm:text-3xl font-bold text-text-primary mt-2">{passes.length}</p>
-                                            </div>
-                                            <span className="text-4xl">🎫</span>
-                                        </div>
-                                    </div>
+                    <div className="flex flex-col lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6 gap-4">
+                        {/* Analytics sidebar (desktop) */}
+                        <aside className="hidden lg:block lg:sticky lg:top-4 self-start bg-bg-card rounded-xl border border-border-subtle p-3 text-sm space-y-1">
+                            <button
+                                onClick={() => setActiveAnalyticsSection('summary')}
+                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                                    activeAnalyticsSection === 'summary'
+                                        ? 'bg-action-primary text-white'
+                                        : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
+                                }`}
+                            >
+                                Summary
+                            </button>
+                            <button
+                                onClick={() => setActiveAnalyticsSection('purchases')}
+                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                                    activeAnalyticsSection === 'purchases'
+                                        ? 'bg-action-primary text-white'
+                                        : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
+                                }`}
+                            >
+                                Recent Purchases
+                            </button>
+                            <button
+                                onClick={() => setActiveAnalyticsSection('passes')}
+                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                                    activeAnalyticsSection === 'passes'
+                                        ? 'bg-action-primary text-white'
+                                        : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
+                                }`}
+                            >
+                                Pass Management
+                            </button>
+                            <button
+                                onClick={() => setActiveAnalyticsSection('redemptions')}
+                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                                    activeAnalyticsSection === 'redemptions'
+                                        ? 'bg-action-primary text-white'
+                                        : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
+                                }`}
+                            >
+                                Redemptions
+                            </button>
+                        </aside>
 
-                                    {/* Revenue */}
-                                    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <p className="text-xs sm:text-sm text-text-secondary font-medium">Total Revenue</p>
-                                                <p className="text-2xl sm:text-3xl font-bold text-value-highlight mt-2">
-                                                    R{passes.reduce((sum, p) => sum + (p.purchasePrice || 0), 0).toLocaleString()}
-                                                </p>
-                                            </div>
-                                            <span className="text-4xl">💰</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Total Redemptions */}
-                                    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <p className="text-xs sm:text-sm text-text-secondary font-medium">Redemptions</p>
-                                                <p className="text-2xl sm:text-3xl font-bold text-action-primary mt-2">{redemptions.length}</p>
-                                            </div>
-                                            <span className="text-4xl">✓</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Redemption Rate */}
-                                    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <p className="text-xs sm:text-sm text-text-secondary font-medium">Redemption Rate</p>
-                                                <p className="text-2xl sm:text-3xl font-bold text-success mt-2">
-                                                    {passes.length > 0 ? Math.round((redemptions.length / passes.length) * 100) : 0}%
-                                                </p>
-                                            </div>
-                                            <span className="text-4xl">📊</span>
-                                        </div>
-                                    </div>
+                        <div className="flex flex-col gap-4 lg:gap-6">
+                            {/* Mobile section switcher */}
+                            <div className="lg:hidden sticky top-0 z-10 bg-bg-primary -mx-3 px-3 pt-1 pb-2">
+                                <div className="flex gap-2 overflow-x-auto text-xs">
+                                    <button
+                                        onClick={() => setActiveAnalyticsSection('summary')}
+                                        className={`px-3 py-1 rounded-full border text-xs whitespace-nowrap ${
+                                            activeAnalyticsSection === 'summary'
+                                                ? 'bg-action-primary text-white border-action-primary'
+                                                : 'bg-bg-card text-text-secondary border-border-subtle'
+                                        }`}
+                                    >
+                                        Summary
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveAnalyticsSection('purchases')}
+                                        className={`px-3 py-1 rounded-full border text-xs whitespace-nowrap ${
+                                            activeAnalyticsSection === 'purchases'
+                                                ? 'bg-action-primary text-white border-action-primary'
+                                                : 'bg-bg-card text-text-secondary border-border-subtle'
+                                        }`}
+                                    >
+                                        Purchases
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveAnalyticsSection('passes')}
+                                        className={`px-3 py-1 rounded-full border text-xs whitespace-nowrap ${
+                                            activeAnalyticsSection === 'passes'
+                                                ? 'bg-action-primary text-white border-action-primary'
+                                                : 'bg-bg-card text-text-secondary border-border-subtle'
+                                        }`}
+                                    >
+                                        Passes
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveAnalyticsSection('redemptions')}
+                                        className={`px-3 py-1 rounded-full border text-xs whitespace-nowrap ${
+                                            activeAnalyticsSection === 'redemptions'
+                                                ? 'bg-action-primary text-white border-action-primary'
+                                                : 'bg-bg-card text-text-secondary border-border-subtle'
+                                        }`}
+                                    >
+                                        Redemptions
+                                    </button>
                                 </div>
+                            </div>
 
-                                {/* Pass Breakdown */}
-                                <div className="grid gap-6 lg:grid-cols-2">
-                                    {/* Pass Purchases by Type */}
-                                    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                        <h3 className="text-lg font-bold text-action-primary mb-4 flex items-center gap-2">
-                                            🎫 Pass Purchases by Type
-                                        </h3>
-                                        <div className="space-y-3">
-                                            {(() => {
-                                                const paidPasses = passes.filter(p => p.paymentStatus === 'completed');
-                                                const freePasses = passes.filter(p => p.passStatus === 'free');
-                                                return [
-                                                    { label: 'Paid Passes', count: paidPasses.length, color: 'text-value-highlight' },
-                                                    { label: 'Free Passes', count: freePasses.length, color: 'text-action-primary' },
-                                                ];
-                                            })().map((item) => (
-                                                <div key={item.label} className="flex items-center justify-between p-3 bg-bg-primary rounded-lg border border-border-subtle">
-                                                    <span className="text-sm text-text-secondary">{item.label}</span>
-                                                    <span className={`text-lg font-bold ${item.color}`}>{item.count}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Most Redeemed Deals */}
-                                    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                        <h3 className="text-lg font-bold text-action-primary mb-4 flex items-center gap-2">
-                                            🏆 Most Redeemed Deals
-                                        </h3>
-                                        <div className="space-y-2 max-h-96 overflow-y-auto">
-                                            {(() => {
-                                                const dealCounts: Record<string, number> = {};
-                                                redemptions.forEach((r) => {
-                                                    dealCounts[r.dealName] = (dealCounts[r.dealName] || 0) + 1;
-                                                });
-                                                return Object.entries(dealCounts)
-                                                    .sort((a, b) => b[1] - a[1])
-                                                    .slice(0, 10);
-                                            })().map(([dealName, count]) => (
-                                                <div key={dealName} className="flex items-center justify-between p-2 bg-bg-primary rounded-lg border border-border-subtle/50">
-                                                    <span className="text-xs sm:text-sm text-text-secondary truncate flex-1">{dealName}</span>
-                                                    <span className="text-sm font-bold text-success ml-2 whitespace-nowrap">{count}x</span>
-                                                </div>
-                                            ))}
-                                            {redemptions.length === 0 && (
-                                                <p className="text-xs text-text-secondary text-center py-4">No redemptions yet</p>
-                                            )}
-                                        </div>
-                                    </div>
+                            {/* Shared analytics header */}
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <h2 className="text-lg font-bold text-text-primary">Analytics</h2>
+                                <div className="flex flex-wrap gap-2">
+                                    <button
+                                        onClick={() => loadAnalytics()}
+                                        disabled={isLoadingAnalytics}
+                                        className="px-3 py-1.5 text-xs font-medium bg-action-primary/20 text-action-primary hover:bg-action-primary/30 rounded-lg transition-colors disabled:opacity-50"
+                                    >
+                                        {isLoadingAnalytics ? '⏳' : '🔄'} Refresh
+                                    </button>
+                                    <button
+                                        onClick={exportPassesToCSV}
+                                        disabled={passes.length === 0}
+                                        className="px-3 py-1.5 text-xs font-medium bg-value-highlight/20 text-value-highlight hover:bg-value-highlight/30 rounded-lg transition-colors disabled:opacity-50"
+                                    >
+                                        📥 Passes
+                                    </button>
+                                    <button
+                                        onClick={exportRedemptionsToCSV}
+                                        disabled={redemptions.length === 0}
+                                        className="px-3 py-1.5 text-xs font-medium bg-success/20 text-success hover:bg-success/30 rounded-lg transition-colors disabled:opacity-50"
+                                    >
+                                        📥 Redemptions
+                                    </button>
                                 </div>
+                            </div>
 
-                                {/* Recent Purchases */}
-                                <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                    <h3 className="text-lg font-bold text-action-primary mb-4 flex items-center gap-2">
-                                        👥 Recent Pass Purchases
-                                    </h3>
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full text-xs sm:text-sm">
-                                            <thead className="border-b border-border-subtle">
-                                                <tr className="text-text-secondary">
-                                                    <th className="text-left py-2 px-2 font-medium">Name</th>
-                                                    <th className="text-left py-2 px-2 font-medium">Email</th>
-                                                    <th className="text-left py-2 px-2 font-medium">Type</th>
-                                                    <th className="text-right py-2 px-2 font-medium">Price</th>
-                                                    <th className="text-left py-2 px-2 font-medium">Date</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-border-subtle">
+                            {isLoadingAnalytics ? (
+                                <div className="py-12 text-center">
+                                    <p className="text-sm text-text-secondary">Loading analytics...</p>
+                                </div>
+                            ) : (
+                                <>
+                                    {activeAnalyticsSection === 'summary' && (
+                                        <>
+                                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                                                <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                                    <div className="flex items-center justify-between">
+                                                        <div>
+                                                            <p className="text-xs text-text-secondary font-medium">Paid Passes</p>
+                                                            <p className="text-xl lg:text-3xl font-bold text-text-primary mt-1">{configPassCount}</p>
+                                                            {passes.filter(p => p.passStatus === 'free').length > 0 && (
+                                                                <p className="text-xs text-text-secondary mt-1">
+                                                                    +{passes.filter(p => p.passStatus === 'free').length} free
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                        <span className="text-2xl lg:text-4xl">🎫</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                                    <div className="flex items-center justify-between">
+                                                        <div>
+                                                            <p className="text-xs text-text-secondary font-medium">Revenue</p>
+                                                            <p className="text-xl lg:text-3xl font-bold text-value-highlight mt-1">
+                                                                R{passes.reduce((sum, p) => sum + (p.purchasePrice || 0), 0).toLocaleString()}
+                                                            </p>
+                                                        </div>
+                                                        <span className="text-2xl lg:text-4xl">💰</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                                    <div className="flex items-center justify-between">
+                                                        <div>
+                                                            <p className="text-xs text-text-secondary font-medium">Redemptions</p>
+                                                            <p className="text-xl lg:text-3xl font-bold text-action-primary mt-1">{redemptions.length}</p>
+                                                        </div>
+                                                        <span className="text-2xl lg:text-4xl">✓</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                                    <div className="flex items-center justify-between">
+                                                        <div>
+                                                            <p className="text-xs text-text-secondary font-medium">Active Rate</p>
+                                                            <p className="text-xl lg:text-3xl font-bold text-success mt-1">
+                                                                {(() => {
+                                                                    const passIds = new Set(passes.map(p => p.passId));
+                                                                    const passesWithRedemptions = new Set(
+                                                                        redemptions.map(r => r.passId).filter(id => passIds.has(id))
+                                                                    );
+                                                                    return passes.length > 0
+                                                                        ? Math.round((passesWithRedemptions.size / passes.length) * 100)
+                                                                        : 0;
+                                                                })()}%
+                                                            </p>
+                                                            <p className="text-xs text-text-secondary mt-1 hidden lg:block">≥1 redemption</p>
+                                                        </div>
+                                                        <span className="text-2xl lg:text-4xl">📊</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
+                                                <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                                    <h3 className="text-base lg:text-lg font-bold text-action-primary mb-3 lg:mb-4 flex items-center gap-2">
+                                                        🎫 Passes by Type
+                                                    </h3>
+                                                    <div className="space-y-3">
+                                                        {(() => {
+                                                            const freeTestCount = passes.length - configPassCount;
+                                                            return [
+                                                                { label: 'Paid Passes', count: configPassCount, color: 'text-value-highlight' },
+                                                                {
+                                                                    label: 'Free/Test Passes',
+                                                                    count: Math.max(0, freeTestCount),
+                                                                    color: 'text-action-primary',
+                                                                },
+                                                            ];
+                                                        })().map((item) => (
+                                                            <div
+                                                                key={item.label}
+                                                                className="flex items-center justify-between p-3 bg-bg-primary rounded-lg border border-border-subtle"
+                                                            >
+                                                                <span className="text-sm text-text-secondary">{item.label}</span>
+                                                                <span className={`text-lg font-bold ${item.color}`}>{item.count}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                                    <h3 className="text-base lg:text-lg font-bold text-action-primary mb-3 lg:mb-4 flex items-center gap-2">
+                                                        🏆 Top Deals
+                                                    </h3>
+                                                    <div className="space-y-2 max-h-60 lg:max-h-96 overflow-y-auto">
+                                                        {(() => {
+                                                            const dealCounts: Record<string, number> = {};
+                                                            redemptions.forEach((r) => {
+                                                                dealCounts[r.dealName] = (dealCounts[r.dealName] || 0) + 1;
+                                                            });
+                                                            return Object.entries(dealCounts)
+                                                                .sort((a, b) => b[1] - a[1])
+                                                                .slice(0, 10);
+                                                        })().map(([dealName, count]) => (
+                                                            <div
+                                                                key={dealName}
+                                                                className="flex items-center justify-between p-2 bg-bg-primary rounded-lg border border-border-subtle/50"
+                                                            >
+                                                                <span className="text-xs text-text-secondary truncate flex-1">{dealName}</span>
+                                                                <span className="text-xs font-bold text-success ml-2 whitespace-nowrap">{count}x</span>
+                                                            </div>
+                                                        ))}
+                                                        {redemptions.length === 0 && (
+                                                            <p className="text-xs text-text-secondary text-center py-4">No redemptions yet</p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+
+                                    {activeAnalyticsSection === 'purchases' && (
+                                        <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                            <h3 className="text-base lg:text-lg font-bold text-action-primary mb-3 lg:mb-4 flex items-center gap-2">
+                                                👥 Recent Purchases
+                                            </h3>
+                                            <div className="lg:hidden space-y-2 max-h-[50vh] overflow-y-auto">
                                                 {passes
                                                     .filter(p => p.paymentStatus === 'completed')
-                                                    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                                                    .sort(
+                                                        (a, b) =>
+                                                            new Date(b.createdAt).getTime() -
+                                                            new Date(a.createdAt).getTime()
+                                                    )
+                                                    .slice(0, 10)
+                                                    .map((pass) => (
+                                                        <div
+                                                            key={pass.passId}
+                                                            className="p-3 bg-bg-primary rounded-lg border border-border-subtle"
+                                                        >
+                                                            <div className="flex justify-between items-start">
+                                                                <div className="min-w-0 flex-1">
+                                                                    <p className="text-sm font-medium text-text-primary truncate">
+                                                                        {pass.passHolderName}
+                                                                    </p>
+                                                                    <p className="text-xs text-text-secondary truncate">
+                                                                        {pass.email}
+                                                                    </p>
+                                                                </div>
+                                                                <div className="text-right ml-2">
+                                                                    <p className="text-sm font-bold text-value-highlight">
+                                                                        R{pass.purchasePrice || 0}
+                                                                    </p>
+                                                                    <p className="text-xs text-text-secondary">
+                                                                        {new Date(pass.createdAt).toLocaleDateString()}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                {passes.filter(p => p.paymentStatus === 'completed').length === 0 && (
+                                                    <p className="text-center py-8 text-text-secondary text-sm">
+                                                        No purchases yet
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <div className="hidden lg:block overflow-x-auto">
+                                                <table className="w-full text-sm">
+                                                    <thead className="border-b border-border-subtle">
+                                                        <tr className="text-text-secondary">
+                                                            <th className="text-left py-2 px-2 font-medium">Name</th>
+                                                            <th className="text-left py-2 px-2 font-medium">Email</th>
+                                                            <th className="text-left py-2 px-2 font-medium">Type</th>
+                                                            <th className="text-right py-2 px-2 font-medium">Price</th>
+                                                            <th className="text-left py-2 px-2 font-medium">Date</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-border-subtle">
+                                                        {passes
+                                                            .filter(p => p.paymentStatus === 'completed')
+                                                            .sort(
+                                                                (a, b) =>
+                                                                    new Date(b.createdAt).getTime() -
+                                                                    new Date(a.createdAt).getTime()
+                                                            )
+                                                            .slice(0, 20)
+                                                            .map((pass) => (
+                                                                <tr
+                                                                    key={pass.passId}
+                                                                    className="hover:bg-bg-primary transition-colors"
+                                                                >
+                                                                    <td className="py-2 px-2 text-text-primary font-medium">
+                                                                        {pass.passHolderName}
+                                                                    </td>
+                                                                    <td className="py-2 px-2 text-text-secondary truncate max-w-[200px]">
+                                                                        {pass.email}
+                                                                    </td>
+                                                                    <td className="py-2 px-2 text-text-secondary capitalize">
+                                                                        {pass.passType}
+                                                                    </td>
+                                                                    <td className="py-2 px-2 text-right text-value-highlight font-bold">
+                                                                        R{pass.purchasePrice || 0}
+                                                                    </td>
+                                                                    <td className="py-2 px-2 text-text-secondary text-xs">
+                                                                        {new Date(pass.createdAt).toLocaleDateString()}
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                    </tbody>
+                                                </table>
+                                                {passes.filter(p => p.paymentStatus === 'completed').length === 0 && (
+                                                    <p className="text-center py-8 text-text-secondary">
+                                                        No purchased passes
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {activeAnalyticsSection === 'passes' && (
+                                        <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                            <h3 className="text-base lg:text-lg font-bold text-action-primary mb-3 lg:mb-4 flex items-center gap-2">
+                                                🎫 Pass Management
+                                            </h3>
+                                            <div className="lg:hidden space-y-2 max-h-[50vh] overflow-y-auto">
+                                                {passes
+                                                    .sort(
+                                                        (a, b) =>
+                                                            new Date(b.createdAt).getTime() -
+                                                            new Date(a.createdAt).getTime()
+                                                    )
                                                     .slice(0, 20)
                                                     .map((pass) => (
-                                                        <tr key={pass.passId} className="hover:bg-bg-primary transition-colors">
-                                                            <td className="py-2 px-2 text-text-primary font-medium">{pass.passHolderName}</td>
-                                                            <td className="py-2 px-2 text-text-secondary truncate">{pass.email}</td>
-                                                            <td className="py-2 px-2 text-text-secondary capitalize">{pass.passType}</td>
-                                                            <td className="py-2 px-2 text-right text-value-highlight font-bold">R{pass.purchasePrice || 0}</td>
-                                                            <td className="py-2 px-2 text-text-secondary text-xs">
-                                                                {new Date(pass.createdAt).toLocaleDateString()}
-                                                            </td>
-                                                        </tr>
+                                                        <div
+                                                            key={pass.passId}
+                                                            className="p-3 bg-bg-primary rounded-lg border border-border-subtle"
+                                                        >
+                                                            <div className="flex justify-between items-start mb-2">
+                                                                <div className="min-w-0 flex-1">
+                                                                    <p className="text-sm font-medium text-text-primary truncate">
+                                                                        {pass.passHolderName}
+                                                                    </p>
+                                                                    <p className="text-xs text-text-secondary font-mono">
+                                                                        {pass.passId}
+                                                                    </p>
+                                                                </div>
+                                                                <span
+                                                                    className={`text-xs px-1.5 py-0.5 rounded font-medium ml-2 ${
+                                                                        pass.paymentStatus === 'completed'
+                                                                            ? 'bg-value-highlight/20 text-value-highlight'
+                                                                            : pass.passStatus === 'free'
+                                                                            ? 'bg-action-primary/20 text-action-primary'
+                                                                            : 'bg-text-secondary/20 text-text-secondary'
+                                                                    }`}
+                                                                >
+                                                                    {pass.paymentStatus === 'completed'
+                                                                        ? 'Paid'
+                                                                        : pass.passStatus === 'free'
+                                                                        ? 'Free'
+                                                                        : 'Pending'}
+                                                                </span>
+                                                            </div>
+                                                            <div className="flex justify-between items-center">
+                                                                <p className="text-xs text-text-secondary">
+                                                                    {new Date(pass.createdAt).toLocaleDateString()}
+                                                                </p>
+                                                                <button
+                                                                    onClick={async () => {
+                                                                        const redemptionCount =
+                                                                            await getRedemptionCountByPass(
+                                                                                pass.passId
+                                                                            );
+                                                                        const confirmMsg =
+                                                                            redemptionCount > 0
+                                                                                ? `Delete pass "${pass.passId}"?\n\n⚠️ This will also delete ${redemptionCount} redemption${
+                                                                                      redemptionCount !== 1
+                                                                                          ? 's'
+                                                                                          : ''
+                                                                                  }.`
+                                                                                : `Delete pass "${pass.passId}"?`;
+                                                                        if (window.confirm(confirmMsg)) {
+                                                                            const result = await deletePass(pass.passId);
+                                                                            if (result.success) {
+                                                                                loadAnalytics();
+                                                                            }
+                                                                        }
+                                                                    }}
+                                                                    className="text-xs bg-urgency-high/20 text-urgency-high hover:bg-urgency-high/40 px-2 py-1 rounded transition-colors font-medium"
+                                                                >
+                                                                    🗑️ Delete
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     ))}
-                                            </tbody>
-                                        </table>
-                                        {passes.filter(p => p.paymentStatus === 'completed').length === 0 && (
-                                            <p className="text-center py-8 text-text-secondary">No purchased passes</p>
-                                        )}
-                                    </div>
-                                </div>
+                                                {passes.length === 0 && (
+                                                    <p className="text-center py-8 text-text-secondary text-sm">No passes yet</p>
+                                                )}
+                                            </div>
+                                            <div className="hidden lg:block overflow-x-auto">
+                                                <table className="w-full text-sm">
+                                                    <thead className="border-b border-border-subtle">
+                                                        <tr className="text-text-secondary">
+                                                            <th className="text-left py-2 px-2 font-medium">Pass ID</th>
+                                                            <th className="text-left py-2 px-2 font-medium">Name</th>
+                                                            <th className="text-left py-2 px-2 font-medium">Status</th>
+                                                            <th className="text-left py-2 px-2 font-medium">Date</th>
+                                                            <th className="text-right py-2 px-2 font-medium">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-border-subtle">
+                                                        {passes
+                                                            .sort(
+                                                                (a, b) =>
+                                                                    new Date(b.createdAt).getTime() -
+                                                                    new Date(a.createdAt).getTime()
+                                                            )
+                                                            .slice(0, 50)
+                                                            .map((pass) => (
+                                                                <tr
+                                                                    key={pass.passId}
+                                                                    className="hover:bg-bg-primary transition-colors group"
+                                                                >
+                                                                    <td className="py-2 px-2 text-text-secondary font-mono text-xs">
+                                                                        {pass.passId}
+                                                                    </td>
+                                                                    <td className="py-2 px-2 text-text-primary font-medium">
+                                                                        {pass.passHolderName}
+                                                                    </td>
+                                                                    <td className="py-2 px-2">
+                                                                        <span
+                                                                            className={`text-xs px-1.5 py-0.5 rounded font-medium ${
+                                                                                pass.paymentStatus === 'completed'
+                                                                                    ? 'bg-value-highlight/20 text-value-highlight'
+                                                                                    : pass.passStatus === 'free'
+                                                                                    ? 'bg-action-primary/20 text-action-primary'
+                                                                                    : 'bg-text-secondary/20 text-text-secondary'
+                                                                            }`}
+                                                                        >
+                                                                            {pass.paymentStatus === 'completed'
+                                                                                ? 'Paid'
+                                                                                : pass.passStatus === 'free'
+                                                                                ? 'Free'
+                                                                                : 'Pending'}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="py-2 px-2 text-text-secondary text-xs">
+                                                                        {new Date(pass.createdAt).toLocaleDateString()}
+                                                                    </td>
+                                                                    <td className="py-2 px-2 text-right">
+                                                                        <button
+                                                                            onClick={async () => {
+                                                                                const redemptionCount =
+                                                                                    await getRedemptionCountByPass(
+                                                                                        pass.passId
+                                                                                    );
+                                                                                const confirmMsg =
+                                                                                    redemptionCount > 0
+                                                                                        ? `Delete pass "${pass.passId}" (${pass.passHolderName})?\n\n⚠️ This will also delete ${
+                                                                                              redemptionCount
+                                                                                          } redemption${
+                                                                                              redemptionCount !== 1
+                                                                                                  ? 's'
+                                                                                                  : ''
+                                                                                          }.\n\nThis cannot be undone.`
+                                                                                        : `Delete pass "${pass.passId}" (${pass.passHolderName})?\n\nThis cannot be undone.`;
+                                                                                if (window.confirm(confirmMsg)) {
+                                                                                    const result = await deletePass(pass.passId);
+                                                                                    if (result.success) {
+                                                                                        loadAnalytics();
+                                                                                    }
+                                                                                }
+                                                                            }}
+                                                                            className="text-xs bg-urgency-high/20 text-urgency-high hover:bg-urgency-high/40 px-2 py-1 rounded transition-colors font-medium lg:opacity-0 lg:group-hover:opacity-100"
+                                                                        >
+                                                                            🗑️ Delete
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                    </tbody>
+                                                </table>
+                                                {passes.length === 0 && (
+                                                    <p className="text-center py-8 text-text-secondary">No passes yet</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
 
-                                {/* Redemption Details */}
-                                <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
-                                    <h3 className="text-lg font-bold text-action-primary mb-4 flex items-center gap-2">
-                                        📜 Recent Redemptions
-                                    </h3>
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full text-xs sm:text-sm">
-                                            <thead className="border-b border-border-subtle">
-                                                <tr className="text-text-secondary">
-                                                    <th className="text-left py-2 px-2 font-medium">Pass ID</th>
-                                                    <th className="text-left py-2 px-2 font-medium">Deal</th>
-                                                    <th className="text-left py-2 px-2 font-medium">Vendor</th>
-                                                    <th className="text-left py-2 px-2 font-medium">Date</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-border-subtle">
-                                                {redemptions
-                                                    .sort((a, b) => new Date(b.redeemedAt).getTime() - new Date(a.redeemedAt).getTime())
-                                                    .slice(0, 20)
-                                                    .map((redemption, idx) => {
-                                                        const vendor = vendors.find(v => v.vendorId === redemption.vendorId);
-                                                        return (
-                                                            <tr key={`${redemption.passId}-${idx}`} className="hover:bg-bg-primary transition-colors">
-                                                                <td className="py-2 px-2 text-text-secondary font-mono text-xs">{redemption.passId.substring(0, 8)}</td>
-                                                                <td className="py-2 px-2 text-text-primary">{redemption.dealName}</td>
-                                                                <td className="py-2 px-2 text-text-secondary">{vendor?.name || 'Unknown'}</td>
-                                                                <td className="py-2 px-2 text-text-secondary text-xs">
-                                                                    {new Date(redemption.redeemedAt).toLocaleDateString()}
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })}
-                                            </tbody>
-                                        </table>
-                                        {redemptions.length === 0 && (
-                                            <p className="text-center py-8 text-text-secondary">No redemptions yet</p>
-                                        )}
-                                    </div>
-                                </div>
-                            </>
-                        )}
+                                    {activeAnalyticsSection === 'redemptions' && (
+                                        <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
+                                            <h3 className="text-base lg:text-lg font-bold text-action-primary mb-3 lg:mb-4 flex items-center gap-2 flex-wrap">
+                                                📜 Redemptions
+                                                {(() => {
+                                                    const passIds = new Set(passes.map(p => p.passId));
+                                                    const orphanCount = redemptions.filter(r => !passIds.has(r.passId)).length;
+                                                    return orphanCount > 0 ? (
+                                                        <span className="text-xs bg-urgency-high/10 text-urgency-high px-2 py-0.5 rounded-full">
+                                                            {orphanCount} orphaned
+                                                        </span>
+                                                    ) : null;
+                                                })()}
+                                            </h3>
+                                            <div className="space-y-2 max-h-[60vh] overflow-y-auto">
+                                                {redemptions.length === 0 && (
+                                                    <p className="text-xs text-text-secondary text-center py-4">No redemptions yet</p>
+                                                )}
+                                                {redemptions.map((r) => {
+                                                    const vendor = vendors.find(v => v.vendorId === r.vendorId);
+                                                    const pass = passes.find(p => p.passId === r.passId);
+                                                    const isOrphan = !pass;
+                                                    return (
+                                                        <div
+                                                            key={`${r.passId}-${r.dealName}-${r.redeemedAt}`}
+                                                            className={`p-3 bg-bg-primary rounded-lg border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 ${
+                                                                isOrphan ? 'border-urgency-high/40 bg-urgency-high/5' : 'border-border-subtle'
+                                                            }`}
+                                                        >
+                                                            <div className="min-w-0 flex-1">
+                                                                <p className="text-xs font-medium text-text-primary truncate">{r.dealName}</p>
+                                                                <p className="text-[11px] text-text-secondary truncate">
+                                                                    {vendor ? vendor.name : 'Unknown vendor'} • Pass {r.passId}
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex items-center justify-between gap-2">
+                                                                <p className="text-[11px] text-text-secondary">
+                                                                    {new Date(r.redeemedAt).toLocaleDateString()}
+                                                                </p>
+                                                                {isOrphan && (
+                                                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-urgency-high/20 text-urgency-high font-medium">
+                                                                        Orphaned
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </div>
                     </div>
                 )}
             </div>

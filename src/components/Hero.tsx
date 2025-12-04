@@ -15,7 +15,7 @@ interface HeroProps {
   passCount?: number;
 }
 
-const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick: _onActivateClick, appStatus, passPrice: propPassPrice, passCount = 0 }) => {
+const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick: _onActivateClick, appStatus, passPrice: propPassPrice }) => {
   const [localPassPrice, setLocalPassPrice] = useState(199);
   const [totalSavings, setTotalSavings] = useState(1000);
   const [launchData, setLaunchData] = useState<{ passesRemaining: number; isLaunchPricing: boolean } | null>(null);
@@ -92,22 +92,14 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
                       {isLoading ? mainButtonText : `Get the Pass – R${passPrice}`}
                   </Button>
                   
-                  {/* Single combined social proof + urgency line */}
-                  <p className="text-white/80 text-xs md:text-sm drop-shadow-md">
-                    {passCount > 0 && (
-                      <span>
-                        Join <span className="font-semibold text-yellow-300">{passCount}+</span> locals saving
-                      </span>
-                    )}
-                    {passCount > 0 && launchData?.isLaunchPricing && launchData.passesRemaining > 0 && (
-                      <span className="mx-2">•</span>
-                    )}
-                    {launchData?.isLaunchPricing && launchData.passesRemaining > 0 && (
+                  {/* Urgency line */}
+                  {launchData?.isLaunchPricing && launchData.passesRemaining > 0 && (
+                    <p className="text-white/80 text-xs md:text-sm drop-shadow-md">
                       <span className="text-yellow-300 font-semibold">
                         Only {launchData.passesRemaining} left at R{passPrice}
                       </span>
-                    )}
-                  </p>
+                    </p>
+                  )}
                   
                   {/* Subtle scroll down arrow */}
                   <div className="mt-12 opacity-60" style={{ animation: 'gentle-bob 2.5s ease-in-out infinite' }}>

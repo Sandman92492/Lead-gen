@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TrustBar from '../components/TrustBar';
-import { getPassPrice, getPassFeatures, getPassCount } from '../utils/pricing';
+import { getPassPrice, getPassFeatures } from '../utils/pricing';
 import { PassFeatures } from '../types';
 
 interface FreUserTeaserProps {
@@ -12,7 +12,6 @@ interface FreUserTeaserProps {
 const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ onSelectPass }) => {
   const navigate = useNavigate();
   const [passPrice, setPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
-  const [passCount, setPassCount] = useState(0);
   const [features, setFeatures] = useState<PassFeatures>({
     description: 'Discover and support Port Alfred\'s best local venues while enjoying great deals and authentic experiences.',
     feature1: 'Discover 70+ local venues and businesses',
@@ -23,14 +22,12 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ onSelectPass }) => {
 
   useEffect(() => {
     const loadData = async () => {
-      const [price, passFeatures, count] = await Promise.all([
+      const [price, passFeatures] = await Promise.all([
         getPassPrice(),
-        getPassFeatures(),
-        getPassCount()
+        getPassFeatures()
       ]);
       setPassPrice(price);
       setFeatures(passFeatures);
-      setPassCount(count);
     };
     loadData();
   }, []);
@@ -76,9 +73,9 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ onSelectPass }) => {
               >
                 Get My Pass Now (R{passPrice.price}) →
               </button>
-              {passCount > 0 && (
+              {passPrice.launchPricing && (
                 <p className="text-white/80 text-sm text-center mt-4">
-                  Join {passCount}+ locals already saving
+                  Limited launch pricing — only 33 left at R{passPrice.price}
                 </p>
               )}
             </div>
