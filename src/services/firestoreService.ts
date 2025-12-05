@@ -12,6 +12,7 @@ import {
     deleteDoc,
 } from 'firebase/firestore';
 import { PassType, PassStatus, Vendor, Deal } from '../types';
+import { triggerFirstRedemptionEmail } from './emailService';
 
 // Pass document structure
 export interface PassDocument {
@@ -105,8 +106,19 @@ export const updatePass = async (passId: string, updates: Partial<PassDocument>)
 };
 
 // Record a deal redemption
-export const recordRedemption = async (passId: string, dealName: string, vendorId: string, userId: string) => {
+export const recordRedemption = async (
+    passId: string,
+    dealName: string,
+    vendorId: string,
+    userId: string,
+    userEmail?: string,
+    userName?: string
+) => {
     try {
+        // Check if this is the user's first redemption
+        const existingRedemptions = await getRedemptionsByPass(passId);
+        const isFirstRedemption = existingRedemptions.length === 0;
+
         await addDoc(collection(db, 'redemptions'), {
             passId,
             dealName,
@@ -114,6 +126,12 @@ export const recordRedemption = async (passId: string, dealName: string, vendorI
             redeemedAt: new Date().toISOString(),
             userId,
         } as RedemptionDocument);
+
+        // Trigger first redemption email (fire-and-forget)
+        if (isFirstRedemption && userEmail) {
+            triggerFirstRedemptionEmail(userEmail, userName, dealName);
+        }
+
         return { success: true };
     } catch (error: any) {
         console.error('Error recording redemption:', error);

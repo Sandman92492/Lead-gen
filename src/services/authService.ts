@@ -9,6 +9,7 @@ import {
 } from 'firebase/auth';
 import { auth, googleProvider, db } from '../firebase';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { triggerAccountCreatedEmail } from './emailService';
 
 // Sign up with email and password
 export const signUpWithEmail = async (email: string, password: string, displayName?: string) => {
@@ -23,6 +24,9 @@ export const signUpWithEmail = async (email: string, password: string, displayNa
       displayName: displayName || '',
       createdAt: new Date().toISOString(),
     });
+
+    // Trigger welcome email for new account (fire-and-forget)
+    triggerAccountCreatedEmail(email, displayName);
 
     return { success: true, user };
   } catch (error: any) {
@@ -61,6 +65,9 @@ export const signInWithGoogle = async () => {
         photoURL: user.photoURL,
         createdAt: new Date().toISOString(),
       });
+
+      // Trigger welcome email for new account (fire-and-forget)
+      triggerAccountCreatedEmail(user.email || '', user.displayName || '');
     } else {
       // Update photoURL for existing users (in case they changed their profile picture)
       await setDoc(userDocRef, {

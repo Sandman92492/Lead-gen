@@ -4,6 +4,11 @@ import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { createHmac } from 'crypto';
 
+// MailerLite configuration
+const MAILERLITE_API_KEY = process.env.MAILERLITE_API_KEY;
+const MAILERLITE_API_URL = 'https://connect.mailerlite.com/api';
+const PASS_HOLDERS_GROUP_ID = '172957060431873572';
+
 // Yoco signing secret - read fresh on each request to avoid stale warm instance issues
 const getSigningSecret = () => {
     const rawSecret = process.env.YOCO_SIGNING_SECRET?.trim() || '';
@@ -208,6 +213,26 @@ const handler: Handler = async (event: any) => {
                 currentPassCount: 1,
                 lastUpdated: new Date().toISOString(),
             }, { merge: true });
+        }
+
+        // Trigger MailerLite welcome email (fire-and-forget, don't block response)
+        if (MAILERLITE_API_KEY) {
+            fetch(`${MAILERLITE_API_URL}/subscribers`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${MAILERLITE_API_KEY}`,
+                },
+                body: JSON.stringify({
+                    email: sanitize(userEmail),
+                    fields: {
+                        name: sanitize(passHolderName),
+                        pass_id: passId,
+                        purchase_date: new Date().toISOString(),
+                    },
+                    groups: [PASS_HOLDERS_GROUP_ID],
+                }),
+            }).catch(err => console.error('MailerLite error:', err));
         }
 
         return {

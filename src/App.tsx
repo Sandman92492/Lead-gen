@@ -279,7 +279,14 @@ const App: React.FC = () => {
 
       // Save to Firestore if user is logged in
       if (user && vendorId) {
-        await recordRedemption(pass.passId, dealName, vendorId, user.uid);
+        await recordRedemption(
+          pass.passId,
+          dealName,
+          vendorId,
+          user.uid,
+          user.email || undefined,
+          pass.passHolderName || user.displayName || undefined
+        );
       }
     }
 
