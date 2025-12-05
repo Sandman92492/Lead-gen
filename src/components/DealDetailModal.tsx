@@ -13,6 +13,7 @@ interface DealDetailModalProps {
   isRedeemed?: boolean;
   passExpiryDate?: string;
   onRedeemClick?: (dealName: string) => void;
+  onBuyPassClick?: () => void;
 }
 
 const DealDetailModal: React.FC<DealDetailModalProps> = ({
@@ -23,6 +24,7 @@ const DealDetailModal: React.FC<DealDetailModalProps> = ({
   isRedeemed = false,
   passExpiryDate,
   onRedeemClick,
+  onBuyPassClick,
 }) => {
   const { vendor } = useVendor(deal?.vendorId || '');
   const mapsUrl = vendor?.mapsUrl || null;
@@ -106,8 +108,8 @@ const DealDetailModal: React.FC<DealDetailModalProps> = ({
         {/* Action Buttons - Fixed at Bottom */}
         <div className="flex flex-col gap-2 mt-6 pt-6 border-t border-border-subtle">
           <div className="grid grid-cols-2 gap-2">
-            {/* Redeem Button */}
-            {hasPass && (
+            {/* Redeem Button - Show for pass holders */}
+            {hasPass ? (
               <>
                 {isExpired ? (
                   <div className="col-span-2 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-md bg-gray-500 text-white text-sm font-bold whitespace-nowrap cursor-not-allowed opacity-75">
@@ -139,6 +141,19 @@ const DealDetailModal: React.FC<DealDetailModalProps> = ({
                   </button>
                 )}
               </>
+            ) : (
+              /* Get Pass Button - Show for non-pass holders */
+              <button
+                onClick={() => {
+                  onClose();
+                  setTimeout(() => {
+                    onBuyPassClick?.();
+                  }, 250);
+                }}
+                className="col-span-2 w-full px-4 py-3 text-sm font-bold text-white bg-action-primary rounded-md hover:brightness-110 transition-all"
+              >
+                🎟️ Get Pass to Redeem
+              </button>
             )}
 
             {/* Directions Button */}

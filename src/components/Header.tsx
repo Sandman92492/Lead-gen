@@ -132,11 +132,7 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
         },
     }, 30);
 
-    const navLinks = [
-        { name: 'Showcase', id: 'deals-showcase' },
-        { name: 'All Deals', id: 'full-deal-list' },
-        { name: 'FAQ', id: 'faq' },
-    ];
+    const navLinks: Array<{ name: string; id: string }> = [];
 
     const whatsappUrl = `https://wa.me/27799569040`;
 

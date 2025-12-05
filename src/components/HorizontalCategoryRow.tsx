@@ -11,6 +11,7 @@ interface HorizontalCategoryRowProps {
   description?: string;
   hasPass?: boolean;
   passExpiryDate?: string;
+  onBuyPassClick?: () => void;
 }
 
 /**
@@ -30,6 +31,7 @@ const HorizontalCategoryRow: React.FC<HorizontalCategoryRowProps> = ({
   description,
   hasPass,
   passExpiryDate,
+  onBuyPassClick,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -158,6 +160,7 @@ const HorizontalCategoryRow: React.FC<HorizontalCategoryRowProps> = ({
                      onClick={onRedeemClick ? () => onRedeemClick(deal.name) : undefined}
                      hasPass={hasPass}
                      passExpiryDate={passExpiryDate}
+                     onBuyPassClick={onBuyPassClick}
                    />
                  ))}
               </div>

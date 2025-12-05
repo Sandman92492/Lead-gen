@@ -137,13 +137,17 @@ const App: React.FC = () => {
     loadRedeemedDeals();
   }, [pass?.passId]);
 
+  // Track if user explicitly requested purchase (clicked buy button)
+  const [pendingPurchase, setPendingPurchase] = useState(false);
+
   // Handle post-auth purchase flow when user auth state updates
   useEffect(() => {
-    if (user && selectedPassType && isAuthModalOpen === false) {
-      // User just signed in and selected a pass type, proceed with purchase
+    if (user && selectedPassType && pendingPurchase && isAuthModalOpen === false) {
+      // User just signed in after clicking buy button, proceed with purchase
       handleSelectAndPurchase(selectedPassType);
+      setPendingPurchase(false); // Clear the pending flag
     }
-  }, [user, selectedPassType, isAuthModalOpen]);
+  }, [user, selectedPassType, pendingPurchase, isAuthModalOpen]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -192,6 +196,7 @@ const App: React.FC = () => {
     // If not authenticated, open auth modal first
     if (!user) {
       setSelectedPassType(passType);
+      setPendingPurchase(true); // Mark that user wants to purchase after auth
       setIsAuthModalOpen(true);
       return;
     }
@@ -361,14 +366,21 @@ const App: React.FC = () => {
 
       <AuthModal
         isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
+        onClose={() => {
+          setIsAuthModalOpen(false);
+          // Clear pending purchase if user closes modal without signing in
+          if (!user) {
+            setPendingPurchase(false);
+            setSelectedPassType(null);
+          }
+        }}
         onAuthSuccess={() => {
           setIsAuthModalOpen(false);
           // After auth, scroll to home/top
           setTimeout(() => {
             window.scrollTo(0, 0);
           }, 100);
-          // If they selected a pass type, it will be handled by the useEffect that watches user changes
+          // If they selected a pass type with pendingPurchase=true, it will be handled by the useEffect
           // Otherwise, just stay on home page and let user browse
         }}
       />
@@ -482,7 +494,7 @@ const App: React.FC = () => {
           onSelectPass={handleSelectAndPurchase}
           onActivateClick={() => setIsActivateModalOpen(true)}
           onMainCtaClick={handleMainCta}
-          onAuthClick={() => setIsAuthModalOpen(true)}
+          onBuyPassClick={() => handleSelectAndPurchase('holiday')}
         />
       )}
 

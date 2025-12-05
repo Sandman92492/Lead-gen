@@ -1,6 +1,5 @@
 import React from 'react';
 import { PassType, Deal } from '../types';
-import FreeUserTeaser from './FreeUserTeaser';
 import VipDashboard from './VipDashboard';
 import SuperHomeScreen from '../components/SuperHomeScreen';
 import { PassInfo } from '../context/AuthContext';
@@ -16,6 +15,7 @@ interface HomePageProps {
   onRedeemClick?: (dealName: string) => void;
   dealsByCategory?: { category: string; emoji: string; deals: Deal[] }[];
   useSuperHome?: boolean;
+  onBuyPassClick?: () => void;
 }
 
 const HomePage: React.FC<HomePageProps> = ({
@@ -29,18 +29,20 @@ const HomePage: React.FC<HomePageProps> = ({
   onRedeemClick,
   dealsByCategory = [],
   useSuperHome = false,
+  onBuyPassClick,
 }) => {
-  // Show SuperHomeScreen for pass users if feature flag is enabled
-  if (hasPass && useSuperHome) {
+  // Show SuperHomeScreen for all signed-in users (with or without pass)
+  if (useSuperHome) {
     return (
       <SuperHomeScreen
-         userName={userName}
-         userPhotoURL={userPhotoURL}
-         pass={pass}
-         dealsByCategory={dealsByCategory}
-         redeemedDeals={redeemedDeals}
-         onRedeemClick={onRedeemClick}
-       />
+        userName={userName}
+        userPhotoURL={userPhotoURL}
+        pass={pass}
+        dealsByCategory={dealsByCategory}
+        redeemedDeals={redeemedDeals}
+        onRedeemClick={onRedeemClick}
+        onBuyPassClick={onBuyPassClick || (() => onSelectPass?.('holiday'))}
+      />
     );
   }
 
@@ -57,12 +59,8 @@ const HomePage: React.FC<HomePageProps> = ({
     );
   }
 
-  return (
-    <FreeUserTeaser
-      userName={userName}
-      onSelectPass={() => onSelectPass?.('holiday')}
-    />
-  );
+  // This shouldn't happen with useSuperHome=true, but fallback just in case
+  return null;
 };
 
 export default HomePage;

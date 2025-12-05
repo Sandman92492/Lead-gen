@@ -12,6 +12,7 @@ interface CategoryDealScrollerProps {
   onRedeemClick?: (dealName: string) => void;
   hasPass: boolean;
   description?: string;
+  onBuyPassClick?: () => void;
 }
 
 const CategoryDealScroller: React.FC<CategoryDealScrollerProps> = ({
@@ -23,6 +24,7 @@ const CategoryDealScroller: React.FC<CategoryDealScrollerProps> = ({
   onRedeemClick,
   hasPass,
   description,
+  onBuyPassClick,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -92,6 +94,7 @@ const CategoryDealScroller: React.FC<CategoryDealScrollerProps> = ({
                     passExpiryDate={passExpiryDate}
                     onClick={() => onRedeemClick?.(deal.name)}
                     isInGrid={true}
+                    onBuyPassClick={onBuyPassClick}
                   />
                 </div>
               ))}
@@ -133,6 +136,7 @@ const CategoryDealScroller: React.FC<CategoryDealScrollerProps> = ({
                     passExpiryDate={passExpiryDate}
                     onClick={() => onRedeemClick?.(deal.name)}
                     isInGrid={false}
+                    onBuyPassClick={onBuyPassClick}
                   />
                 </div>
               ))}

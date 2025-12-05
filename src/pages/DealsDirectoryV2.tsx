@@ -53,7 +53,7 @@ const DealsDirectoryV2: React.FC<DealsDirectoryV2Props> = ({
   ];
 
   return (
-    <main className="pb-24 sm:pb-0">
+    <>
       {/* Pass Expired Banner */}
       {isPassExpired && hasPass && (
         <div className="bg-red-50 dark:bg-red-950/30 border-t border-b border-red-200 dark:border-red-800 py-4">
@@ -78,8 +78,18 @@ const DealsDirectoryV2: React.FC<DealsDirectoryV2Props> = ({
         </div>
       )}
 
-      <section id="deals-directory-v2" className="bg-bg-primary relative">
+      <section id="deals-directory-v2" className="bg-bg-primary relative pb-24 md:pb-12">
          <div className="container mx-auto px-4 sm:px-6 py-8 md:py-12">
+           {/* Hero Heading */}
+           <div className="text-center mb-10">
+             <h1 className="text-3xl md:text-4xl font-display font-black text-action-primary mb-4">
+               All Deals
+             </h1>
+             <p className="text-lg md:text-xl text-text-secondary leading-relaxed">
+               Browse {allDeals.length}+ local deals. Get your pass to unlock them all.
+             </p>
+           </div>
+
            {/* Filter Pills Row - Emoji Only */}
            <div className="mb-10 flex justify-center gap-6 sm:gap-8">
              {filterOptions.map((option) => (
@@ -141,6 +151,7 @@ const DealsDirectoryV2: React.FC<DealsDirectoryV2Props> = ({
                     isInGrid={true}
                     hasPass={hasPass}
                     passExpiryDate={passExpiryDate}
+                    onBuyPassClick={onBuyPassClick}
                   />
                 </div>
               ))}
@@ -148,7 +159,7 @@ const DealsDirectoryV2: React.FC<DealsDirectoryV2Props> = ({
           )}
         </div>
       </section>
-    </main>
+    </>
   );
 };
 

@@ -12,6 +12,7 @@ interface CompactDealCardProps {
   isInGrid?: boolean; // Responsive sizing for grid layout
   hasPass?: boolean; // User has an active pass
   passExpiryDate?: string; // Pass expiry date to check if expired
+  onBuyPassClick?: () => void; // Trigger buy pass flow for non-pass holders
 }
 
 /**
@@ -30,6 +31,7 @@ const CompactDealCard: React.FC<CompactDealCardProps> = ({
   isInGrid = false,
   hasPass = false,
   passExpiryDate,
+  onBuyPassClick,
 }) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const { vendor } = useVendor(deal.vendorId);
@@ -134,6 +136,12 @@ const CompactDealCard: React.FC<CompactDealCardProps> = ({
           // Then trigger redemption after a delay
           setTimeout(() => {
             onClick?.();
+          }, 250);
+        }}
+        onBuyPassClick={() => {
+          setIsDetailModalOpen(false);
+          setTimeout(() => {
+            onBuyPassClick?.();
           }, 250);
         }}
       />

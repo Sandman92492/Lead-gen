@@ -54,11 +54,14 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
 
     // Navigate to /home on first mount (when user signs in)
     useEffect(() => {
-        if (!hasNavigatedRef.current && (location.pathname === '/' || location.pathname === '')) {
+        if (!hasNavigatedRef.current) {
             hasNavigatedRef.current = true;
-            navigate('/home', { replace: true });
+            // Always start on home page when signing in
+            if (location.pathname !== '/home') {
+                navigate('/home', { replace: true });
+            }
         }
-    }, [navigate]);
+    }, [navigate, location.pathname]);
 
     // Scroll to top when route changes
     useEffect(() => {
@@ -163,6 +166,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
                             onRedeemClick={onRedeemClick}
                             dealsByCategory={dealsByCategory}
                             useSuperHome={true}
+                            onBuyPassClick={onBuyPassClick}
                         />
                     } />
                     <Route path="/deals" element={

@@ -3,7 +3,7 @@ import Hero from './Hero';
 import TrustBar from './TrustBar';
 import CharitySection from './CharitySection';
 import HowItWorks from './HowItWorks';
-import DealsShowcase from './DealsShowcase';
+import DealsDirectoryV2 from '../pages/DealsDirectoryV2';
 import FAQ from './FAQ';
 import PricingOptions from './PricingOptions';
 import { PassType } from '../types';
@@ -13,14 +13,14 @@ interface FreeUserViewProps {
   onSelectPass: (passType: PassType) => void;
   onActivateClick: () => void;
   onMainCtaClick: () => void;
-  onAuthClick?: () => void;
+  onBuyPassClick?: () => void;
 }
 
 const FreeUserView: React.FC<FreeUserViewProps> = ({
   onSelectPass,
   onActivateClick,
   onMainCtaClick,
-  onAuthClick,
+  onBuyPassClick,
 }) => {
   const [passPrice, setPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
   const [passCount, setPassCount] = useState(0);
@@ -56,7 +56,12 @@ const FreeUserView: React.FC<FreeUserViewProps> = ({
         <TrustBar venueCount={venueCount} />
         <CharitySection />
         <HowItWorks />
-        <DealsShowcase hasPass={false} onRedeemClick={() => {}} redeemedDeals={[]} isFreeUser={true} onSignInClick={onAuthClick} />
+        <DealsDirectoryV2 
+          hasPass={false} 
+          onRedeemClick={() => onBuyPassClick?.() || onMainCtaClick()} 
+          redeemedDeals={[]} 
+          onBuyPassClick={onBuyPassClick || onMainCtaClick}
+        />
         <FAQ />
         <PricingOptions onSelectPass={onSelectPass} passPrice={passPrice} />
       </main>
