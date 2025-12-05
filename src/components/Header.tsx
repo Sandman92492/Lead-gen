@@ -232,7 +232,7 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
             {!isSignedIn && (
                 <button
                     onClick={toggleMenu}
-                    className="fixed bottom-0 left-0 right-0 md:hidden z-20 w-full px-8 py-6 bg-bg-card text-text-primary font-bold text-xl flex items-center justify-center gap-3 rounded-t-3xl shadow-lg border-t-8 hover:shadow-xl hover:bg-gray-50 transition-all border-brand-dark-blue"
+                    className="fixed bottom-0 left-0 right-0 md:hidden z-40 w-full px-8 py-6 bg-bg-card text-text-primary font-bold text-xl flex items-center justify-center gap-3 rounded-t-3xl shadow-lg border-t-8 hover:shadow-xl hover:bg-gray-50 transition-all border-brand-dark-blue"
                     style={{ boxShadow: theme === 'dark' ? '0 -4px 8px rgba(0, 0, 0, 0.4), 0 -12px 20px rgba(0, 0, 0, 0.5)' : '0 -4px 8px rgba(0, 0, 0, 0.1), 0 -12px 20px rgba(0, 0, 0, 0.15)' }}
                     aria-label="Open menu"
                     aria-expanded={isMenuOpen}

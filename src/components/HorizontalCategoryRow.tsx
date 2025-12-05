@@ -37,10 +37,6 @@ const HorizontalCategoryRow: React.FC<HorizontalCategoryRowProps> = ({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  if (deals.length === 0) {
-    return null;
-  }
-
   const checkScroll = () => {
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
@@ -50,6 +46,7 @@ const HorizontalCategoryRow: React.FC<HorizontalCategoryRowProps> = ({
   };
 
   React.useEffect(() => {
+    if (!deals || deals.length === 0) return;
     checkScroll();
     const container = scrollContainerRef.current;
     if (container) {
@@ -61,6 +58,11 @@ const HorizontalCategoryRow: React.FC<HorizontalCategoryRowProps> = ({
       };
     }
   }, [deals]);
+
+  // Safety check for undefined/empty deals - AFTER all hooks
+  if (!deals || deals.length === 0) {
+    return null;
+  }
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
