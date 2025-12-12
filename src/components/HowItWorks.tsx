@@ -32,6 +32,7 @@ const HowItWorks: React.FC = () => {
             icon: <PhoneIcon />,
             title: 'Flash Your Phone',
             description: 'Show your digital pass at checkout. No codes needed.',
+            note: 'Active internet connection required to redeem deals.',
         },
         {
             icon: <SavingsIcon />,
@@ -61,6 +62,9 @@ const HowItWorks: React.FC = () => {
                             </div>
                             <h3 className="text-xl font-display font-bold text-text-primary mb-2">{step.title}</h3>
                             <p className="text-text-secondary text-sm leading-relaxed">{step.description}</p>
+                            {'note' in step && (step as any).note && (
+                              <p className="text-text-secondary/80 text-xs leading-relaxed mt-2">{(step as any).note}</p>
+                            )}
                         </div>
                     ))}
                 </div>

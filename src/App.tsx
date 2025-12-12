@@ -41,6 +41,11 @@ const App: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [isOnline, setIsOnline] = useState(() => {
+    if (typeof navigator === 'undefined') return true;
+    return navigator.onLine;
+  });
+
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [selectedPassType, setSelectedPassType] = useState<PassType | null>(null);
   const [isActivateModalOpen, setIsActivateModalOpen] = useState(false);
@@ -96,6 +101,19 @@ const App: React.FC = () => {
 
   // Payment result modals
   const [paymentResult, setPaymentResult] = useState<'success' | 'failure' | 'cancel' | null>(null);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   // Scroll to top when userState changes to free
   useEffect(() => {
@@ -502,6 +520,7 @@ const App: React.FC = () => {
           onActivateClick={() => setIsActivateModalOpen(true)}
           onMainCtaClick={handleMainCta}
           onBuyPassClick={() => handleSelectAndPurchase('holiday')}
+          isOnline={isOnline}
         />
       )}
 
@@ -522,6 +541,7 @@ const App: React.FC = () => {
           onTermsClick={() => setIsTermsOfServiceOpen(true)}
           onCharityClick={() => setIsCharitySectionOpen(true)}
           onFaqClick={() => setIsFaqOpen(true)}
+          isOnline={isOnline}
         />
       )}
 

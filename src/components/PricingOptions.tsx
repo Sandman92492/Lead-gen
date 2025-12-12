@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Button from './Button.tsx';
 import { PassType, PassFeatures } from '../types.ts';
 import { getPassPrice, getPassFeatures } from '../utils/pricing';
+import { useAllDeals } from '../hooks/useAllDeals';
 
 interface PricingOptionsProps {
     onSelectPass?: (passType: PassType) => void;
@@ -13,11 +14,21 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
     const [localPassPrice, setLocalPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
     const [features, setFeatures] = useState<PassFeatures>({
         description: 'Discover and support Port Alfred\'s best local venues while enjoying great deals and authentic experiences.',
-        feature1: 'Discover 70+ local venues and businesses',
+        feature1: 'Discover local venues and businesses',
         feature2: 'Support independent Port Alfred businesses',
         feature3: 'Enjoy verified savings and great experiences',
-        venueCount: 70
+        venueCount: 0
     });
+
+    const { deals: allDeals = [] } = useAllDeals();
+    const venueCount = useMemo(() => {
+        const vendorIds = new Set(allDeals.map((deal) => deal.vendorId).filter(Boolean));
+        return vendorIds.size;
+    }, [allDeals]);
+
+    const feature1Text = venueCount > 0
+        ? `Discover ${venueCount}+ local venues and businesses`
+        : 'Discover local venues and businesses';
 
     // Use prop if provided, otherwise use local state
     const passPrice = propPassPrice || localPassPrice;
@@ -72,8 +83,7 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
                                     </div>
                                     {passPrice.launchPricing && (
                                         <>
-                                            <span className="block text-sm text-urgency-high font-bold mt-1">🎉 Launch Pricing!</span>
-                                            <span className="block text-xs text-urgency-high mt-1">From Nov 30 • Limited to first 50 users</span>
+                                            <span className="block text-sm text-urgency-high font-bold mt-1">🎉 LIMITED LAUNCH OFFER: 50% OFF</span>
                                         </>
                                     )}
                                     <span className="text-text-secondary block text-sm mt-2">Dec 1 - Jan 31</span>
@@ -85,7 +95,7 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
                             <ul className="space-y-3 mb-8">
                                 <li className="flex items-start text-text-secondary">
                                     <span className="text-action-primary mr-3 font-bold">✓</span>
-                                    <span>{features.feature1}</span>
+                                    <span>{feature1Text}</span>
                                 </li>
                                 <li className="flex items-start text-text-secondary">
                                     <span className="text-action-primary mr-3 font-bold">✓</span>
@@ -116,6 +126,12 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
                                 >
                                     {isTestPaymentLoading ? 'Processing...' : `Buy Pass (R${passPrice.price})`}
                                 </Button>
+                                <div className="mt-3 flex items-center justify-center gap-3 text-text-secondary/70">
+                                    <span className="text-[10px] font-semibold uppercase tracking-wide">visa</span>
+                                    <span className="text-[10px] font-semibold uppercase tracking-wide">mastercard</span>
+                                    <span className="text-[10px] font-semibold uppercase tracking-wide">apple pay</span>
+                                    <span className="text-[10px] font-semibold uppercase tracking-wide">google pay</span>
+                                </div>
                             </div>
                         </div>
                     </div>

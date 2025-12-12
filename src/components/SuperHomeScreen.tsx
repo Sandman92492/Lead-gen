@@ -21,6 +21,8 @@ interface SuperHomeScreenProps {
   // Interactions
   onRedeemClick?: (dealName: string) => void;
   onBuyPassClick?: () => void;
+
+  isOnline?: boolean;
 }
 
 /**
@@ -44,6 +46,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
   onRedeemClick,
   passExpiryDate,
   onBuyPassClick,
+  isOnline = true,
 }) => {
   const navigate = useNavigate();
   const [isPassModalOpen, setIsPassModalOpen] = useState(false);
@@ -101,6 +104,27 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
           </div>
         </div>
       </header>
+
+      {!isOnline && (
+        <section>
+          <div className="w-full bg-urgency-high/10 border-y border-urgency-high/30">
+            <div className="container-px container mx-auto px-4 py-3">
+              <div className="max-w-6xl mx-auto">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 text-urgency-high" aria-hidden="true">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM9 9a1 1 0 102 0 1 1 0 00-2 0zm.25 6a.75.75 0 001.5 0v-4a.75.75 0 00-1.5 0v4z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <p className="text-text-secondary text-sm">
+                    You are offline. You can view your pass, but need an internet connection to redeem deals.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ==================== HERO: PASS CARD ==================== */}
       <section className="py-8 md:py-12">

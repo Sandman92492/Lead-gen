@@ -20,7 +20,7 @@ const DealsShowcase: React.FC<DealsShowcaseProps> = ({ hasPass, redeemedDeals = 
     deals = [...allDeals].sort((a, b) => (b.savings || 0) - (a.savings || 0)).slice(0, 4);
   } else {
     // For other users: show featured deals
-    deals = allDeals.filter(deal => deal.featured);
+    deals = allDeals.filter(deal => deal.featured).sort((a, b) => (b.savings || 0) - (a.savings || 0));
   }
 
   const isRedeemed = (dealName: string) => redeemedDeals.includes(dealName);

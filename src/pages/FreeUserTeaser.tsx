@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TrustBar from '../components/TrustBar';
-import { getPassPrice, getPassFeatures } from '../utils/pricing';
-import { PassFeatures } from '../types';
+import { getPassPrice } from '../utils/pricing';
+import { useAllDeals } from '../hooks/useAllDeals';
 
 interface FreUserTeaserProps {
   userName?: string;
@@ -12,22 +12,19 @@ interface FreUserTeaserProps {
 const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ onSelectPass }) => {
   const navigate = useNavigate();
   const [passPrice, setPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
-  const [features, setFeatures] = useState<PassFeatures>({
-    description: 'Discover and support Port Alfred\'s best local venues while enjoying great deals and authentic experiences.',
-    feature1: 'Discover 70+ local venues and businesses',
-    feature2: 'Support independent Port Alfred businesses',
-    feature3: 'Enjoy verified savings and great experiences',
-    venueCount: 70
-  });
+  const { deals: allDeals = [] } = useAllDeals();
+
+  const venueCount = useMemo(() => {
+    const vendorIds = new Set(allDeals.map((deal) => deal.vendorId).filter(Boolean));
+    return vendorIds.size;
+  }, [allDeals]);
 
   useEffect(() => {
     const loadData = async () => {
-      const [price, passFeatures] = await Promise.all([
+      const [price] = await Promise.all([
         getPassPrice(),
-        getPassFeatures()
       ]);
       setPassPrice(price);
-      setFeatures(passFeatures);
     };
     loadData();
   }, []);
@@ -84,7 +81,7 @@ const FreeUserTeaser: React.FC<FreUserTeaserProps> = ({ onSelectPass }) => {
       </section>
 
       {/* Trust & Proof Strip */}
-      <TrustBar venueCount={features.venueCount} />
+      <TrustBar venueCount={venueCount} />
 
       {/* Browse All Deals Section */}
       <section className="bg-bg-primary py-6 md:py-16">

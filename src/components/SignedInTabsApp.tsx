@@ -18,6 +18,7 @@ interface SignedInTabsAppProps {
     user?: any;
     userEmail?: string;
     userPhotoURL?: string;
+    isOnline?: boolean;
     onMainCta: () => void;
     onRedeemClick: (dealName: string) => void;
     onSignOut: () => void;
@@ -36,6 +37,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
     user,
     userEmail,
     userPhotoURL,
+    isOnline,
     onMainCta,
     onRedeemClick,
     onSignOut,
@@ -167,6 +169,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
                             dealsByCategory={dealsByCategory}
                             useSuperHome={true}
                             onBuyPassClick={onBuyPassClick}
+                            isOnline={isOnline}
                         />
                     } />
                     <Route path="/deals" element={

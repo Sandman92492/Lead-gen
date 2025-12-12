@@ -17,9 +17,8 @@ const CharitySection: React.FC = () => {
             </div>
             <div className="text-lg text-text-secondary leading-relaxed max-w-3xl mx-auto">
               <p>
-                This isn't just a discount pass. It's a community initiative. We donate{' '}
-                <strong className="text-action-primary">25% of every sale</strong> directly to the 
-                Port Alfred Soup Kitchen to help feed families right here in town.
+                We donate <strong className="text-action-primary">25% of every sale</strong> directly to the Port Alfred Soup Kitchen.{' '}
+                <strong className="text-action-primary">Your purchase helps put food on the table for local families.</strong>
               </p>
             </div>
           </div>

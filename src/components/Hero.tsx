@@ -66,7 +66,7 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
         <div className="absolute inset-0 bg-black/50 dark:bg-black/60 z-0"></div>
         <div className="container mx-auto px-4 sm:px-6 pt-24 md:pt-16 relative z-10 flex flex-col items-center">
            <div className="max-w-3xl mx-auto scroll-reveal">
-               <h2 className="text-xs md:text-sm font-semibold text-white uppercase tracking-[0.25em] mb-3 md:mb-4 drop-shadow-sm flex items-center justify-center gap-2">
+               <h2 className="text-xs md:text-sm font-semibold text-yellow-300 uppercase tracking-[0.25em] mb-3 md:mb-4 drop-shadow-sm flex items-center justify-center gap-2">
                    <svg className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                        <path d="M12 2C7.13 2 3 6.13 3 11c0 5.25 9 13 9 13s9-7.75 9-13c0-4.87-4.13-9-9-9zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                    </svg>

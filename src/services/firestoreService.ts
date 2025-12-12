@@ -14,6 +14,33 @@ import {
 import { PassType, PassStatus, Vendor, Deal } from '../types';
 import { triggerFirstRedemptionEmail } from './emailService';
 
+const PAHP_CACHED_DEALS_KEY = 'pahp_cached_deals_v1';
+
+const isNavigatorOffline = (): boolean => {
+    return typeof navigator !== 'undefined' && navigator.onLine === false;
+};
+
+const getCachedDeals = (): Deal[] | null => {
+    try {
+        const raw = localStorage.getItem(PAHP_CACHED_DEALS_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw) as any;
+        const dealsCandidate = parsed?.data ? parsed.data : parsed;
+        if (!Array.isArray(dealsCandidate)) return null;
+        return dealsCandidate as Deal[];
+    } catch {
+        return null;
+    }
+};
+
+const setCachedDeals = (deals: Deal[]) => {
+    try {
+        localStorage.setItem(PAHP_CACHED_DEALS_KEY, JSON.stringify({ cachedAt: new Date().toISOString(), data: deals }));
+    } catch {
+        // Ignore cache errors
+    }
+};
+
 // Pass document structure
 export interface PassDocument {
     passId: string;
@@ -411,9 +438,22 @@ export const getAllDeals = async (): Promise<Deal[]> => {
             
             return { ...deal, id: doc.id };
         }));
-        return sortDeals(deals);
+        const sorted = sortDeals(deals);
+        if (sorted.length > 0) {
+            setCachedDeals(sorted);
+            return sorted;
+        }
+
+        if (isNavigatorOffline()) {
+            const cached = getCachedDeals();
+            if (cached) return sortDeals(cached);
+        }
+
+        return sorted;
     } catch (error: any) {
         console.error('Error getting deals:', error);
+        const cached = getCachedDeals();
+        if (cached) return sortDeals(cached);
         return [];
     }
 };

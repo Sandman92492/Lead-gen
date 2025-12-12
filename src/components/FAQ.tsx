@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { FAQS } from '../constants.tsx';
 import { highlightPrices } from '../utils/formatting';
-import { getPassFeatures } from '../utils/pricing';
+import { useAllDeals } from '../hooks/useAllDeals';
 
 interface FaqHeaderRef {
   [key: number]: HTMLButtonElement | null;
@@ -9,9 +9,14 @@ interface FaqHeaderRef {
 
 const FAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const [venueCount, setVenueCount] = useState(70); // Default fallback
   const faqHeaderRefs = useRef<FaqHeaderRef>({});
   const prevIndexRef = useRef<number | null>(0);
+
+  const { deals: allDeals = [] } = useAllDeals();
+  const venueCount = useMemo(() => {
+    const vendorIds = new Set(allDeals.map((deal) => deal.vendorId).filter(Boolean));
+    return vendorIds.size;
+  }, [allDeals]);
 
   useEffect(() => {
     // Only scroll if we're opening a NEW item (not just closing)
@@ -27,28 +32,17 @@ const FAQ: React.FC = () => {
     prevIndexRef.current = openIndex;
   }, [openIndex]);
 
-  // Fetch venue count from Firestore
-  useEffect(() => {
-    const loadVenueCount = async () => {
-      try {
-        const features = await getPassFeatures();
-        if (features.venueCount) {
-          setVenueCount(features.venueCount);
-        }
-      } catch {
-        // Keep default value on error
-      }
-    };
-    loadVenueCount();
-  }, []);
-
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   const renderAnswer = (answer: string) => {
-    // Replace {{VENUE_COUNT}} with actual count
-    let processedAnswer = answer.replace(/{{VENUE_COUNT}}/g, venueCount.toString());
+    const venueCountText = venueCount > 0 ? venueCount.toString() : 'many';
+    const venueCountPlusText = venueCount > 0 ? `${venueCount}+` : 'many';
+
+    let processedAnswer = answer
+      .replace(/{{VENUE_COUNT}}\+/g, venueCountPlusText)
+      .replace(/{{VENUE_COUNT}}/g, venueCountText);
     return highlightPrices(processedAnswer);
   };
 

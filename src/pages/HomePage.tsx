@@ -16,6 +16,7 @@ interface HomePageProps {
   dealsByCategory?: { category: string; emoji: string; deals: Deal[] }[];
   useSuperHome?: boolean;
   onBuyPassClick?: () => void;
+  isOnline?: boolean;
 }
 
 const HomePage: React.FC<HomePageProps> = ({
@@ -30,6 +31,7 @@ const HomePage: React.FC<HomePageProps> = ({
   dealsByCategory = [],
   useSuperHome = false,
   onBuyPassClick,
+  isOnline,
 }) => {
   // Show SuperHomeScreen for all signed-in users (with or without pass)
   if (useSuperHome) {
@@ -42,6 +44,7 @@ const HomePage: React.FC<HomePageProps> = ({
         redeemedDeals={redeemedDeals}
         onRedeemClick={onRedeemClick}
         onBuyPassClick={onBuyPassClick || (() => onSelectPass?.('holiday'))}
+        isOnline={isOnline}
       />
     );
   }
