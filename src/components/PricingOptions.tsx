@@ -83,10 +83,10 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
                                     </div>
                                     {passPrice.launchPricing && (
                                         <>
-                                            <span className="block text-sm text-urgency-high font-bold mt-1">🎉 LIMITED LAUNCH OFFER: 50% OFF</span>
+                                            <span className="block text-sm text-urgency-high font-bold mt-1">Early supporter pricing is live.</span>
                                         </>
                                     )}
-                                    <span className="text-text-secondary block text-sm mt-2">Dec 1 - Jan 31</span>
+                                    <span className="text-text-secondary block text-sm mt-2">Valid Dec 1 - Jan 31</span>
                                 </div>
                             </div>
 

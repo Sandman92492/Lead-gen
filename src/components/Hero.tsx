@@ -78,7 +78,7 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
                    </span>
                </h1>
                <p className="text-base md:text-lg text-white/90 leading-relaxed mb-6 drop-shadow-lg max-w-xl mx-auto">
-                   Skip tourist prices. Unlock R{totalSavings.toLocaleString()}+ in savings at Port Alfred's best spots.
+                   Discover the places locals love. Unlock R{totalSavings.toLocaleString()}+ in savings around Port Alfred and surrounds.
                </p>
 
                <div className="flex flex-col items-center gap-6">
@@ -96,7 +96,7 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
                   {launchData?.isLaunchPricing && launchData.passesRemaining > 0 && (
                     <p className="text-white/80 text-xs md:text-sm drop-shadow-md">
                       <span className="text-yellow-300 font-semibold">
-                        Only {launchData.passesRemaining} left at R{passPrice}
+                        Early supporter pricing is live.
                       </span>
                     </p>
                   )}
