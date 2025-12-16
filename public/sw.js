@@ -1,5 +1,5 @@
 // Service Worker for Port Alfred Holiday Pass PWA
-// Build timestamp: 2025-12-12T11:10:56.523Z
+// Build timestamp: 2025-12-16T08:12:27.437Z
 const CACHE_NAME = 'holiday-pass-v5';
 const RUNTIME_CACHE = 'holiday-pass-runtime-v5';
 const ASSETS_CACHE = 'holiday-pass-assets-v5';

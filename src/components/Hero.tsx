@@ -1,9 +1,6 @@
-
-
 import React, { useState, useEffect } from 'react';
 import Button from './Button.tsx';
-import { getPassPrice, getLaunchPricingData } from '../utils/pricing';
-import { useAllDeals } from '../hooks/useAllDeals';
+import { getLaunchPricingData } from '../utils/pricing';
 
 interface HeroProps {
   onButtonClick: () => void;
@@ -11,56 +8,39 @@ interface HeroProps {
   passHolderName: string | null;
   onActivateClick: () => void;
   appStatus: 'loading' | 'validated' | 'guest';
-  passPrice?: number;
-  passCount?: number;
+  venueCount?: number;
 }
 
-const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick: _onActivateClick, appStatus, passPrice: propPassPrice }) => {
-  const [localPassPrice, setLocalPassPrice] = useState(199);
-  const [totalSavings, setTotalSavings] = useState(1000);
+const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick: _onActivateClick, appStatus, venueCount = 0 }) => {
   const [launchData, setLaunchData] = useState<{ passesRemaining: number; isLaunchPricing: boolean } | null>(null);
-  const { deals } = useAllDeals();
   const isLoading = appStatus === 'loading';
   const mainButtonText = isLoading ? 'Checking Pass...' : buttonText;
 
-  // Use prop if provided, otherwise fetch locally
-  const passPrice = propPassPrice ?? localPassPrice;
-
   useEffect(() => {
     const loadData = async () => {
-      if (propPassPrice === undefined) {
-        const price = await getPassPrice();
-        setLocalPassPrice(price.price);
-      }
       // Always fetch launch data for passes remaining
       const launch = await getLaunchPricingData();
       setLaunchData(launch);
     };
     loadData();
-  }, [propPassPrice]);
-
-  // Calculate total savings from all deals, rounded down to nearest hundred
-  useEffect(() => {
-    if (deals.length > 0) {
-      const total = deals.reduce((sum, deal) => sum + (deal.savings || 0), 0);
-      const roundedTotal = Math.floor(total / 100) * 100;
-      setTotalSavings(roundedTotal);
-    }
-  }, [deals]);
+  }, []);
 
   const imageUrl = "/Images/welcomev3.webp";
+  const trustedText = venueCount > 0 ? `Trusted by ${venueCount}+ local businesses` : 'Trusted by local businesses';
 
   return (
     <>
       <section className="relative min-h-screen flex flex-col items-center justify-start md:justify-center text-center overflow-hidden">
-         {/* Image background for all devices */}
-         <div
-           className="absolute inset-0 bg-cover bg-center bg-fixed z-0"
-           style={{
-             backgroundImage: `url('${imageUrl}')`,
-             backgroundAttachment: 'fixed'
-           }}
-         />
+        {/* Hero background image */}
+        <img
+          src={imageUrl}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover z-0 select-none pointer-events-none"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+        />
 
         {/* Overlay for text readability */}
         <div className="absolute inset-0 bg-black/50 dark:bg-black/60 z-0"></div>
@@ -72,16 +52,22 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
                    </svg>
                    Port Alfred Holiday Pass
                </h2>
-               <h1 className="font-display text-white leading-tight mb-8 md:mb-10 drop-shadow-lg">
-                   <span className="block text-4xl md:text-5xl font-black">
-                     Holiday Like a <span className="text-yellow-300">Local.</span>
-                   </span>
+               <h1 className="font-display text-white leading-[1.05] tracking-tight mb-5 md:mb-6 drop-shadow-lg text-balance">
+                 <span className="block text-3xl sm:text-4xl md:text-5xl font-black">
+                   One pass. Big local savings.
+                 </span>
                </h1>
                <p className="text-base md:text-lg text-white/90 leading-relaxed mb-6 drop-shadow-lg max-w-xl mx-auto">
-                   Discover the places locals love. Unlock R{totalSavings.toLocaleString()}+ in savings around Port Alfred and surrounds.
+                 Instant discounts & freebies at local favourites. Verified in-store. Pays for itself in 2–3 uses.
                </p>
 
-               <div className="flex flex-col items-center gap-6">
+               <div className="flex flex-col items-center gap-4 md:gap-5">
+                  {launchData?.isLaunchPricing && launchData.passesRemaining > 0 && (
+                    <span className="inline-flex items-center gap-2 rounded-full bg-yellow-300/15 border border-yellow-300/30 px-4 py-1 text-xs md:text-sm text-yellow-200 drop-shadow-md">
+                      Early supporter pricing is live
+                    </span>
+                  )}
+
                   <Button 
                     variant="primary" 
                     size="lg"
@@ -89,20 +75,26 @@ const Hero: React.FC<HeroProps> = ({ onButtonClick, buttonText, onActivateClick:
                     onClick={onButtonClick}
                     disabled={isLoading}
                   >
-                      {isLoading ? mainButtonText : `Get the Pass – R${passPrice}`}
+                    {mainButtonText}
                   </Button>
-                  
-                  {/* Urgency line */}
-                  {launchData?.isLaunchPricing && launchData.passesRemaining > 0 && (
-                    <p className="text-white/80 text-xs md:text-sm drop-shadow-md">
-                      <span className="text-yellow-300 font-semibold">
-                        Early supporter pricing is live.
-                      </span>
-                    </p>
-                  )}
+
+                  <p className="text-white/85 text-xs md:text-sm drop-shadow-md">
+                    {trustedText} • Secure checkout
+                  </p>
+
+                  <span className="inline-flex items-center gap-2 rounded-full bg-urgency-high/15 border border-urgency-high/30 px-4 py-1 text-xs text-white/90">
+                    ❤️ 25% to the Soup Kitchen
+                  </span>
+
+                  <a
+                    href="#top-picks"
+                    className="text-white/90 text-sm font-semibold hover:text-white underline underline-offset-4"
+                  >
+                    See included deals
+                  </a>
                   
                   {/* Subtle scroll down arrow */}
-                  <div className="mt-12 opacity-60" style={{ animation: 'gentle-bob 2.5s ease-in-out infinite' }}>
+                  <div className="hidden md:block mt-10 opacity-60" style={{ animation: 'gentle-bob 2.5s ease-in-out infinite' }}>
                    <svg className="w-6 h-6 text-white drop-shadow-md" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                      <path d="M12 5v14M19 12l-7 7m0 0l-7-7" strokeLinecap="round" strokeLinejoin="round" />
                    </svg>

@@ -27,8 +27,8 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
     }, [allDeals]);
 
     const feature1Text = venueCount > 0
-        ? `Discover ${venueCount}+ local venues and businesses`
-        : 'Discover local venues and businesses';
+        ? `Unlock ${venueCount}+ partner venues`
+        : 'Unlock partner venues';
 
     // Use prop if provided, otherwise use local state
     const passPrice = propPassPrice || localPassPrice;
@@ -54,14 +54,14 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
     };
 
     return (
-        <section id="pricing-options" className="py-20 md:py-32 bg-bg-primary">
+        <section id="pricing-options" className="py-12 md:py-16 bg-bg-primary border-b border-border-subtle">
             <div className="container mx-auto px-4 sm:px-6">
-                <div className="max-w-3xl mx-auto text-center mb-16 scroll-reveal">
-                    <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">
-                        Select Your Plan
+                <div className="max-w-3xl mx-auto text-center mb-8 md:mb-10 scroll-reveal">
+                    <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-3">
+                        Pricing
                     </h2>
-                    <h1 className="text-4xl md:text-5xl font-display font-black text-action-primary mb-4 md:mb-6">Support Local Port Alfred</h1>
-                    <p className="text-lg md:text-xl text-text-secondary mb-8 md:mb-10">Get great deals while discovering and supporting the businesses that make our town thrive.</p>
+                    <h1 className="text-4xl md:text-5xl font-display font-black text-action-primary mb-3 md:mb-4">Holiday Pass</h1>
+                    <p className="text-lg md:text-xl text-text-secondary">One purchase unlocks all verified local deals.</p>
                 </div>
 
                 <div className="max-w-4xl mx-auto">
@@ -71,9 +71,9 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
                             <div className="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-action-primary text-white dark:bg-action-primary dark:text-white font-bold text-sm px-4 py-1 rounded-full shadow-lg">
                                 The Only Pass
                             </div>
-                            <h3 className="text-3xl font-display font-black text-text-primary text-center mb-4">Holiday Pass</h3>
+                            <h3 className="text-2xl sm:text-3xl font-display font-black text-text-primary text-center mb-3">Holiday Pass</h3>
 
-                            <div className="text-center mb-6">
+                            <div className="text-center mb-5">
                                 <div>
                                     <div className="flex items-center justify-center gap-3 mb-2">
                                         <span className="text-5xl font-display font-black text-action-primary">R{passPrice.price}</span>
@@ -81,16 +81,39 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
                                             <span className="text-text-secondary line-through text-2xl">R199</span>
                                         )}
                                     </div>
-                                    {passPrice.launchPricing && (
-                                        <>
-                                            <span className="block text-sm text-urgency-high font-bold mt-1">Early supporter pricing is live.</span>
-                                        </>
-                                    )}
-                                    <span className="text-text-secondary block text-sm mt-2">Valid Dec 1 - Jan 31</span>
+                                    <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
+                                        {passPrice.launchPricing && (
+                                            <span className="inline-flex items-center rounded-full bg-urgency-high/10 text-urgency-high border border-urgency-high/20 px-3 py-1 text-xs font-bold">
+                                                Early pricing
+                                            </span>
+                                        )}
+                                        <span className="inline-flex items-center rounded-full bg-bg-primary text-text-secondary border border-border-subtle px-3 py-1 text-xs font-semibold">
+                                            Valid Dec 1 – Jan 31
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <p className="text-text-secondary text-center mb-6">{features.description}</p>
+                            <div className="pt-1 mb-6">
+                                <Button
+                                    variant="primary"
+                                    className="w-full text-lg py-3 transform transition-transform duration-300 hover:scale-105 animate-subtle-pulse disabled:animate-none"
+                                    onClick={handleTestPayment}
+                                    disabled={isTestPaymentLoading}
+                                >
+                                    {isTestPaymentLoading ? 'Processing...' : `Buy Pass (R${passPrice.price})`}
+                                </Button>
+                                <div className="mt-3 flex items-center justify-center gap-3 text-text-secondary/70">
+                                    <span className="text-[10px] font-semibold uppercase tracking-wide">visa</span>
+                                    <span className="text-[10px] font-semibold uppercase tracking-wide">mastercard</span>
+                                    <span className="text-[10px] font-semibold uppercase tracking-wide">apple pay</span>
+                                    <span className="text-[10px] font-semibold uppercase tracking-wide">google pay</span>
+                                </div>
+                            </div>
+
+                            <p className="text-text-secondary text-center mb-6">
+                                {features.description}
+                            </p>
 
                             <ul className="space-y-3 mb-8">
                                 <li className="flex items-start text-text-secondary">
@@ -114,23 +137,6 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
                                         <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
                                     </svg>
                                     <span>Instant digital access</span>
-                                </div>
-                            </div>
-
-                            <div className="pt-3">
-                                <Button
-                                    variant="primary"
-                                    className="w-full text-lg py-3 transform transition-transform duration-300 hover:scale-105 animate-subtle-pulse disabled:animate-none"
-                                    onClick={handleTestPayment}
-                                    disabled={isTestPaymentLoading}
-                                >
-                                    {isTestPaymentLoading ? 'Processing...' : `Buy Pass (R${passPrice.price})`}
-                                </Button>
-                                <div className="mt-3 flex items-center justify-center gap-3 text-text-secondary/70">
-                                    <span className="text-[10px] font-semibold uppercase tracking-wide">visa</span>
-                                    <span className="text-[10px] font-semibold uppercase tracking-wide">mastercard</span>
-                                    <span className="text-[10px] font-semibold uppercase tracking-wide">apple pay</span>
-                                    <span className="text-[10px] font-semibold uppercase tracking-wide">google pay</span>
                                 </div>
                             </div>
                         </div>

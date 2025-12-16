@@ -2,12 +2,12 @@ import React from 'react';
 
 const CharitySection: React.FC = () => {
   return (
-    <section id="charity" className="py-20 md:py-32 bg-bg-card">
+    <section id="charity" className="pt-12 pb-8 md:pt-16 md:pb-12 bg-bg-card">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
           {/* Text content */}
           <div className="text-center scroll-reveal mb-10 md:mb-12">
-            <h2 className="text-4xl md:text-5xl font-display font-black text-action-primary mb-4 md:mb-6">
+            <h2 className="text-3xl md:text-4xl font-display font-black text-action-primary mb-4 md:mb-6">
               Save Local. Feed Local.
             </h2>
             <div className="mb-6">
@@ -28,7 +28,9 @@ const CharitySection: React.FC = () => {
             <img 
               src="/Images/charity2.webp" 
               alt="Making a difference in the Port Alfred community through charitable giving"
-              className="rounded-lg shadow-2xl w-full h-auto object-cover border-4 border-action-primary"
+              className="rounded-2xl shadow-lg w-full max-w-3xl mx-auto h-64 sm:h-80 md:h-[420px] object-cover border border-border-subtle"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </div>

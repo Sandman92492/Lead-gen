@@ -3,11 +3,11 @@ import Hero from './Hero';
 import TrustBar from './TrustBar';
 import CharitySection from './CharitySection';
 import HowItWorks from './HowItWorks';
-import HorizontalCategoryRow from './HorizontalCategoryRow';
 import FAQ from './FAQ';
 import PricingOptions from './PricingOptions';
-import { PassType, Deal } from '../types';
-import { getPassPrice, getPassCount } from '../utils/pricing';
+import CompactDealCard from './CompactDealCard';
+import { PassType } from '../types';
+import { getPassPrice } from '../utils/pricing';
 import { useAllDeals } from '../hooks/useAllDeals';
 
 interface FreeUserViewProps {
@@ -26,42 +26,41 @@ const FreeUserView: React.FC<FreeUserViewProps> = ({
   isOnline = true,
 }) => {
   const [passPrice, setPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
-  const [passCount, setPassCount] = useState(0);
   const { deals: allDeals = [] } = useAllDeals();
+
+  const topPicksDeals = useMemo(() => {
+    if (!allDeals || allDeals.length === 0) return [];
+
+    const dealsWithSavings = allDeals.filter((deal) => (deal.savings || 0) > 0);
+    const sourceDeals = dealsWithSavings.length >= 6 ? dealsWithSavings : allDeals;
+
+    return [...sourceDeals].sort((a, b) => (b.savings || 0) - (a.savings || 0)).slice(0, 6);
+  }, [allDeals]);
 
   const venueCount = useMemo(() => {
     const vendorIds = new Set(allDeals.map((deal) => deal.vendorId).filter(Boolean));
     return vendorIds.size;
   }, [allDeals]);
 
-  const sortDealsBySavings = (deals: Deal[]) => {
-    return [...deals].sort((a, b) => (b.savings || 0) - (a.savings || 0));
-  };
-
-  // Load price, pass count, and venue count once at parent level
+  // Load price once at parent level
   useEffect(() => {
     const loadData = async () => {
-      const [price, count] = await Promise.all([
-        getPassPrice(),
-        getPassCount(),
-      ]);
+      const price = await getPassPrice();
       setPassPrice(price);
-      setPassCount(count);
     };
     loadData();
   }, []);
 
   return (
     <>
-      <main className="pb-24 md:pb-0 bg-bg-primary">
+      <main className="bg-bg-primary">
         <Hero
           onButtonClick={onMainCtaClick}
-          buttonText="Get My Holiday Pass Now"
+          buttonText={`Buy Pass (R${passPrice.price})`}
           passHolderName={null}
           onActivateClick={onActivateClick}
           appStatus="guest"
-          passPrice={passPrice.price}
-          passCount={passCount}
+          venueCount={venueCount}
         />
 
         {!isOnline && (
@@ -75,7 +74,7 @@ const FreeUserView: React.FC<FreeUserViewProps> = ({
                     </svg>
                   </div>
                   <p className="text-text-secondary text-sm">
-                    You are offline. Pricing and pass counts may be outdated.
+                    You are offline. Pricing may be outdated.
                   </p>
                 </div>
               </div>
@@ -83,56 +82,93 @@ const FreeUserView: React.FC<FreeUserViewProps> = ({
           </section>
         )}
 
-        <TrustBar venueCount={venueCount} />
-        <CharitySection />
-        <HowItWorks />
-        {/* Category Carousels */}
-        {allDeals.length > 0 && (
-          <section className="bg-bg-primary">
-            {/* Heading */}
-            <div className="container mx-auto px-4 sm:px-6 py-8 text-center">
-              <h2 className="text-3xl md:text-4xl font-display font-black text-action-primary mb-4">
-                All Deals
-              </h2>
-              <p className="text-lg md:text-xl text-text-secondary leading-relaxed">
-                Browse {allDeals.length}+ local deals. Get your pass to unlock them all.
+        {/* Top Picks */}
+        {topPicksDeals.length > 0 && (
+          <section id="top-picks" className="bg-bg-primary py-10 md:py-14 border-b border-border-subtle">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="flex items-end justify-between gap-4 mb-5">
+                <div>
+                  <p className="text-xs md:text-sm font-semibold text-action-primary uppercase tracking-widest mb-2">
+                    Top savings right now
+                  </p>
+                  <h2 className="text-2xl md:text-3xl font-display font-black text-text-primary">
+                    Preview a few top deals
+                  </h2>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={onMainCtaClick}
+                  className="text-sm font-semibold text-action-primary hover:underline underline-offset-4 flex-shrink-0"
+                >
+                  Sign in to see all deals →
+                </button>
+              </div>
+
+              <div className="overflow-x-auto scrollbar-hide">
+                <div className="flex gap-4 pb-2">
+                  {topPicksDeals.map((deal, index) => (
+                    <CompactDealCard
+                      key={deal.id || deal.name}
+                      deal={deal}
+                      index={index}
+                      isRedeemed={false}
+                      hasPass={false}
+                      onBuyPassClick={onBuyPassClick || onMainCtaClick}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <p className="mt-3 text-xs text-text-secondary">
+                Tap a deal to preview. Sign in to browse all deals — pass required to redeem in-store.
               </p>
             </div>
-
-            <HorizontalCategoryRow
-                title="Local Eats & Treats"
-                emoji="🍔"
-                description="Support our favorite local food spots"
-                deals={sortDealsBySavings(allDeals.filter((deal) => deal.category === 'restaurant'))}
-                redeemedDeals={[]}
-                onRedeemClick={() => onBuyPassClick?.() || onMainCtaClick()}
-                hasPass={false}
-                onBuyPassClick={onBuyPassClick || onMainCtaClick}
-              />
-              <HorizontalCategoryRow
-                title="Activities & Adventure"
-                emoji="🛶"
-                description="Unforgettable experiences in Port Alfred"
-                deals={sortDealsBySavings(allDeals.filter((deal) => deal.category === 'activity'))}
-                redeemedDeals={[]}
-                onRedeemClick={() => onBuyPassClick?.() || onMainCtaClick()}
-                hasPass={false}
-                onBuyPassClick={onBuyPassClick || onMainCtaClick}
-              />
-            <HorizontalCategoryRow
-              title="Lifestyle & Wellness"
-              emoji="✨"
-              description="Local shops, spas, and wellness"
-              deals={sortDealsBySavings(allDeals.filter((deal) => deal.category === 'shopping'))}
-              redeemedDeals={[]}
-              onRedeemClick={() => onBuyPassClick?.() || onMainCtaClick()}
-              hasPass={false}
-              onBuyPassClick={onBuyPassClick || onMainCtaClick}
-            />
           </section>
         )}
-        <FAQ />
+
+        {/* Why It Works */}
+        <section className="bg-bg-card py-10 md:py-14 border-b border-border-subtle">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-2xl md:text-3xl font-display font-black text-action-primary mb-6">
+                Perfect for your visit
+              </h2>
+
+              <ul className="grid gap-3 sm:grid-cols-3 text-left">
+                <li className="flex items-start gap-3 bg-bg-primary rounded-xl p-4 border border-border-subtle">
+                  <span className="mt-0.5 text-success font-bold" aria-hidden="true">✓</span>
+                  <span className="text-sm text-text-secondary">
+                    <span className="font-semibold text-text-primary">Use instantly</span> on your phone
+                  </span>
+                </li>
+                <li className="flex items-start gap-3 bg-bg-primary rounded-xl p-4 border border-border-subtle">
+                  <span className="mt-0.5 text-success font-bold" aria-hidden="true">✓</span>
+                  <span className="text-sm text-text-secondary">
+                    <span className="font-semibold text-text-primary">Verified in-store</span> (partners trust it)
+                  </span>
+                </li>
+                <li className="flex items-start gap-3 bg-bg-primary rounded-xl p-4 border border-border-subtle">
+                  <span className="mt-0.5 text-success font-bold" aria-hidden="true">✓</span>
+                  <span className="text-sm text-text-secondary">
+                    <span className="font-semibold text-text-primary">Built for short stays</span> — save more than the pass costs
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <HowItWorks />
+
+        {/* Social Proof */}
+        <TrustBar venueCount={venueCount} />
+
         <PricingOptions onSelectPass={onSelectPass} passPrice={passPrice} />
+
+        <FAQ />
+
+        <CharitySection />
       </main>
     </>
   );

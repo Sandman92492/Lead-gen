@@ -42,9 +42,9 @@ const HowItWorks: React.FC = () => {
     ];
 
     return (
-        <section id="how-it-works" className="py-20 md:py-32 bg-bg-card">
+        <section id="how-it-works" className="py-12 md:py-16 bg-bg-card border-b border-border-subtle">
             <div className="container mx-auto px-4 sm:px-6">
-                <div className="max-w-3xl mx-auto text-center mb-16 scroll-reveal">
+                <div className="max-w-3xl mx-auto text-center mb-10 md:mb-12 scroll-reveal">
                     <h1 className="text-4xl md:text-5xl font-display font-black text-action-primary mb-4 md:mb-6">Howzit Work?</h1>
                     <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">No printing. No paper coupons. Discover hidden gems and save instantly on your phone.</p>
                 </div>
