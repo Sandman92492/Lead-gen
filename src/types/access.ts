@@ -37,6 +37,9 @@ export interface CredentialDocument {
   displayName: string;
   createdAt: string;
   suspendedReason?: string;
+  currentCode?: string;
+  currentCodeIssuedAt?: string;
+  currentCodeExpiresAt?: string;
 }
 
 export interface CheckpointDocument {
@@ -85,4 +88,3 @@ export type NewStaffInput = Omit<StaffDocument, 'staffId' | 'createdAt' | 'appro
   createdAt?: string;
   approvedDeviceIds?: string[];
 };
-
