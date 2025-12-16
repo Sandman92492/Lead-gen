@@ -23,13 +23,13 @@ const LoadingScreen: React.FC = () => {
         {/* Logo */}
         <img 
           src={logo} 
-          alt="Holiday Pass Logo" 
+          alt="Raffle Tickets Logo" 
           className="w-16 h-16 object-contain"
         />
         
         {/* Text */}
         <div className="text-center">
-          <p className="text-text-primary font-semibold mb-2">Loading your pass...</p>
+          <p className="text-text-primary font-semibold mb-2">Loading your ticket pack...</p>
           <p className="text-text-secondary text-sm">Just a moment</p>
         </div>
 

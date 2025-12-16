@@ -7,6 +7,9 @@ import { useToast } from '../context/ToastContext';
 import { haptics } from '../utils/haptics';
 import { validateName, validateEmail } from '../utils/validation';
 import { getPassPrice } from '../utils/pricing';
+import { createPass } from '../services/firestoreService';
+
+const mode = ((import.meta as any).env.VITE_DATA_MODE ?? 'mock') as string;
 
 interface PurchaseModalProps {
   isOpen: boolean;
@@ -17,7 +20,7 @@ interface PurchaseModalProps {
   userId?: string;
 }
 
-const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, userEmail, userDisplayName, userId }) => {
+const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, passType, userEmail, userDisplayName, userId }) => {
   const { showToast } = useToast();
   const [name, setName] = useState(userDisplayName || '');
   const [email, setEmail] = useState(userEmail || '');
@@ -98,6 +101,50 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, userEmai
       showToast(emailError.message, 'error');
       return;
     }
+
+    if (mode === 'mock') {
+      try {
+        setIsLoading(true);
+
+        const now = new Date();
+        const expiry = new Date(now);
+        expiry.setDate(expiry.getDate() + 365);
+
+        const passId =
+          typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+            ? crypto.randomUUID().slice(0, 8).toUpperCase()
+            : `${Date.now().toString(16).slice(-8)}`.toUpperCase();
+
+        const result = await createPass({
+          passId,
+          passHolderName: name.trim(),
+          email: email.trim(),
+          passType,
+          passStatus: 'paid',
+          expiryDate: expiry.toISOString(),
+          createdAt: now.toISOString(),
+          userId: userId || 'mock_user_1',
+          paymentStatus: 'completed',
+          purchasePrice: passPrice.price,
+        });
+
+        if (!result.success) {
+          haptics.error();
+          showToast(result.error || 'Purchase failed', 'error');
+          setIsLoading(false);
+          return;
+        }
+
+        // Mirror the existing flow (success screen) without external calls.
+        window.location.href = '/payment/success';
+        return;
+      } catch (error: any) {
+        haptics.error();
+        showToast(error?.message || 'An error occurred. Please try again.', 'error');
+        setIsLoading(false);
+        return;
+      }
+    }
     
     await handleYocoPayment();
   };
@@ -106,7 +153,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, userEmai
     <BaseModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Get Your Holiday Pass"
+      title="Get Your Ticket Pack"
       maxWidth="sm"
     >
       {/* Price Badge */}
@@ -123,7 +170,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, userEmai
         {/* Name & Email Fields */}
         <div className="space-y-3">
           <div>
-            <label className="text-xs text-text-secondary mb-1 block">Name on pass</label>
+            <label className="text-xs text-text-secondary mb-1 block">Name on ticket pack</label>
             <FormInput
               type="text"
               value={name}
@@ -165,7 +212,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, userEmai
           </div>
           <div className="flex items-center gap-2">
             <span>✅</span>
-            <span>14-day refund if no deals redeemed</span>
+            <span>14-day refund if no raffles entered</span>
           </div>
         </div>
       </form>

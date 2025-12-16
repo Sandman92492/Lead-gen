@@ -24,7 +24,7 @@ export const PassIcon: React.FC<IconProps> = ({ className = 'w-6 h-6' }) => {
    return (
      <img 
        src="/Images/pass.svg" 
-       alt="Pass" 
+       alt="Ticket Pack" 
        className={className}
        style={{ 
          filter: theme === 'dark' ? 'brightness(1.2) invert(1)' : 'brightness(0.9)'
@@ -38,7 +38,7 @@ export const DealsIcon: React.FC<IconProps> = ({ className = 'w-6 h-6' }) => {
    return (
      <img 
        src="/Images/all-deals.svg" 
-       alt="All Deals" 
+       alt="All Raffles" 
        className={className}
        style={{ 
          filter: theme === 'dark' ? 'brightness(1.2) invert(1)' : 'brightness(0.9)'

@@ -33,7 +33,7 @@ const RedemptionConfirmationModal: React.FC<RedemptionConfirmationModalProps> = 
   };
 
   return (
-    <BaseModal isOpen={isOpen} onClose={onCancel} title="Redeem Deal?" showCloseButton zIndex={60}>
+    <BaseModal isOpen={isOpen} onClose={onCancel} title="Enter Raffle?" showCloseButton zIndex={60}>
       <div className="text-center">
         <div className="mb-4 inline-flex items-center justify-center w-12 h-12 bg-action-primary/20 rounded-full">
           <svg
@@ -53,7 +53,7 @@ const RedemptionConfirmationModal: React.FC<RedemptionConfirmationModalProps> = 
         </div>
 
         <p className="text-text-secondary mb-6">
-          Are you sure you want to redeem:
+          Are you sure you want to enter:
         </p>
 
         <div className="bg-bg-primary border border-accent-primary/30 rounded-lg p-4 mb-6">
@@ -62,7 +62,7 @@ const RedemptionConfirmationModal: React.FC<RedemptionConfirmationModalProps> = 
         </div>
 
         <p className="text-sm text-text-secondary mb-6">
-          Once redeemed, you won't be able to redeem this deal again. Make sure you're ready to use it.
+          Once entered, you won't be able to enter this raffle again. Make sure you're ready to submit your entry.
         </p>
 
         <div className="flex gap-3">
@@ -80,7 +80,7 @@ const RedemptionConfirmationModal: React.FC<RedemptionConfirmationModalProps> = 
             disabled={isLoading}
             className="flex-1"
           >
-            {isLoading ? 'Redeeming...' : 'Confirm'}
+            {isLoading ? 'Entering...' : 'Confirm'}
           </Button>
         </div>
       </div>

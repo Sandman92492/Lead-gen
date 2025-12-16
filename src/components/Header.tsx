@@ -42,7 +42,7 @@ const ThemeToggleButton = () => {
     return (
         <button
             onClick={toggleTheme}
-            className="p-2 rounded-full text-action-primary hover:bg-bg-card transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-action-primary)]"
+            className="p-2 rounded-full text-action-primary hover:bg-bg-card transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:ring-offset-2 focus:ring-offset-[var(--bg)]"
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >
             {theme === 'light' ? (
@@ -143,7 +143,7 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                     <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex items-center md:flex-1">
                         <img
                             src={theme === 'dark' ? '/Images/logo-ocean.svg' : '/Images/logo-sand.svg'}
-                            alt="Port Alfred Holiday Pass Logo"
+                            alt="Raffle Tickets Logo"
                             className="h-16 w-auto"
                         />
                     </a>
@@ -215,10 +215,10 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                     }`}>
                         <div className="container mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-3">
                             <p className="text-sm text-text-secondary hidden sm:block">
-                                <span className="font-semibold text-text-primary">Holiday Pass</span> – Unlock exclusive local deals
+                                <span className="font-semibold text-text-primary">Ticket Pack</span> – Enter raffles for schools/fundraisers
                             </p>
                             <p className="text-sm text-text-secondary sm:hidden">
-                                <span className="font-semibold text-text-primary">Get the Pass</span>
+                                <span className="font-semibold text-text-primary">Get the Ticket Pack</span>
                             </p>
                             <Button onClick={onButtonClick} variant="primary" size="sm" className="flex-shrink-0">
                                 {buttonText}
@@ -232,8 +232,7 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
             {!isSignedIn && (
                 <button
                     onClick={toggleMenu}
-                    className="fixed bottom-0 left-0 right-0 md:hidden z-40 w-full px-8 py-6 bg-bg-card text-text-primary font-bold text-xl flex items-center justify-center gap-3 rounded-t-3xl shadow-lg border-t-8 hover:shadow-xl hover:bg-gray-50 transition-all border-brand-dark-blue"
-                    style={{ boxShadow: theme === 'dark' ? '0 -4px 8px rgba(0, 0, 0, 0.4), 0 -12px 20px rgba(0, 0, 0, 0.5)' : '0 -4px 8px rgba(0, 0, 0, 0.1), 0 -12px 20px rgba(0, 0, 0, 0.15)' }}
+                    className="fixed bottom-0 left-0 right-0 md:hidden z-40 w-full px-8 py-6 bg-bg-card/95 backdrop-blur text-text-primary font-bold text-lg flex items-center justify-center gap-3 rounded-t-[var(--radius)] shadow-[var(--shadow)] border-t border-border-subtle hover:bg-bg-card transition-colors"
                     aria-label="Open menu"
                     aria-expanded={isMenuOpen}
                 >
@@ -256,7 +255,7 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                 >
                     <div
                         ref={menuRef}
-                        className={`absolute bottom-0 left-0 right-0 bg-bg-card shadow-2xl rounded-t-3xl transform transition-transform duration-300 ease-in-out max-h-[90vh] overflow-y-auto ${isMenuOpen ? 'translate-y-0' : 'translate-y-full'}`}
+                        className={`absolute bottom-0 left-0 right-0 bg-bg-card shadow-[var(--shadow)] rounded-t-[var(--radius)] border border-border-subtle transform transition-transform duration-300 ease-in-out max-h-[90vh] overflow-y-auto ${isMenuOpen ? 'translate-y-0' : 'translate-y-full'}`}
                         onClick={e => e.stopPropagation()}
                     >
                         {/* Handle bar for bottom sheet indication */}
@@ -330,7 +329,7 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                                             setShowInstallPrompt(false);
                                         }}
                                         className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-white bg-action-primary hover:brightness-110 transition-all font-semibold"
-                                        aria-label="Install Holiday Pass app"
+                                        aria-label="Install Raffle Tickets app"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                                             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>

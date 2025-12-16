@@ -93,7 +93,7 @@ const DealDetailModal: React.FC<DealDetailModalProps> = ({
               {deal.category === 'restaurant' && '🍔'}
               {deal.category === 'activity' && '🛶'}
               {deal.category === 'shopping' && '🛍️'}
-              <span className="capitalize">{deal.category || 'Deal'}</span>
+              <span className="capitalize">{deal.category || 'Raffle'}</span>
             </span>
             
             {/* City Badge */}
@@ -116,14 +116,14 @@ const DealDetailModal: React.FC<DealDetailModalProps> = ({
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M13.477 14.89A6 6 0 15 1 2.05 8c.065-.327.67-.985.236-1.378.88-.88 1.95-1.965 2.6-1.965h.5a.5.5 0 0 1 .5.5v5.5a1 1 0 1 1-2 0V8.26l-.464 1.393a1 1 0 1 1-1.933-.644l2-6a1 1 0 0 1 1.933.644l-.464 1.393h1.93l-2.868 8.607a1 1 0 0 1-1.866-.373l2.868-8.607h.5a.5.5 0 0 0 .5-.5V.05z" clipRule="evenodd" />
                     </svg>
-                    <span>Pass Expired</span>
+                    <span>Ticket Pack Expired</span>
                   </div>
                 ) : isRedeemed ? (
                   <div className="col-span-2 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-md bg-success text-white text-sm font-bold whitespace-nowrap">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    <span>Redeemed</span>
+                    <span>Entered</span>
                   </div>
                 ) : (
                   <button
@@ -137,7 +137,7 @@ const DealDetailModal: React.FC<DealDetailModalProps> = ({
                     }}
                     className="col-span-2 w-full px-4 py-3 text-sm font-bold text-white bg-urgency-high rounded-md hover:brightness-110 transition-all"
                   >
-                    Redeem
+                    Enter
                   </button>
                 )}
               </>
@@ -152,7 +152,7 @@ const DealDetailModal: React.FC<DealDetailModalProps> = ({
                 }}
                 className="col-span-2 w-full px-4 py-3 text-sm font-bold text-white bg-action-primary rounded-md hover:brightness-110 transition-all"
               >
-                🎟️ Get Pass to Redeem
+                🎟️ Get Ticket Pack to Enter
               </button>
             )}
 

@@ -103,7 +103,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userEmail, userPhotoURL, onSi
             {hasPass && (
               <div className="pb-6 border-b border-border-subtle last:pb-0 last:border-0">
                 <p className="text-text-secondary text-sm font-semibold uppercase tracking-wide mb-2">Subscription</p>
-                <p className="text-text-primary text-lg">Holiday Pass Member</p>
+                <p className="text-text-primary text-lg">Ticket Pack Member</p>
               </div>
             )}
 
@@ -178,32 +178,32 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userEmail, userPhotoURL, onSi
            </nav>
         </div>
 
-        {/* Redemption History */}
+        {/* Entry History */}
         {hasPass && (
           <div className="bg-bg-card rounded-xl border border-border-subtle p-6 sm:p-8 mb-6">
             <h2 className="text-xl font-display font-bold text-action-primary flex items-center gap-2 mb-4">
               <svg className="w-5 h-5 text-action-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Redemption History
+              Entry History
             </h2>
             <Button
               variant="secondary"
               className="w-full py-3 text-base font-bold mb-4"
               onClick={() => setIsRedemptionModalOpen(true)}
             >
-              View All
+              View All Entries
             </Button>
             {redeemedDealsDetails.length === 0 ? (
               <div className="bg-bg-primary rounded-lg p-4 text-center mt-4">
                 <p className="text-text-secondary text-sm">
-                  No redemptions yet. Start redeeming deals from your pass.
+                  No entries yet. Start entering raffles from your ticket pack.
                 </p>
               </div>
             ) : (
               <div className="mt-4">
                 <p className="text-text-secondary text-sm">
-                  You've redeemed <span className="font-bold text-action-primary">{redeemedDealsDetails.length}</span> deal{redeemedDealsDetails.length !== 1 ? 's' : ''}
+                  You've entered <span className="font-bold text-action-primary">{redeemedDealsDetails.length}</span> raffle{redeemedDealsDetails.length !== 1 ? 's' : ''}
                 </p>
               </div>
             )}
@@ -220,7 +220,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userEmail, userPhotoURL, onSi
                   <svg className="w-6 h-6 text-action-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Redemption History
+                  Entry History
                 </h2>
                 <button
                   onClick={() => setIsRedemptionModalOpen(false)}
@@ -238,7 +238,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userEmail, userPhotoURL, onSi
                 {redeemedDealsDetails.length === 0 ? (
                   <div className="text-center py-8">
                     <p className="text-text-secondary">
-                      No redemptions yet. Start redeeming deals from your pass.
+                      No entries yet. Start entering raffles from your ticket pack.
                     </p>
                   </div>
                 ) : (
@@ -255,7 +255,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userEmail, userPhotoURL, onSi
                               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                               </svg>
-                              <span>Redeemed</span>
+                              <span>Entered</span>
                             </div>
                           </div>
                         </div>
@@ -277,7 +277,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userEmail, userPhotoURL, onSi
              <span>Account Actions</span>
            </h2>
            <p className="text-text-secondary mb-6 text-xs sm:text-sm leading-relaxed">
-             Once you sign out, you'll need to sign in again to access your pass and redemptions.
+             Once you sign out, you'll need to sign in again to access your ticket pack and entries.
            </p>
           <Button 
             variant="outline"

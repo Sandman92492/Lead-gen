@@ -3,35 +3,114 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Light Mode - Coastal Holiday Savings */
-  --color-bg-primary: #E8E5DC;
-  --color-bg-card: #FFFFFF;
-  --color-border-subtle: #E0E0E0;
-  --color-action-primary: #0077B6;
-  --color-urgency-high: #FF8C69;
-  --color-value-highlight: #E6B800;
-  --color-alert: #0077B6;
-  --color-success: #00B894;
-  --color-text-primary: #333333;
-  --color-text-secondary: #666666;
-  --color-heading-dark-mode: #E8E5DC;
-  
+:root,
+:root[data-theme='raffle'] {
+  /* ============================================
+     RAFFLE THEME (default)
+     ============================================ */
+  --bg: #F5F7FB;
+  --surface: #EEF3FB;
+  --card: #FFFFFF;
+  --text: #0F172A;
+  --muted: #475569;
+  --border: rgba(15, 23, 42, 0.12);
+
+  --brand: #1D4ED8;
+  --accent: #F59E0B;
+  --success: #16A34A;
+  --danger: #DC2626;
+
+  --radius: 18px;
+  --shadow: 0 14px 34px rgba(15, 23, 42, 0.12);
+  --ring: rgba(29, 78, 216, 0.35);
+
+  /* Map existing semantic vars to tokens (backward compatible) */
+  --color-background: var(--bg);
+  --color-bg-primary: var(--surface);
+  --color-bg-card: var(--card);
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--muted);
+  --color-border-subtle: var(--border);
+  --color-action-primary: var(--brand);
+  --color-value-highlight: var(--accent);
+  --color-success: var(--success);
+  --color-urgency-high: var(--accent);
+  --color-alert: var(--danger);
+
+  /* Brand/Pass-specific (kept for existing UI) */
+  --color-brand-dark-blue: var(--brand);
+  --color-brand-yellow: var(--accent);
+  --color-brand-red: var(--danger);
+  --color-brand-white: #FFFFFF;
+  --color-brand-light-text: #EAF2FF;
+
+  /* Accent colors (legacy) */
+  --color-accent-primary: var(--brand);
+  --color-accent-secondary: var(--accent);
+
+  /* Legacy variables used by Tailwind config */
+  --color-background-alt: var(--card);
+  --color-text-inverted: #FFFFFF;
+  --color-button-text: #FFFFFF;
+  --color-redemption-green: #34D399;
+  --color-deep-teal: var(--danger);
+  --color-warm-coral: var(--danger);
+  --color-turquoise: var(--brand);
+  --color-light-turquoise: #34D399;
+  --color-warm-gold: var(--accent);
+  --color-fresh-green: #34D399;
+  --color-cream: var(--bg);
+  --color-light-cream: var(--card);
+
+  --color-heading-dark-mode: var(--card);
+}
+
+:root[data-theme='holiday'] {
+  /* ============================================
+     HOLIDAY THEME (legacy look)
+     ============================================ */
+  --bg: #FDF6E3;
+  --surface: #E8E5DC;
+  --card: #FFFFFF;
+  --text: #333333;
+  --muted: #666666;
+  --border: #E0E0E0;
+
+  --brand: #0077B6;
+  --accent: #E6B800;
+  --success: #00B894;
+  --danger: #FF8C69;
+
+  --radius: 18px;
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
+  --ring: rgba(0, 119, 182, 0.32);
+
+  /* Map existing semantic vars to tokens (backward compatible) */
+  --color-background: var(--bg);
+  --color-bg-primary: var(--surface);
+  --color-bg-card: var(--card);
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--muted);
+  --color-border-subtle: var(--border);
+  --color-action-primary: var(--brand);
+  --color-value-highlight: var(--accent);
+  --color-success: var(--success);
+  --color-urgency-high: var(--danger);
+  --color-alert: var(--brand);
+
   /* Brand/Pass-specific colors - Coastal themed */
-  --color-brand-red: #FF8C69;
+  --color-brand-red: var(--danger);
   --color-brand-yellow: #FFD166;
   --color-brand-white: #FFFFFF;
-  --color-brand-dark-blue: #0077B6;
+  --color-brand-dark-blue: var(--brand);
   --color-brand-light-text: #E0F7F9;
-  
+
   /* Accent color - Royal blue */
   --color-accent-primary: #3B82F6;
-  
+  --color-accent-secondary: #3B82F6;
 
-  
   /* Legacy variables for backward compatibility */
-  --color-background: #FDF6E3;
-  --color-background-alt: #FFFFFF;
+  --color-background-alt: var(--card);
   --color-text-inverted: #FFFFFF;
   --color-button-text: #FFFFFF;
   --color-redemption-green: #34D399;
@@ -41,43 +120,118 @@
   --color-light-turquoise: #34D399;
   --color-warm-gold: #FFB340;
   --color-fresh-green: #34D399;
-  --color-cream: #FDF6E3;
-  --color-light-cream: #FFFFFF;
-  
-  /* For legacy accent colors */
+  --color-cream: var(--bg);
+  --color-light-cream: var(--card);
+
+  --color-heading-dark-mode: var(--surface);
+}
+
+:root.dark,
+:root.dark[data-theme='raffle'] {
+  /* ============================================
+     RAFFLE THEME - DARK MODE
+     ============================================ */
+  --bg: #0B1220;
+  --surface: #0F172A;
+  --card: #111C33;
+  --text: #E2E8F0;
+  --muted: #94A3B8;
+  --border: rgba(226, 232, 240, 0.12);
+
+  --brand: #60A5FA;
+  --accent: #FBBF24;
+  --success: #34D399;
+  --danger: #F87171;
+
+  --radius: 18px;
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+  --ring: rgba(96, 165, 250, 0.42);
+
+  /* Keep existing semantic vars aligned */
+  --color-background: var(--bg);
+  --color-bg-primary: var(--surface);
+  --color-bg-card: var(--card);
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--muted);
+  --color-border-subtle: var(--border);
+  --color-action-primary: var(--brand);
+  --color-value-highlight: var(--accent);
+  --color-success: var(--success);
+  --color-urgency-high: var(--accent);
+  --color-alert: var(--danger);
+
+  --color-brand-dark-blue: var(--brand);
+  --color-brand-yellow: var(--accent);
+  --color-brand-red: var(--danger);
+  --color-brand-white: #FFFFFF;
+  --color-brand-light-text: #EAF2FF;
+
+  --color-accent-primary: var(--brand);
+  --color-accent-secondary: var(--accent);
+
+  --color-background-alt: var(--card);
+  --color-text-inverted: var(--bg);
+  --color-button-text: #FFFFFF;
+  --color-redemption-green: var(--success);
+  --color-deep-teal: var(--danger);
+  --color-warm-coral: var(--danger);
+  --color-turquoise: var(--brand);
+  --color-light-turquoise: var(--success);
+  --color-warm-gold: var(--accent);
+  --color-fresh-green: var(--success);
+  --color-cream: var(--surface);
+  --color-light-cream: var(--card);
+
+  --color-heading-dark-mode: var(--card);
+}
+
+:root.dark[data-theme='holiday'] {
+  /* ============================================
+     HOLIDAY THEME - DARK MODE (legacy)
+     ============================================ */
+  --bg: #1B3A4B;
+  --surface: #333333;
+  --card: #444444;
+  --text: #E8E5DC;
+  --muted: #B0B0B0;
+  --border: #555555;
+
+  --brand: #00A8E8;
+  --accent: #FFD166;
+  --success: #00E3B0;
+  --danger: #FF8C69;
+
+  --radius: 18px;
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+  --ring: rgba(0, 168, 232, 0.38);
+
+  /* Existing semantic vars */
+  --color-background: var(--bg);
+  --color-bg-primary: var(--surface);
+  --color-bg-card: var(--card);
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--muted);
+  --color-border-subtle: var(--border);
+  --color-action-primary: var(--brand);
+  --color-urgency-high: var(--danger);
+  --color-value-highlight: var(--accent);
+  --color-alert: var(--brand);
+  --color-success: var(--success);
+
+  /* Brand/Pass-specific colors - Coastal dark mode */
+  --color-brand-red: #FF9A84;
+  --color-brand-yellow: #FFE88D;
+  --color-brand-white: #FFFFFF;
+  --color-brand-dark-blue: var(--brand);
+  --color-brand-light-text: #E0F7F9;
+
+  /* Accent color - Royal blue */
+  --color-accent-primary: #3B82F6;
   --color-accent-secondary: #3B82F6;
-  }
 
-.dark {
-   /* Dark Mode - Coastal Holiday Savings - Deep Ocean */
-   --color-bg-primary: #333333;
-   --color-bg-card: #444444;
-   --color-border-subtle: #555555;
-   --color-action-primary: #00A8E8;
-   --color-urgency-high: #FF8C69;
-   --color-value-highlight: #FFD166;
-   --color-alert: #00A8E8;
-   --color-success: #00E3B0;
-   --color-text-primary: #E8E5DC;
-   --color-text-secondary: #B0B0B0;
-   --color-heading-dark-mode: #E8E5DC;
-   
-
-   
-   /* Brand/Pass-specific colors - Coastal dark mode */
-   --color-brand-red: #FF9A84;
-   --color-brand-yellow: #FFE88D;
-   --color-brand-white: #FFFFFF;
-   --color-brand-dark-blue: #00A8E8;
-   --color-brand-light-text: #E0F7F9;
-   
-   /* Accent color - Royal blue */
-   --color-accent-primary: #3B82F6;
-  
-  /* Legacy variables for backward compatibility */
-  --color-background: #1B3A4B;
+  /* Legacy variables */
   --color-background-alt: #2C5F78;
-  --color-text-inverted: #1B3A4B;
+  --color-text-inverted: var(--bg);
   --color-button-text: #FFFFFF;
   --color-redemption-green: #34D399;
   --color-deep-teal: #FF6B5A;
@@ -88,9 +242,8 @@
   --color-fresh-green: #34D399;
   --color-cream: #2C5F78;
   --color-light-cream: #1F4D5F;
-  
-  /* For legacy accent colors */
-  --color-accent-secondary: #3B82F6;
+
+  --color-heading-dark-mode: var(--text);
 }
 
 html {
@@ -98,8 +251,8 @@ html {
 }
 
 body {
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-primary);
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 .scroll-reveal {

@@ -190,7 +190,7 @@ const App: React.FC = () => {
    const tabs = useMemo(() => {
      return [
        { id: 'home', label: 'Home', path: '/home' },
-       { id: 'deals', label: 'Deals', path: '/deals' },
+       { id: 'deals', label: 'Raffles', path: '/deals' },
        { id: 'profile', label: 'Profile', path: '/profile' },
      ];
    }, []);
@@ -275,9 +275,9 @@ const App: React.FC = () => {
   };
 
   const getButtonText = () => {
-    if (isLoading) return 'Checking Pass...';
-    if (userState === 'signed-in-with-pass') return 'View My Pass';
-    return 'Get My Pass';
+    if (isLoading) return 'Checking Ticket Pack...';
+    if (userState === 'signed-in-with-pass') return 'View My Ticket Pack';
+    return 'Get My Ticket Pack';
   };
 
   const handleRedeemDeal = async (dealName: string, vendorId?: string, vendorName?: string) => {
@@ -465,7 +465,7 @@ const App: React.FC = () => {
       <RedemptionSuccessModal
         isOpen={!!justRedeemedDeal}
         dealName={justRedeemedDeal || ''}
-        venueName={redemptionVendorName || 'Partner Venue'}
+        venueName={redemptionVendorName || 'School/Fundraiser'}
         onClose={() => {
           setJustRedeemedDeal(null);
           setRedemptionVendorName(null);

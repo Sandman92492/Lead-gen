@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Button from './Button.tsx';
+import Badge from './ui/Badge';
+import Card from './ui/Card';
 import { PassType, PassFeatures } from '../types.ts';
 import { getPassPrice, getPassFeatures } from '../utils/pricing';
 import { useAllDeals } from '../hooks/useAllDeals';
@@ -13,10 +15,10 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
     const [isTestPaymentLoading, setIsTestPaymentLoading] = useState(false);
     const [localPassPrice, setLocalPassPrice] = useState({ price: 199, cents: 19900, launchPricing: false });
     const [features, setFeatures] = useState<PassFeatures>({
-        description: 'Discover and support Port Alfred\'s best local venues while enjoying great deals and authentic experiences.',
-        feature1: 'Discover local venues and businesses',
-        feature2: 'Support independent Port Alfred businesses',
-        feature3: 'Enjoy verified savings and great experiences',
+        description: 'Support schools and fundraisers by entering raffles and tracking your entries in one place.',
+        feature1: 'Enter raffles from schools/fundraisers',
+        feature2: 'Support the causes you care about',
+        feature3: 'Verified entries with staff PIN',
         venueCount: 0
     });
 
@@ -27,8 +29,8 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
     }, [allDeals]);
 
     const feature1Text = venueCount > 0
-        ? `Discover ${venueCount}+ local venues and businesses`
-        : 'Discover local venues and businesses';
+        ? `Enter raffles from ${venueCount}+ schools/fundraisers`
+        : 'Enter raffles from schools/fundraisers';
 
     // Use prop if provided, otherwise use local state
     const passPrice = propPassPrice || localPassPrice;
@@ -54,24 +56,64 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
     };
 
     return (
-        <section id="pricing-options" className="py-20 md:py-32 bg-bg-primary">
+        <section id="pricing-options" className="py-16 md:py-24 bg-bg-primary">
             <div className="container mx-auto px-4 sm:px-6">
-                <div className="max-w-3xl mx-auto text-center mb-16 scroll-reveal">
-                    <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">
-                        Select Your Plan
-                    </h2>
-                    <h1 className="text-4xl md:text-5xl font-display font-black text-action-primary mb-4 md:mb-6">Support Local Port Alfred</h1>
-                    <p className="text-lg md:text-xl text-text-secondary mb-8 md:mb-10">Get great deals while discovering and supporting the businesses that make our town thrive.</p>
-                </div>
+                <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+                    <div className="lg:col-span-5">
+                        <div className="scroll-reveal">
+                            <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-[0.2em] mb-3">
+                                Ticket Pack
+                            </h2>
+                            <h1 className="text-4xl md:text-5xl font-display font-black text-text-primary mb-4 tracking-tight">
+                                Support the fundraiser.
+                                <span className="block text-action-primary">Win prizes.</span>
+                            </h1>
+                            <p className="text-lg md:text-xl text-text-secondary leading-relaxed">
+                                One purchase unlocks entries across our prize raffles — tracked and verified digitally.
+                            </p>
 
-                <div className="max-w-4xl mx-auto">
-                    <div className="max-w-2xl mx-auto">
-                        {/* Holiday Pass */}
-                        <div className="border-2 border-action-primary bg-bg-card rounded-2xl p-6 sm:p-8 flex flex-col scroll-reveal relative">
-                            <div className="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-action-primary text-white dark:bg-action-primary dark:text-white font-bold text-sm px-4 py-1 rounded-full shadow-lg">
-                                The Only Pass
+                            <div className="mt-6 flex flex-wrap gap-2">
+                                <Badge variant="neutral">Secure checkout</Badge>
+                                <Badge variant="neutral">Verified entries</Badge>
+                                <Badge variant="neutral">Instant digital access</Badge>
                             </div>
-                            <h3 className="text-3xl font-display font-black text-text-primary text-center mb-4">Holiday Pass</h3>
+
+                            <ul className="mt-8 space-y-3">
+                                <li className="flex items-start gap-3 text-text-secondary">
+                                    <span className="mt-0.5 text-success font-bold">✓</span>
+                                    <span>{feature1Text}</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-text-secondary">
+                                    <span className="mt-0.5 text-success font-bold">✓</span>
+                                    <span>{features.feature2}</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-text-secondary">
+                                    <span className="mt-0.5 text-success font-bold">✓</span>
+                                    <span>{features.feature3}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="lg:col-span-7">
+                        <Card className="relative overflow-hidden scroll-reveal" padding="lg">
+                            <div className="absolute inset-x-0 top-0 h-1 bg-action-primary/70" aria-hidden="true" />
+                            <div className="flex items-center justify-between gap-3 mb-6">
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="brand" size="sm">Official fundraiser</Badge>
+                                    {passPrice.launchPricing && (
+                                        <Badge variant="accent" size="sm">Early supporter pricing</Badge>
+                                    )}
+                                </div>
+                                <span className="text-xs text-text-secondary">One pack • Multiple entries</span>
+                            </div>
+
+                            <h3 className="text-3xl sm:text-4xl font-display font-black text-text-primary tracking-tight">
+                                Ticket Pack
+                            </h3>
+                            <p className="mt-2 text-text-secondary">
+                                {features.description}
+                            </p>
 
                             <div className="text-center mb-6">
                                 <div>
@@ -83,29 +125,12 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
                                     </div>
                                     {passPrice.launchPricing && (
                                         <>
-                                            <span className="block text-sm text-urgency-high font-bold mt-1">Early supporter pricing is live.</span>
+                                            <span className="block text-sm text-urgency-high font-bold mt-1">Limited-time supporter pricing.</span>
                                         </>
                                     )}
-                                    <span className="text-text-secondary block text-sm mt-2">Valid Dec 1 - Jan 31</span>
+                                    <span className="text-text-secondary block text-sm mt-2">Valid for the current fundraiser period</span>
                                 </div>
                             </div>
-
-                            <p className="text-text-secondary text-center mb-6">{features.description}</p>
-
-                            <ul className="space-y-3 mb-8">
-                                <li className="flex items-start text-text-secondary">
-                                    <span className="text-action-primary mr-3 font-bold">✓</span>
-                                    <span>{feature1Text}</span>
-                                </li>
-                                <li className="flex items-start text-text-secondary">
-                                    <span className="text-action-primary mr-3 font-bold">✓</span>
-                                    <span>{features.feature2}</span>
-                                </li>
-                                <li className="flex items-start text-text-secondary">
-                                    <span className="text-action-primary mr-3 font-bold">✓</span>
-                                    <span>{features.feature3}</span>
-                                </li>
-                            </ul>
 
                             <div className="border-t border-border-subtle pt-4 mt-auto space-y-2 text-center text-sm text-text-secondary mb-4">
                                 <div className="flex items-center justify-center gap-2">
@@ -124,7 +149,7 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
                                     onClick={handleTestPayment}
                                     disabled={isTestPaymentLoading}
                                 >
-                                    {isTestPaymentLoading ? 'Processing...' : `Buy Pass (R${passPrice.price})`}
+                                    {isTestPaymentLoading ? 'Processing...' : `Buy Ticket Pack (R${passPrice.price})`}
                                 </Button>
                                 <div className="mt-3 flex items-center justify-center gap-3 text-text-secondary/70">
                                     <span className="text-[10px] font-semibold uppercase tracking-wide">visa</span>
@@ -133,11 +158,9 @@ const PricingOptions: React.FC<PricingOptionsProps> = ({ onSelectPass, passPrice
                                     <span className="text-[10px] font-semibold uppercase tracking-wide">google pay</span>
                                 </div>
                             </div>
-                        </div>
+                        </Card>
                     </div>
                 </div>
-
-
             </div>
         </section>
     );

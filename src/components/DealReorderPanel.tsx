@@ -160,7 +160,7 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
     <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          🔄 Reorder Deals
+          🔄 Reorder Prizes
         </h2>
         {successMessage && (
           <span className="text-sm text-value-highlight font-semibold">{successMessage}</span>
@@ -169,19 +169,19 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
 
       {hasUnorderedDeals && (
         <div className="mb-4 p-3 bg-urgency-high/10 border border-urgency-high rounded-lg">
-          <p className="text-xs text-urgency-high font-medium mb-2">⚠️ Some deals are missing sort order</p>
+          <p className="text-xs text-urgency-high font-medium mb-2">⚠️ Some prizes are missing sort order</p>
           <button
             onClick={initializeAllSortOrders}
             disabled={isInitializingAll}
             className="text-xs px-3 py-1.5 bg-urgency-high text-white hover:bg-urgency-high/80 rounded font-medium disabled:opacity-50 transition-colors"
           >
-            {isInitializingAll ? 'Initializing...' : 'Fix All Deals'}
+            {isInitializingAll ? 'Initializing...' : 'Fix All Prizes'}
           </button>
         </div>
       )}
 
       {deals.length === 0 ? (
-        <p className="text-sm text-text-secondary text-center py-8">No deals to reorder</p>
+        <p className="text-sm text-text-secondary text-center py-8">No prizes to reorder</p>
       ) : (
         <div className="space-y-2">
           {sortedDeals.map((deal, index) => (

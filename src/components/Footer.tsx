@@ -20,10 +20,10 @@ const Footer: React.FC<FooterProps> = ({ onButtonClick, buttonText, hasPass, onP
         {!hasPass && (
           <>
             <h2 className="text-4xl md:text-5xl font-display font-black mb-4">
-              Ready for a <span className="text-value-highlight">Lekker</span> Holiday?
+              Ready to <span className="text-value-highlight">Support</span> a Great Cause?
             </h2>
             <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Get instant access to all these deals and more. Make your holiday in Port Alfred the most <span className="font-bold text-value-highlight">memorable</span> (and <span className="font-bold text-value-highlight">affordable</span>) one yet.
+              Enter raffles and support schools/fundraisers. Get your ticket pack and make a real impact.
             </p>
             <Button variant="primary" size="lg" className="!bg-white !text-action-primary hover:!bg-white/90 px-12 md:px-14 transform hover:scale-105 shadow-xl" onClick={onButtonClick}>
               {buttonText}
@@ -34,11 +34,11 @@ const Footer: React.FC<FooterProps> = ({ onButtonClick, buttonText, hasPass, onP
           <div className="mx-auto mb-6 w-16 h-16 flex-shrink-0">
               <img 
                 src={theme === 'dark' ? '/Images/logo-dark.png' : '/Images/logo-light.png'} 
-                alt="Port Alfred Holiday Pass Logo"
+                alt="Raffle Tickets Logo"
                 className="w-full h-full object-contain"
               />
           </div>
-          <p>&copy; {new Date().getFullYear()} Port Alfred Holiday Pass. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Raffle Tickets. All rights reserved.</p>
           <div className="mt-4 flex flex-wrap justify-center gap-4 text-sm">
             <button onClick={onPrivacyClick} className="text-white hover:text-value-highlight underline transition">
               Privacy Policy

@@ -1,6 +1,9 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { initializeApp, type FirebaseApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider, type Auth } from 'firebase/auth';
+import { getFirestore, type Firestore } from 'firebase/firestore';
+
+const mode = ((import.meta as any).env.VITE_DATA_MODE ?? 'mock') as string;
+const isFirebaseMode = mode === 'firebase';
 
 // Firebase configuration from environment variables (Netlify)
 // Falls back to development values if env vars not set
@@ -15,7 +18,21 @@ const firebaseConfig = {
   measurementId: (import.meta as any).env.VITE_FIREBASE_MEASUREMENT_ID || (isDev ? "G-XXXXXXXXXX" : undefined)
 };
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const googleProvider = new GoogleAuthProvider();
+let app: FirebaseApp | null = null;
+
+export let auth: Auth;
+export let db: Firestore;
+export let googleProvider: GoogleAuthProvider;
+
+if (isFirebaseMode) {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  googleProvider = new GoogleAuthProvider();
+} else {
+  auth = null as unknown as Auth;
+  db = null as unknown as Firestore;
+  googleProvider = null as unknown as GoogleAuthProvider;
+}
+
+export const firebaseApp = app;

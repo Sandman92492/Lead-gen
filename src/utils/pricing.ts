@@ -5,6 +5,9 @@ import { PassFeatures } from '../types';
 const PAHP_CACHED_PRICING_CONFIG_KEY = 'pahp_cached_pricing_config_v1';
 const PAHP_CACHED_PASS_FEATURES_KEY = 'pahp_cached_pass_features_v1';
 
+const mode = ((import.meta as any).env.VITE_DATA_MODE ?? 'mock') as string;
+const isFirebaseMode = mode === 'firebase';
+
 type CachedValue<T> = {
   cachedAt: string;
   data: T;
@@ -79,6 +82,10 @@ const computeLaunchPricingFromPricingData = (pricingData: PricingConfigData): {
  */
 export const getPassPrice = async (): Promise<{ price: number; cents: number; launchPricing: boolean }> => {
   try {
+    if (!isFirebaseMode || !db) {
+      return getDefaultPrice();
+    }
+
     if (isNavigatorOffline()) {
       const cachedPricing = getCachedValue<PricingConfigData>(PAHP_CACHED_PRICING_CONFIG_KEY);
       if (cachedPricing) {
@@ -125,6 +132,10 @@ const getDefaultPrice = (): { price: number; cents: number; launchPricing: boole
  */
 export const getPassFeatures = async (): Promise<PassFeatures> => {
   try {
+    if (!isFirebaseMode || !db) {
+      return getDefaultPassFeatures();
+    }
+
     if (isNavigatorOffline()) {
       const cachedFeatures = getCachedValue<PassFeatures>(PAHP_CACHED_PASS_FEATURES_KEY);
       if (cachedFeatures) return cachedFeatures;
@@ -154,10 +165,10 @@ export const getPassFeatures = async (): Promise<PassFeatures> => {
  * Get default pass features
  */
 const getDefaultPassFeatures = (): PassFeatures => ({
-  description: 'Discover and support Port Alfred\'s best local venues while enjoying great deals and authentic experiences.',
-  feature1: 'Discover local venues and businesses',
-  feature2: 'Support independent Port Alfred businesses',
-  feature3: 'Enjoy verified savings and great experiences',
+  description: 'Support schools and fundraisers by entering raffles and tracking your entries in one place.',
+  feature1: 'Enter raffles from schools/fundraisers',
+  feature2: 'Support the causes you care about',
+  feature3: 'Verified entries with staff PIN',
   venueCount: 0
 });
 
@@ -166,6 +177,10 @@ const getDefaultPassFeatures = (): PassFeatures => ({
  */
 export const getPassCount = async (): Promise<number> => {
   try {
+    if (!isFirebaseMode || !db) {
+      return 0;
+    }
+
     if (isNavigatorOffline()) {
       const cachedPricing = getCachedValue<PricingConfigData>(PAHP_CACHED_PRICING_CONFIG_KEY);
       if (cachedPricing) {
@@ -200,6 +215,10 @@ export const getLaunchPricingData = async (): Promise<{
   isLaunchPricing: boolean;
 }> => {
   try {
+    if (!isFirebaseMode || !db) {
+      return { passCount: 0, launchThreshold: 50, passesRemaining: 50, isLaunchPricing: true };
+    }
+
     if (isNavigatorOffline()) {
       const cachedPricing = getCachedValue<PricingConfigData>(PAHP_CACHED_PRICING_CONFIG_KEY);
       if (cachedPricing) {

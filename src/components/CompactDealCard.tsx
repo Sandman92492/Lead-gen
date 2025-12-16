@@ -96,7 +96,7 @@ const CompactDealCard: React.FC<CompactDealCardProps> = ({
                   clipRule="evenodd"
                 />
               </svg>
-              <span>Used</span>
+              <span>Entered</span>
             </div>
           )}
         </div>
@@ -116,7 +116,7 @@ const CompactDealCard: React.FC<CompactDealCardProps> = ({
            {/* Savings Badge */}
            {deal.savings && deal.savings > 0 && (
              <span className="inline-block bg-success/10 text-success px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap mt-2">
-               Save R{deal.savings}
+               Prize Value R{deal.savings}
              </span>
            )}
          </div>

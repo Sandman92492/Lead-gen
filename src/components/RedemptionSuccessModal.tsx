@@ -58,14 +58,14 @@ const RedemptionSuccessModal: React.FC<RedemptionSuccessModalProps> = ({
 
                 {/* Deal Redeemed */}
                 <h1 className="text-4xl font-display font-black text-success">
-                    DEAL<br />REDEEMED
+                    ENTRY<br />RECORDED
                 </h1>
 
                 {/* Venue name - what staff should see */}
                 <div className="bg-success/10 rounded-xl p-6 border-2 border-success/30 space-y-4">
                     <div>
                         <p className="text-sm font-semibold uppercase tracking-wider text-text-secondary mb-2">
-                            Venue
+                            School/Fundraiser
                         </p>
                         <p className="text-2xl font-display font-black text-text-primary">
                             {venueName}
@@ -74,7 +74,7 @@ const RedemptionSuccessModal: React.FC<RedemptionSuccessModalProps> = ({
 
                     <div className="border-t-2 border-success/20 pt-4">
                         <p className="text-sm font-semibold uppercase tracking-wider text-text-secondary mb-2">
-                            Deal
+                            Raffle
                         </p>
                         <p className="text-lg font-bold text-text-primary">
                             {dealName}

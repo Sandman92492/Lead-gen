@@ -117,7 +117,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
                     </svg>
                   </div>
                   <p className="text-text-secondary text-sm">
-                    You are offline. You can view your pass, but need an internet connection to redeem deals.
+                    You are offline. You can view your ticket pack, but need an internet connection to enter raffles.
                   </p>
                 </div>
               </div>
@@ -140,7 +140,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
                   style={{
                     background: 'linear-gradient(135deg, #0077B6 0%, #00A8E8 50%, #0077B6 100%)',
                   }}
-                  aria-label="View your digital pass"
+                  aria-label="View your ticket pack"
                 >
                   {/* Subtle texture overlay */}
                   <div className="absolute inset-0 opacity-10" style={{
@@ -159,7 +159,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
                   {/* Bottom section: pass info left, tap right */}
                   <div className="flex justify-between items-end relative z-10">
                     <div className="text-left">
-                      <p className="text-xs uppercase tracking-[0.2em] text-white/70 mb-1">Holiday Pass</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-white/70 mb-1">Ticket Pack</p>
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-success animate-live-pulse" />
                         <p className="text-sm text-white/90">
@@ -183,7 +183,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
                   style={{
                     background: 'linear-gradient(135deg, #6B7280 0%, #9CA3AF 50%, #6B7280 100%)',
                   }}
-                  aria-label="Get your holiday pass"
+                  aria-label="Get your ticket pack"
                 >
                   {/* Subtle texture overlay */}
                   <div className="absolute inset-0 opacity-10" style={{
@@ -204,13 +204,13 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
                   {/* Bottom section: CTA */}
                   <div className="flex justify-between items-end relative z-10">
                     <div className="text-left">
-                      <p className="text-xs uppercase tracking-[0.2em] text-white/70 mb-1">Holiday Pass</p>
+                      <p className="text-xs uppercase tracking-[0.2em] text-white/70 mb-1">Ticket Pack</p>
                       <p className="text-lg font-bold text-white">
                         Unlock for R{passPrice.price}
                       </p>
                     </div>
                     <div className="bg-white text-gray-700 px-4 py-2 rounded-lg font-bold text-sm">
-                      Get Pass →
+                      Get Ticket Pack →
                     </div>
                   </div>
                 </button>
@@ -228,7 +228,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
               {/* Deals Redeemed */}
               <div className={`bg-bg-card rounded-lg p-4 md:p-6 border border-border-subtle text-center ${!hasPass ? 'opacity-50' : ''}`}>
                 <p className="text-xs md:text-sm text-text-secondary font-semibold uppercase tracking-wide mb-2">
-                  Deals Redeemed
+                  Entries
                 </p>
                 <p className="text-3xl md:text-4xl font-display font-black text-action-primary">
                   {hasPass ? redeemCount : '—'}
@@ -238,7 +238,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
               {/* Total Savings */}
               <div className={`bg-bg-card rounded-lg p-4 md:p-6 border border-border-subtle text-center ${!hasPass ? 'opacity-50' : ''}`}>
                 <p className="text-xs md:text-sm text-text-secondary font-semibold uppercase tracking-wide mb-2">
-                  Total Savings
+                  Total Prize Value
                 </p>
                 <p className="text-3xl md:text-4xl font-display font-black text-success">
                   {hasPass ? `R${savingsLoading ? '...' : totalSavings}` : '—'}

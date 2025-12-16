@@ -50,7 +50,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
               Welcome back, {userName || 'Member'}
             </h1>
             <p className="text-lg md:text-xl text-text-secondary mb-6">
-              Your pass is active and ready to use
+              Your ticket pack is active and ready to use
             </p>
             
             {/* Status Badge - Success */}
@@ -74,10 +74,10 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
                     {redeemedDeals.length}
                   </span>
                 </div>
-                <p className="text-text-secondary font-semibold">Deals Redeemed</p>
+                <p className="text-text-secondary font-semibold">Entries</p>
                 {redeemedDeals.length > 0 && (
                   <p className="text-xs text-text-secondary mt-2">
-                    {redeemedDeals.length === 1 ? 'Great start!' : 'You\'re saving big!'}
+                    {redeemedDeals.length === 1 ? 'Great start!' : 'You\'re on a roll!'}
                   </p>
                 )}
               </div>
@@ -90,13 +90,11 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
                     R{savingsLoading ? '...' : totalSavings}
                   </span>
                 </div>
-                <p className="text-text-secondary font-semibold">Estimated Savings</p>
-                <p className="text-xs text-text-secondary mt-1">
-                  Based on average deal value
-                </p>
+                <p className="text-text-secondary font-semibold">Total Prize Value</p>
+                <p className="text-xs text-text-secondary mt-1">Based on raffle prize values</p>
                 {totalSavings > 0 && (
                   <p className="text-xs text-text-secondary mt-2">
-                    That's {Math.round((totalSavings / (pass?.purchasePrice || 3500)) * 100)}% of pass value back!
+                    Prize pool value shown across raffles you've entered.
                   </p>
                 )}
               </div>
@@ -118,14 +116,14 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
                 }}
               >
                 <div className="flex items-start justify-between gap-4 mb-3">
-                  <h2 className="text-2xl sm:text-3xl font-display font-black leading-tight group-hover:opacity-95 transition-opacity" style={{ color: '#FFFFFF' }}>Your Digital Pass</h2>
+                  <h2 className="text-2xl sm:text-3xl font-display font-black leading-tight group-hover:opacity-95 transition-opacity" style={{ color: '#FFFFFF' }}>Your Ticket Pack</h2>
                   <span className="text-4xl flex-shrink-0 group-hover:scale-110 transition-transform duration-300">📱</span>
                 </div>
                 <p className="text-base sm:text-lg font-semibold mb-4" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
-                  Quick access to view your pass and redemption history
+                  Quick access to view your ticket pack and entry history
                 </p>
                 <div className="inline-flex items-center gap-2 font-bold group-hover:gap-3 transition-all duration-300" style={{ color: '#FFFFFF' }}>
-                  <span>View My Pass</span>
+                  <span>View My Ticket Pack</span>
                   <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
@@ -142,7 +140,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-3xl mx-auto">
               <h2 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 text-center">
-                 Featured Offer
+                 Featured Prize
                 </h2>
               <p className="text-3xl md:text-4xl font-display font-black text-action-primary mb-8 text-center">
                 Don't Miss Out
@@ -193,7 +191,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
               variant="primary"
               className="px-8 py-4"
             >
-              Browse All {allDeals.length} Deals
+              Browse All {allDeals.length} Raffles
             </Button>
           </div>
         </div>

@@ -61,17 +61,17 @@ const DealsDirectoryV2: React.FC<DealsDirectoryV2Props> = ({
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="font-semibold text-red-900 dark:text-red-200">
-                  Your pass has expired
+                  Your ticket pack has expired
                 </p>
                 <p className="text-sm text-red-800 dark:text-red-300">
-                  Purchase a new pass to access exclusive deals
+                  Purchase a new ticket pack to access raffles
                 </p>
               </div>
               <button
                 onClick={onBuyPassClick}
                 className="flex-shrink-0 px-6 py-2 bg-urgency-high text-white font-bold rounded-md hover:brightness-110 transition-all whitespace-nowrap"
               >
-                Get New Pass
+                Get New Ticket Pack
               </button>
             </div>
           </div>
@@ -83,10 +83,10 @@ const DealsDirectoryV2: React.FC<DealsDirectoryV2Props> = ({
            {/* Hero Heading */}
            <div className="text-center mb-10">
              <h1 className="text-3xl md:text-4xl font-display font-black text-action-primary mb-4">
-               All Deals
+               All Raffles
              </h1>
              <p className="text-lg md:text-xl text-text-secondary leading-relaxed">
-               Browse {allDeals.length}+ local deals. Get your pass to unlock them all.
+               Browse {allDeals.length}+ raffles. Get your ticket pack to enter them all.
              </p>
            </div>
 
@@ -115,7 +115,7 @@ const DealsDirectoryV2: React.FC<DealsDirectoryV2Props> = ({
           {/* Loading State */}
           {isLoading && (
             <div className="text-center py-12">
-              <p className="text-text-secondary">Loading deals...</p>
+              <p className="text-text-secondary">Loading raffles...</p>
             </div>
           )}
 
@@ -124,15 +124,15 @@ const DealsDirectoryV2: React.FC<DealsDirectoryV2Props> = ({
             <div className="text-center py-12">
               <p className="text-text-secondary mb-4">
                 {selectedCategory === 'all'
-                  ? 'No deals available yet.'
-                  : `No deals found in this category.`}
+                  ? 'No raffles available yet.'
+                  : `No raffles found in this category.`}
               </p>
               {selectedCategory !== 'all' && (
                 <button
                   onClick={() => setSelectedCategory('all')}
                   className="text-action-primary hover:text-action-primary/80 font-semibold"
                 >
-                  View all deals
+                  View all raffles
                 </button>
               )}
             </div>

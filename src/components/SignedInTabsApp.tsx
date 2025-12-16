@@ -123,7 +123,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
             activity: 'Activities and Adventure',
             shopping: 'Lifestyle and Wellness',
             lifestyle: 'Lifestyle and Wellness',
-            Other: 'More Deals',
+            Other: 'More Raffles',
         };
 
         // Define category order: Restaurants, Activities, Shopping, Lifestyle, Other
@@ -142,7 +142,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
 
     const tabs = useMemo(() => [
         { id: 'home', label: 'Home', path: '/home', icon: <HomeIcon /> },
-        { id: 'deals', label: 'Deals', path: '/deals', icon: <DealsIcon /> },
+        { id: 'deals', label: 'Raffles', path: '/deals', icon: <DealsIcon /> },
         { id: 'profile', label: 'Profile', path: '/profile', icon: <ProfileIcon /> },
     ], []);
 
@@ -189,7 +189,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
             <div className="hidden md:block">
                 <Footer
                     onButtonClick={onBuyPassClick || onMainCta}
-                    buttonText="Get My Pass"
+                    buttonText="Get My Ticket Pack"
                     hasPass={hasPass}
                     onPrivacyClick={onPrivacyClick}
                     onTermsClick={onTermsClick}
@@ -199,8 +199,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
             {/* Mobile bottom tabs */}
             {/* Render mobile tabs only */}
             <nav
-                className="fixed bottom-0 left-0 right-0 z-20 bg-bg-card border-t-8 border-brand-dark-blue md:hidden rounded-t-3xl shadow-lg"
-                style={{ boxShadow: 'var(--box-shadow, 0 -4px 8px rgba(0, 0, 0, 0.1))' }}
+                className="fixed bottom-0 left-0 right-0 z-20 bg-bg-card/95 backdrop-blur border-t border-border-subtle md:hidden rounded-t-[var(--radius)] shadow-[var(--shadow)]"
             >
                 <div className="flex justify-around items-center h-16 sm:h-20 gap-1 px-2">
                     {tabs.map((tab, index) => (

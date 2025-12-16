@@ -61,14 +61,14 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
                         You're All Set! 🎉
                     </h2>
                     <p className="text-text-secondary text-lg">
-                        Your Holiday Pass is ready to use
+                        Your Ticket Pack is ready to use
                     </p>
                 </div>
 
                 {/* How to use steps */}
                 <div className="bg-bg-primary rounded-xl p-6 mb-6">
                     <h3 className="font-bold text-lg text-action-primary mb-4">
-                        How to redeem your deals:
+                        How to enter raffles:
                     </h3>
                     <ol className="space-y-4">
                         <li className="flex items-start gap-3">
@@ -76,8 +76,8 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
                                 1
                             </div>
                             <div className="flex-1">
-                                <p className="font-semibold text-text-primary">Visit any partner venue</p>
-                                <p className="text-sm text-text-secondary">Browse deals below and choose where to go</p>
+                                <p className="font-semibold text-text-primary">Browse raffles</p>
+                                <p className="text-sm text-text-secondary">Explore raffles below and choose one to enter</p>
                             </div>
                         </li>
                         <li className="flex items-start gap-3">
@@ -85,7 +85,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
                                 2
                             </div>
                             <div className="flex-1">
-                                <p className="font-semibold text-text-primary">Tap "Redeem" on the deal</p>
+                                <p className="font-semibold text-text-primary">Tap "Enter" on the raffle</p>
                                 <p className="text-sm text-text-secondary">This will show a confirmation screen</p>
                             </div>
                         </li>
@@ -95,7 +95,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
                             </div>
                             <div className="flex-1">
                                 <p className="font-semibold text-text-primary">Show the green screen to staff</p>
-                                <p className="text-sm text-text-secondary">They'll honor your deal on the spot</p>
+                                <p className="text-sm text-text-secondary">They'll confirm your entry on the spot</p>
                             </div>
                         </li>
                         <li className="flex items-start gap-3">
@@ -103,8 +103,8 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
                                 ✓
                             </div>
                             <div className="flex-1">
-                                <p className="font-semibold text-text-primary">Enjoy your savings!</p>
-                                <p className="text-sm text-text-secondary">Use each deal once per venue</p>
+                                <p className="font-semibold text-text-primary">Good luck!</p>
+                                <p className="text-sm text-text-secondary">Each raffle can be entered once per ticket pack</p>
                             </div>
                         </li>
                     </ol>
@@ -119,7 +119,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
                         <div className="flex-1">
                             <p className="font-semibold text-sm text-action-primary mb-1">Pro Tip:</p>
                             <p className="text-xs text-text-secondary">
-                                Check deal terms before visiting. Some deals may have restrictions like specific days or times.
+                                Check raffle terms before entering. Some raffles may have restrictions like specific dates or rules.
                             </p>
                         </div>
                     </div>
@@ -131,7 +131,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
                     onClick={onClose}
                     className="w-full text-lg"
                 >
-                    Start Exploring Deals
+                    Start Exploring Raffles
                 </Button>
 
                 <p className="text-center text-xs text-text-secondary mt-4">

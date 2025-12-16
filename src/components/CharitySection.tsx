@@ -1,35 +1,49 @@
 import React from 'react';
+import Badge from './ui/Badge';
+import Card from './ui/Card';
 
 const CharitySection: React.FC = () => {
   return (
-    <section id="charity" className="py-20 md:py-32 bg-bg-card">
+    <section id="charity" className="py-16 md:py-24 bg-bg-primary">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto">
-          {/* Text content */}
-          <div className="text-center scroll-reveal mb-10 md:mb-12">
-            <h2 className="text-4xl md:text-5xl font-display font-black text-action-primary mb-4 md:mb-6">
-              Save Local. Feed Local.
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          <div className="lg:col-span-5 scroll-reveal text-center lg:text-left">
+            <Badge variant="brand" size="sm">Where funds go</Badge>
+            <h2 className="mt-4 text-4xl md:text-5xl font-display font-black text-text-primary tracking-tight">
+              Real impact for the fundraiser
             </h2>
-            <div className="mb-6">
-              <svg className="w-16 h-16 text-urgency-high mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="text-lg text-text-secondary leading-relaxed max-w-3xl mx-auto">
-              <p>
-                We donate <strong className="text-action-primary">25% of every sale</strong> directly to the Port Alfred Soup Kitchen.{' '}
-                <strong className="text-action-primary">Your purchase helps put food on the table for local families.</strong>
-              </p>
+            <p className="mt-4 text-lg text-text-secondary leading-relaxed">
+              Every ticket pack supports a school or NPO fundraiser. Funds help cover essentials and unlock opportunities for learners and the community.
+            </p>
+
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+              <Card padding="sm" className="shadow-none bg-bg-card">
+                <p className="text-sm font-semibold text-text-primary">Programs</p>
+                <p className="mt-1 text-sm text-text-secondary">Sports, arts, and activities</p>
+              </Card>
+              <Card padding="sm" className="shadow-none bg-bg-card">
+                <p className="text-sm font-semibold text-text-primary">Resources</p>
+                <p className="mt-1 text-sm text-text-secondary">Learning materials & equipment</p>
+              </Card>
+              <Card padding="sm" className="shadow-none bg-bg-card">
+                <p className="text-sm font-semibold text-text-primary">Community</p>
+                <p className="mt-1 text-sm text-text-secondary">Support where it’s needed most</p>
+              </Card>
             </div>
           </div>
 
-          {/* Image */}
-          <div className="scroll-reveal">
-            <img 
-              src="/Images/charity2.webp" 
-              alt="Making a difference in the Port Alfred community through charitable giving"
-              className="rounded-lg shadow-2xl w-full h-auto object-cover border-4 border-action-primary"
-            />
+          <div className="lg:col-span-7 scroll-reveal">
+            <Card padding="none" className="overflow-hidden">
+              <img
+                src="/Images/charity2.webp"
+                alt="A school fundraiser making a difference in the community"
+                className="w-full h-64 sm:h-80 md:h-96 object-cover"
+                loading="lazy"
+              />
+            </Card>
+            <p className="mt-3 text-xs text-text-secondary text-center">
+              Fundraiser imagery shown for illustration.
+            </p>
           </div>
         </div>
       </div>

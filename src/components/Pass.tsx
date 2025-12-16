@@ -99,7 +99,7 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
 
                 {passIsExpired && (
                     <div className="absolute top-0 left-0 right-0 bg-red-600 text-white text-xs font-bold py-2 text-center z-20 shadow-lg">
-                        PASS EXPIRED
+                        TICKET PACK EXPIRED
                     </div>
                 )}
 
@@ -112,19 +112,19 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
                 </button>
 
                 <header className="text-center relative z-10 mb-6">
-                    <div className="mx-auto mb-6 w-20 h-20 flex-shrink-0 rounded-2xl p-2" aria-label="Port Alfred Holiday Pass Logo Icon">
+                    <div className="mx-auto mb-6 w-20 h-20 flex-shrink-0 rounded-2xl p-2" aria-label="Raffle Tickets Logo Icon">
                         <img 
                           src={theme === 'dark' ? '/Images/logo-ocean.svg' : '/Images/logo-sand.svg'} 
-                          alt="Port Alfred Holiday Pass Logo"
+                          alt="Raffle Tickets Logo"
                           className="w-full h-full object-contain"
                         />
                     </div>
-                    <h1 className="font-display text-brand-white text-xl sm:text-2xl mb-1">Port Alfred</h1>
-                    <h2 className="font-display font-extrabold text-2xl sm:text-3xl tracking-tight text-brand-yellow">HOLIDAY PASS</h2>
+                    <h1 className="font-display text-brand-white text-xl sm:text-2xl mb-1">Raffle Tickets</h1>
+                    <h2 className="font-display font-extrabold text-2xl sm:text-3xl tracking-tight text-brand-yellow">TICKET PACK</h2>
                 </header>
 
                 <main className="text-center my-auto relative z-10 space-y-3">
-                    <p className="text-success text-xs sm:text-sm font-semibold tracking-widest uppercase">Pass Holder</p>
+                    <p className="text-success text-xs sm:text-sm font-semibold tracking-widest uppercase">Ticket Holder</p>
                     <p className="font-display text-3xl sm:text-4xl font-bold break-words text-brand-yellow drop-shadow-md">{name}</p>
                 </main>
 
@@ -132,7 +132,7 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
                      <div className="border-t-2 border-dashed border-brand-yellow/40"></div>
                      <div className="space-y-2 sm:space-y-3 text-center text-sm">
                          <div>
-                             <p className="text-success text-xs font-semibold tracking-wider uppercase">Pass ID</p>
+                             <p className="text-success text-xs font-semibold tracking-wider uppercase">Ticket Pack ID</p>
                              <p className="font-mono text-xs text-brand-white/80 mt-0.5">{passId}</p>
                          </div>
                          <div>
@@ -147,11 +147,11 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
                      <div className="pt-1 sm:pt-2">
                          <div className="flex items-center justify-center gap-2" aria-live="off" title="Live verification indicator">
                              <div className="w-2.5 h-2.5 rounded-full bg-success animate-live-pulse" aria-hidden="true"></div>
-                             <p className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold tracking-wider text-brand-yellow">
+                         <p className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold tracking-wider text-brand-yellow">
                                  {time.toLocaleTimeString('en-GB')}
                              </p>
                          </div>
-                         <p className="text-center text-xs text-brand-white/60 mt-2">Show this screen to redeem</p>
+                         <p className="text-center text-xs text-brand-white/60 mt-2">Show this screen to enter</p>
                      </div>
                  </footer>
             </div>

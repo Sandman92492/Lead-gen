@@ -38,6 +38,24 @@ const FreeUserView: React.FC<FreeUserViewProps> = ({
     return [...deals].sort((a, b) => (b.savings || 0) - (a.savings || 0));
   };
 
+  const featuredPrizes = useMemo(() => {
+    const featured = allDeals
+      .filter((deal) => deal.featured)
+      .sort((a, b) => {
+        const orderA = a.sortOrder ?? 999;
+        const orderB = b.sortOrder ?? 999;
+        if (orderA !== orderB) return orderA - orderB;
+        return (b.savings || 0) - (a.savings || 0);
+      });
+
+    return featured.slice(0, 12);
+  }, [allDeals]);
+
+  const prizeHighlights = useMemo(() => {
+    if (featuredPrizes.length > 0) return featuredPrizes;
+    return sortDealsBySavings(allDeals).slice(0, 12);
+  }, [allDeals, featuredPrizes]);
+
   // Load price, pass count, and venue count once at parent level
   useEffect(() => {
     const loadData = async () => {
@@ -56,7 +74,7 @@ const FreeUserView: React.FC<FreeUserViewProps> = ({
       <main className="pb-24 md:pb-0 bg-bg-primary">
         <Hero
           onButtonClick={onMainCtaClick}
-          buttonText="Get My Holiday Pass Now"
+          buttonText="Get My Ticket Pack Now"
           passHolderName={null}
           onActivateClick={onActivateClick}
           appStatus="guest"
@@ -75,7 +93,7 @@ const FreeUserView: React.FC<FreeUserViewProps> = ({
                     </svg>
                   </div>
                   <p className="text-text-secondary text-sm">
-                    You are offline. Pricing and pass counts may be outdated.
+                    You are offline. Pricing and ticket pack counts may be outdated.
                   </p>
                 </div>
               </div>
@@ -84,55 +102,27 @@ const FreeUserView: React.FC<FreeUserViewProps> = ({
         )}
 
         <TrustBar venueCount={venueCount} />
-        <CharitySection />
-        <HowItWorks />
-        {/* Category Carousels */}
-        {allDeals.length > 0 && (
-          <section className="bg-bg-primary">
-            {/* Heading */}
-            <div className="container mx-auto px-4 sm:px-6 py-8 text-center">
-              <h2 className="text-3xl md:text-4xl font-display font-black text-action-primary mb-4">
-                All Deals
-              </h2>
-              <p className="text-lg md:text-xl text-text-secondary leading-relaxed">
-                Browse {allDeals.length}+ local deals. Get your pass to unlock them all.
-              </p>
-            </div>
+        <PricingOptions onSelectPass={onSelectPass} passPrice={passPrice} />
 
+        {/* Prize Highlights (featured prizes first) */}
+        {prizeHighlights.length > 0 && (
+          <div id="deals-showcase">
             <HorizontalCategoryRow
-                title="Local Eats & Treats"
-                emoji="🍔"
-                description="Support our favorite local food spots"
-                deals={sortDealsBySavings(allDeals.filter((deal) => deal.category === 'restaurant'))}
-                redeemedDeals={[]}
-                onRedeemClick={() => onBuyPassClick?.() || onMainCtaClick()}
-                hasPass={false}
-                onBuyPassClick={onBuyPassClick || onMainCtaClick}
-              />
-              <HorizontalCategoryRow
-                title="Activities & Adventure"
-                emoji="🛶"
-                description="Unforgettable experiences in Port Alfred"
-                deals={sortDealsBySavings(allDeals.filter((deal) => deal.category === 'activity'))}
-                redeemedDeals={[]}
-                onRedeemClick={() => onBuyPassClick?.() || onMainCtaClick()}
-                hasPass={false}
-                onBuyPassClick={onBuyPassClick || onMainCtaClick}
-              />
-            <HorizontalCategoryRow
-              title="Lifestyle & Wellness"
-              emoji="✨"
-              description="Local shops, spas, and wellness"
-              deals={sortDealsBySavings(allDeals.filter((deal) => deal.category === 'shopping'))}
+              title="Prize Highlights"
+              emoji="🏆"
+              description="A few of the prizes you can enter with one ticket pack"
+              deals={prizeHighlights}
               redeemedDeals={[]}
               onRedeemClick={() => onBuyPassClick?.() || onMainCtaClick()}
               hasPass={false}
               onBuyPassClick={onBuyPassClick || onMainCtaClick}
             />
-          </section>
+          </div>
         )}
+
+        <HowItWorks />
+        <CharitySection />
         <FAQ />
-        <PricingOptions onSelectPass={onSelectPass} passPrice={passPrice} />
       </main>
     </>
   );

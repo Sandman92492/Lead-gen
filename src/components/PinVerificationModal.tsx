@@ -75,13 +75,13 @@ const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
   if (vendorLoading && isOpen) {
     return (
       <BaseModal isOpen={isOpen} onClose={onCancel} zIndex={60}>
-        <p className="text-text-secondary text-center">Loading vendor information...</p>
+        <p className="text-text-secondary text-center">Loading school/fundraiser information...</p>
       </BaseModal>
     );
   }
 
   return (
-    <BaseModal isOpen={isOpen} onClose={onCancel} title="Vendor Verification" showCloseButton zIndex={60}>
+    <BaseModal isOpen={isOpen} onClose={onCancel} title="School/Fundraiser Verification" showCloseButton zIndex={60}>
       <div className="text-center">
           <div className="mb-4 inline-flex items-center justify-center w-12 h-12 bg-action-primary/20 rounded-full">
             <svg
@@ -101,11 +101,11 @@ const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
           </div>
 
           <p className="text-text-secondary mb-4">
-            Please ask the staff to enter their 4-digit PIN to verify this redemption.
+            Please ask the staff to enter their 4-digit PIN to verify this entry.
           </p>
 
           <div className="bg-bg-primary border border-accent-primary/30 rounded-lg p-3 mb-6">
-            <p className="text-sm text-text-secondary mb-1">Redeeming at:</p>
+            <p className="text-sm text-text-secondary mb-1">Entering via:</p>
             <p className="font-display font-bold text-accent-primary">{vendor?.name}</p>
           </div>
 

@@ -10,6 +10,14 @@ export default {
       colors: {
         'background': 'var(--color-background)',
         'background-alt': 'var(--color-background-alt)',
+        /* Semantic UI tokens */
+        'bg-primary': 'var(--color-bg-primary)',
+        'bg-card': 'var(--color-bg-card)',
+        'action-primary': 'var(--color-action-primary)',
+        'urgency-high': 'var(--color-urgency-high)',
+        'value-highlight': 'var(--color-value-highlight)',
+        'alert': 'var(--color-alert)',
+        'success': 'var(--color-success)',
         'text-primary': 'var(--color-text-primary)',
         'text-secondary': 'var(--color-text-secondary)',
         'text-inverted': 'var(--color-text-inverted)',

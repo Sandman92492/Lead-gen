@@ -39,7 +39,7 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({ onClose }) => {
         </h1>
 
         <p className="text-sm sm:text-base text-text-secondary mb-4 sm:mb-6">
-          Your pass has been activated and is now available in your account.
+          Your ticket pack has been activated and is now available in your account.
         </p>
 
         <p className="text-xs sm:text-sm text-text-secondary/70 mb-6 sm:mb-8">

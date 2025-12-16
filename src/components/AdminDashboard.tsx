@@ -230,7 +230,7 @@ const AdminDashboard: React.FC = () => {
 
     // CSV Export functions
     const exportPassesToCSV = () => {
-        const headers = ['Pass ID', 'Name', 'Email', 'Type', 'Status', 'Price (R)', 'Created', 'Expiry'];
+        const headers = ['Ticket Pack ID', 'Name', 'Email', 'Type', 'Status', 'Price (R)', 'Created', 'Expiry'];
         const rows = passes.map(p => [
             p.passId,
             p.passHolderName,
@@ -241,12 +241,12 @@ const AdminDashboard: React.FC = () => {
             new Date(p.createdAt).toLocaleDateString(),
             new Date(p.expiryDate).toLocaleDateString(),
         ]);
-        downloadCSV([headers, ...rows], 'passes-export.csv');
+        downloadCSV([headers, ...rows], 'ticket-packs-export.csv');
     };
 
     const exportRedemptionsToCSV = () => {
         const passIds = new Set(passes.map(p => p.passId));
-        const headers = ['Pass ID', 'Deal Name', 'Vendor', 'Date', 'Status'];
+        const headers = ['Ticket Pack ID', 'Raffle', 'Fundraiser', 'Date', 'Status'];
         const rows = redemptions.map(r => {
             const vendor = vendors.find(v => v.vendorId === r.vendorId);
             const isOrphan = !passIds.has(r.passId);
@@ -258,7 +258,7 @@ const AdminDashboard: React.FC = () => {
                 isOrphan ? 'Orphaned' : 'Valid',
             ];
         });
-        downloadCSV([headers, ...rows], 'redemptions-export.csv');
+        downloadCSV([headers, ...rows], 'entries-export.csv');
     };
 
     const downloadCSV = (data: (string | number)[][], filename: string) => {
@@ -372,7 +372,7 @@ const AdminDashboard: React.FC = () => {
                 const result = await updateVendor(editingVendorId, updates);
                 if (result.success) {
                     const imageCount = vendorForm.images.split(/[\n,]+/).map(s => s.trim()).filter(Boolean).length;
-                    setVendorSuccess(`Vendor "${vendorForm.name.trim()}" updated successfully with ${imageCount} images!`);
+                    setVendorSuccess(`Fundraiser "${vendorForm.name.trim()}" updated successfully with ${imageCount} images!`);
                     setEditingVendorId(null);
                     setVendorForm({
                         name: '',
@@ -388,7 +388,7 @@ const AdminDashboard: React.FC = () => {
                     });
                     loadVendors();
                 } else {
-                    setVendorError(result.error || 'Failed to update vendor');
+                    setVendorError(result.error || 'Failed to update fundraiser');
                 }
             } else {
                 // Create new vendor
@@ -411,7 +411,7 @@ const AdminDashboard: React.FC = () => {
                 const result = await createVendor(newVendor);
                 if (result.success) {
                     const imageCount = newVendor.images?.length || 0;
-                    setVendorSuccess(`Vendor "${newVendor.name}" created successfully with ${imageCount} images!`);
+                    setVendorSuccess(`Fundraiser "${newVendor.name}" created successfully with ${imageCount} images!`);
                     setVendorForm({
                         name: '',
                         email: '',
@@ -426,7 +426,7 @@ const AdminDashboard: React.FC = () => {
                     });
                     loadVendors();
                 } else {
-                    setVendorError(result.error || 'Failed to create vendor');
+                    setVendorError(result.error || 'Failed to create fundraiser');
                 }
             }
         } catch (error: any) {
@@ -474,8 +474,8 @@ const AdminDashboard: React.FC = () => {
         // Get count of associated deals for confirmation message
         const dealCount = await getDealCountByVendor(vendorId);
         const confirmMessage = dealCount > 0
-            ? `Delete vendor "${vendorName}"?\n\n⚠️ This will also delete ${dealCount} associated deal${dealCount !== 1 ? 's' : ''}.\n\nThis cannot be undone.`
-            : `Delete vendor "${vendorName}"? This cannot be undone.`;
+            ? `Delete fundraiser "${vendorName}"?\n\n⚠️ This will also delete ${dealCount} associated prize${dealCount !== 1 ? 's' : ''}.\n\nThis cannot be undone.`
+            : `Delete fundraiser "${vendorName}"? This cannot be undone.`;
         
         if (!window.confirm(confirmMessage)) {
             return;
@@ -485,13 +485,13 @@ const AdminDashboard: React.FC = () => {
             const result = await deleteVendor(vendorId);
             if (result.success) {
                 const successMsg = dealCount > 0
-                    ? `Vendor "${vendorName}" and ${dealCount} deal${dealCount !== 1 ? 's' : ''} deleted successfully!`
-                    : `Vendor "${vendorName}" deleted successfully!`;
+                    ? `Fundraiser "${vendorName}" and ${dealCount} prize${dealCount !== 1 ? 's' : ''} deleted successfully!`
+                    : `Fundraiser "${vendorName}" deleted successfully!`;
                 setVendorSuccess(successMsg);
                 loadVendors();
                 loadDeals(); // Refresh deals list since we may have deleted some
             } else {
-                setVendorError(result.error || 'Failed to delete vendor');
+                setVendorError(result.error || 'Failed to delete fundraiser');
             }
         } catch (error: any) {
             setVendorError(error.message || 'An error occurred');
@@ -505,7 +505,7 @@ const AdminDashboard: React.FC = () => {
 
         // Validation
         if (!dealForm.vendorId || !dealForm.name.trim() || !dealForm.offer.trim()) {
-            setDealError('Please fill in all required fields (Vendor, Name, Offer)');
+            setDealError('Please fill in all required fields (Fundraiser, Name, Prize)');
             return;
         }
 
@@ -668,7 +668,7 @@ const AdminDashboard: React.FC = () => {
                     <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-black text-action-primary mb-1">
                         Admin Dashboard
                     </h1>
-                    <p className="text-sm text-text-secondary">Manage vendors, deals & analytics</p>
+                    <p className="text-sm text-text-secondary">Manage fundraisers, prizes & analytics</p>
                 </div>
 
                 {/* Tabs - Scrollable on mobile */}
@@ -680,7 +680,7 @@ const AdminDashboard: React.FC = () => {
                             : 'text-text-secondary hover:text-text-primary'
                             }`}
                     >
-                        🏪 Vendors
+                        🏫 Fundraisers
                     </button>
                     <button
                         onClick={() => setActiveTab('deals')}
@@ -689,7 +689,7 @@ const AdminDashboard: React.FC = () => {
                             : 'text-text-secondary hover:text-text-primary'
                             }`}
                     >
-                        🎁 Deals
+                        🎁 Prizes
                     </button>
                     <button
                         onClick={() => setActiveTab('analytics')}
@@ -725,7 +725,7 @@ const AdminDashboard: React.FC = () => {
                                         : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
                                 }`}
                             >
-                                Add / Edit Vendor
+                                Add / Edit Fundraiser
                             </button>
                             <button
                                 onClick={() => setActiveVendorSection('list')}
@@ -735,7 +735,7 @@ const AdminDashboard: React.FC = () => {
                                         : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
                                 }`}
                             >
-                                Vendor List
+                                Fundraiser List
                             </button>
                         </aside>
 
@@ -780,14 +780,14 @@ const AdminDashboard: React.FC = () => {
                             {activeVendorSection === 'overview' && (
                                 <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
                                     <h2 className="text-base lg:text-lg font-display font-bold text-action-primary mb-3 lg:mb-4">
-                                        🏪 Vendor Overview
+                                        🏫 Fundraiser Overview
                                     </h2>
                                     <p className="text-xs text-text-secondary mb-2">
-                                        Quick snapshot of your vendors.
+                                        Quick snapshot of your fundraisers.
                                     </p>
                                     <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                                         <div className="bg-bg-primary rounded-lg border border-border-subtle p-3">
-                                            <p className="text-[11px] text-text-secondary">Total Vendors</p>
+                                            <p className="text-[11px] text-text-secondary">Total Fundraisers</p>
                                             <p className="text-lg font-bold text-text-primary mt-1">{vendors.length}</p>
                                         </div>
                                         <div className="bg-bg-primary rounded-lg border border-border-subtle p-3">
@@ -811,7 +811,7 @@ const AdminDashboard: React.FC = () => {
                                     <div className="flex items-center justify-between mb-4 lg:mb-6">
                                         <div>
                                             <h2 className="text-lg font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                                🏪 {editingVendorId ? 'Edit Vendor' : 'Add Vendor'}
+                                                🏫 {editingVendorId ? 'Edit Fundraiser' : 'Add Fundraiser'}
                                             </h2>
                                         </div>
                                         {editingVendorId && (
@@ -827,13 +827,13 @@ const AdminDashboard: React.FC = () => {
                                         <FormSection icon="📝" title="Basic Info" description="Name & category">
                                             <div>
                                                 <label className="block text-xs font-medium text-action-primary mb-2">
-                                                    Venue Name <span className="text-urgency-high">*</span>
+                                                    Fundraiser Name <span className="text-urgency-high">*</span>
                                                 </label>
                                                 <input
                                                     type="text"
                                                     value={vendorForm.name}
                                                     onChange={(e) => setVendorForm({ ...vendorForm, name: e.target.value })}
-                                                    placeholder="e.g., Brew Pub"
+                                                    placeholder="e.g., Riverside Primary"
                                                     className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
                                                 />
                                             </div>
@@ -964,7 +964,7 @@ const AdminDashboard: React.FC = () => {
                                                     placeholder="https://example.com/logo.jpg"
                                                     className="w-full px-3 py-1.5 text-xs bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
                                                 />
-                                                <ImagePreview url={vendorForm.imageUrl} alt={vendorForm.name || 'Vendor logo'} />
+                                                <ImagePreview url={vendorForm.imageUrl} alt={vendorForm.name || 'Fundraiser logo'} />
                                             </div>
 
                                             <div>
@@ -1004,7 +1004,7 @@ const AdminDashboard: React.FC = () => {
                                 <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
                                     <div className="flex items-center justify-between gap-2 mb-3">
                                         <h2 className="text-lg font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                            📋 Vendors{' '}
+                                            📋 Fundraisers{' '}
                                             <span className="text-xs font-normal text-text-secondary bg-border-subtle px-2 py-0.5 rounded-full">
                                                 {filteredVendors.length}/{vendors.length}
                                             </span>
@@ -1021,7 +1021,7 @@ const AdminDashboard: React.FC = () => {
                                         type="text"
                                         value={vendorSearch}
                                         onChange={(e) => setVendorSearch(e.target.value)}
-                                        placeholder="🔍 Search vendors..."
+                                        placeholder="🔍 Search fundraisers..."
                                         className="w-full px-3 py-2 mb-3 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
                                     />
                                     {isLoadingVendors ? (
@@ -1031,7 +1031,7 @@ const AdminDashboard: React.FC = () => {
                                     ) : filteredVendors.length === 0 ? (
                                         <div className="py-8 text-center">
                                             <p className="text-sm text-text-secondary">
-                                                {vendorSearch ? 'No matching vendors' : 'No vendors yet'}
+                                                {vendorSearch ? 'No matching fundraisers' : 'No fundraisers yet'}
                                             </p>
                                         </div>
                                     ) : (
@@ -1089,10 +1089,10 @@ const AdminDashboard: React.FC = () => {
                     </div>
                 )}
 
-                {/* Deals Tab */}
+                {/* Prizes Tab */}
                 {activeTab === 'deals' && (
                     <div className="flex flex-col lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6 gap-4">
-                        {/* Deals sidebar (desktop) */}
+                        {/* Prizes sidebar (desktop) */}
                         <aside className="hidden lg:block lg:sticky lg:top-4 self-start bg-bg-card rounded-xl border border-border-subtle p-3 text-sm space-y-1">
                             <button
                                 onClick={() => setActiveDealSection('overview')}
@@ -1122,7 +1122,7 @@ const AdminDashboard: React.FC = () => {
                                         : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
                                 }`}
                             >
-                                Add / Edit Deal
+                                Add / Edit Prize
                             </button>
                             <button
                                 onClick={() => setActiveDealSection('list')}
@@ -1132,7 +1132,7 @@ const AdminDashboard: React.FC = () => {
                                         : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
                                 }`}
                             >
-                                Deals List
+                                Prizes List
                             </button>
                         </aside>
 
@@ -1183,16 +1183,16 @@ const AdminDashboard: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Deals sections */}
+                            {/* Prize sections */}
                             {activeDealSection === 'overview' && (
                                 <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
                                     <h2 className="text-base lg:text-lg font-display font-bold text-action-primary mb-3 lg:mb-4">
-                                        🎁 Deals Overview
+                                        🎁 Prizes Overview
                                     </h2>
-                                    <p className="text-xs text-text-secondary mb-2">High-level view of your deals.</p>
+                                    <p className="text-xs text-text-secondary mb-2">High-level view of your prizes.</p>
                                     <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                                         <div className="bg-bg-primary rounded-lg border border-border-subtle p-3">
-                                            <p className="text-[11px] text-text-secondary">Total Deals</p>
+                                            <p className="text-[11px] text-text-secondary">Total Prizes</p>
                                             <p className="text-lg font-bold text-text-primary mt-1">{deals.length}</p>
                                         </div>
                                         <div className="bg-bg-primary rounded-lg border border-border-subtle p-3">
@@ -1202,7 +1202,7 @@ const AdminDashboard: React.FC = () => {
                                             </p>
                                         </div>
                                         <div className="bg-bg-primary rounded-lg border border-border-subtle p-3">
-                                            <p className="text-[11px] text-text-secondary">Vendors</p>
+                                            <p className="text-[11px] text-text-secondary">Fundraisers</p>
                                             <p className="text-lg font-bold text-text-primary mt-1">
                                                 {Array.from(new Set(deals.map(d => d.vendorId))).filter(Boolean).length}
                                             </p>
@@ -1222,7 +1222,7 @@ const AdminDashboard: React.FC = () => {
                                     <div className="flex items-center justify-between mb-4 lg:mb-6">
                                         <div>
                                             <h2 className="text-lg font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                                🎁 {editingDealId ? 'Edit Deal' : 'Add Deal'}
+                                                🎁 {editingDealId ? 'Edit Prize' : 'Add Prize'}
                                             </h2>
                                         </div>
                                         {editingDealId && (
@@ -1235,10 +1235,10 @@ const AdminDashboard: React.FC = () => {
                                         )}
                                     </div>
                                     <form onSubmit={handleAddDeal} className="space-y-0">
-                                        <FormSection icon="🏪" title="Offer" description="Vendor & description">
+                                        <FormSection icon="🏫" title="Prize" description="Fundraiser & details">
                                             <div>
                                                 <label className="block text-xs font-medium text-action-primary mb-1">
-                                                    Vendor <span className="text-urgency-high">*</span>
+                                                    Fundraiser <span className="text-urgency-high">*</span>
                                                 </label>
                                                 <select
                                                     value={dealForm.vendorId}
@@ -1254,7 +1254,7 @@ const AdminDashboard: React.FC = () => {
                                                     }}
                                                     className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
                                                 >
-                                                    <option value="">Select vendor...</option>
+                                                    <option value="">Select fundraiser...</option>
                                                     {vendors.map((vendor) => (
                                                         <option key={vendor.vendorId} value={vendor.vendorId}>
                                                             {vendor.name} ({vendor.city})
@@ -1432,7 +1432,7 @@ const AdminDashboard: React.FC = () => {
                                 <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
                                     <div className="flex items-center justify-between gap-2 mb-3">
                                         <h2 className="text-lg font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                            📦 Deals{' '}
+                                            📦 Prizes{' '}
                                             <span className="text-xs font-normal text-text-secondary bg-border-subtle px-2 py-0.5 rounded-full">
                                                 {filteredDeals.length}/{deals.length}
                                             </span>
@@ -1449,7 +1449,7 @@ const AdminDashboard: React.FC = () => {
                                         type="text"
                                         value={dealSearch}
                                         onChange={(e) => setDealSearch(e.target.value)}
-                                        placeholder="🔍 Search deals..."
+                                        placeholder="🔍 Search prizes..."
                                         className="w-full px-3 py-2 mb-3 text-sm bg-bg-primary border border-border-subtle rounded-lg text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-action-primary"
                                     />
                                     {isLoadingDeals ? (
@@ -1459,7 +1459,7 @@ const AdminDashboard: React.FC = () => {
                                     ) : filteredDeals.length === 0 ? (
                                         <div className="py-8 text-center">
                                             <p className="text-sm text-text-secondary">
-                                                {dealSearch ? 'No matching deals' : 'No deals yet'}
+                                                {dealSearch ? 'No matching prizes' : 'No prizes yet'}
                                             </p>
                                         </div>
                                     ) : (
@@ -1514,7 +1514,7 @@ const AdminDashboard: React.FC = () => {
                                         : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
                                 }`}
                             >
-                                Pass Management
+                                Ticket Packs
                             </button>
                             <button
                                 onClick={() => setActiveAnalyticsSection('redemptions')}
@@ -1524,7 +1524,7 @@ const AdminDashboard: React.FC = () => {
                                         : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'
                                 }`}
                             >
-                                Redemptions
+                                Entries
                             </button>
                         </aside>
 
@@ -1560,7 +1560,7 @@ const AdminDashboard: React.FC = () => {
                                                 : 'bg-bg-card text-text-secondary border-border-subtle'
                                         }`}
                                     >
-                                        Passes
+                                        Ticket Packs
                                     </button>
                                     <button
                                         onClick={() => setActiveAnalyticsSection('redemptions')}
@@ -1570,7 +1570,7 @@ const AdminDashboard: React.FC = () => {
                                                 : 'bg-bg-card text-text-secondary border-border-subtle'
                                         }`}
                                     >
-                                        Redemptions
+                                        Entries
                                     </button>
                                 </div>
                             </div>
@@ -1591,14 +1591,14 @@ const AdminDashboard: React.FC = () => {
                                         disabled={passes.length === 0}
                                         className="px-3 py-1.5 text-xs font-medium bg-value-highlight/20 text-value-highlight hover:bg-value-highlight/30 rounded-lg transition-colors disabled:opacity-50"
                                     >
-                                        📥 Passes
+                                        📥 Ticket Packs
                                     </button>
                                     <button
                                         onClick={exportRedemptionsToCSV}
                                         disabled={redemptions.length === 0}
                                         className="px-3 py-1.5 text-xs font-medium bg-success/20 text-success hover:bg-success/30 rounded-lg transition-colors disabled:opacity-50"
                                     >
-                                        📥 Redemptions
+                                        📥 Entries
                                     </button>
                                 </div>
                             </div>
@@ -1615,7 +1615,7 @@ const AdminDashboard: React.FC = () => {
                                                 <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
                                                     <div className="flex items-center justify-between">
                                                         <div>
-                                                            <p className="text-xs text-text-secondary font-medium">Paid Passes</p>
+                                                            <p className="text-xs text-text-secondary font-medium">Paid Ticket Packs</p>
                                                             <p className="text-xl lg:text-3xl font-bold text-text-primary mt-1">{configPassCount}</p>
                                                             {passes.filter(p => p.passStatus === 'free').length > 0 && (
                                                                 <p className="text-xs text-text-secondary mt-1">
@@ -1642,7 +1642,7 @@ const AdminDashboard: React.FC = () => {
                                                 <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
                                                     <div className="flex items-center justify-between">
                                                         <div>
-                                                            <p className="text-xs text-text-secondary font-medium">Redemptions</p>
+                                                            <p className="text-xs text-text-secondary font-medium">Entries</p>
                                                             <p className="text-xl lg:text-3xl font-bold text-action-primary mt-1">{redemptions.length}</p>
                                                         </div>
                                                         <span className="text-2xl lg:text-4xl">✓</span>
@@ -1680,9 +1680,9 @@ const AdminDashboard: React.FC = () => {
                                                         {(() => {
                                                             const freeTestCount = passes.length - configPassCount;
                                                             return [
-                                                                { label: 'Paid Passes', count: configPassCount, color: 'text-value-highlight' },
+                                                                { label: 'Paid Ticket Packs', count: configPassCount, color: 'text-value-highlight' },
                                                                 {
-                                                                    label: 'Free/Test Passes',
+                                                                    label: 'Free/Test Ticket Packs',
                                                                     count: Math.max(0, freeTestCount),
                                                                     color: 'text-action-primary',
                                                                 },
@@ -1701,7 +1701,7 @@ const AdminDashboard: React.FC = () => {
 
                                                 <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
                                                     <h3 className="text-base lg:text-lg font-bold text-action-primary mb-3 lg:mb-4 flex items-center gap-2">
-                                                        🏆 Top Deals
+                                                        🏆 Top Prizes
                                                     </h3>
                                                     <div className="space-y-2 max-h-60 lg:max-h-96 overflow-y-auto">
                                                         {(() => {
@@ -1722,7 +1722,7 @@ const AdminDashboard: React.FC = () => {
                                                             </div>
                                                         ))}
                                                         {redemptions.length === 0 && (
-                                                            <p className="text-xs text-text-secondary text-center py-4">No redemptions yet</p>
+                                                            <p className="text-xs text-text-secondary text-center py-4">No entries yet</p>
                                                         )}
                                                     </div>
                                                 </div>
@@ -1821,7 +1821,7 @@ const AdminDashboard: React.FC = () => {
                                                 </table>
                                                 {passes.filter(p => p.paymentStatus === 'completed').length === 0 && (
                                                     <p className="text-center py-8 text-text-secondary">
-                                                        No purchased passes
+                                                        No purchased ticket packs
                                                     </p>
                                                 )}
                                             </div>
@@ -1831,7 +1831,7 @@ const AdminDashboard: React.FC = () => {
                                     {activeAnalyticsSection === 'passes' && (
                                         <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
                                             <h3 className="text-base lg:text-lg font-bold text-action-primary mb-3 lg:mb-4 flex items-center gap-2">
-                                                🎫 Pass Management
+                                                🎫 Ticket Packs
                                             </h3>
                                             <div className="lg:hidden space-y-2 max-h-[50vh] overflow-y-auto">
                                                 {passes
@@ -1883,12 +1883,10 @@ const AdminDashboard: React.FC = () => {
                                                                             );
                                                                         const confirmMsg =
                                                                             redemptionCount > 0
-                                                                                ? `Delete pass "${pass.passId}"?\n\n⚠️ This will also delete ${redemptionCount} redemption${
-                                                                                      redemptionCount !== 1
-                                                                                          ? 's'
-                                                                                          : ''
+                                                                                ? `Delete ticket pack "${pass.passId}"?\n\n⚠️ This will also delete ${redemptionCount} entr${
+                                                                                      redemptionCount !== 1 ? 'ies' : 'y'
                                                                                   }.`
-                                                                                : `Delete pass "${pass.passId}"?`;
+                                                                                : `Delete ticket pack "${pass.passId}"?`;
                                                                         if (window.confirm(confirmMsg)) {
                                                                             const result = await deletePass(pass.passId);
                                                                             if (result.success) {
@@ -1904,14 +1902,14 @@ const AdminDashboard: React.FC = () => {
                                                         </div>
                                                     ))}
                                                 {passes.length === 0 && (
-                                                    <p className="text-center py-8 text-text-secondary text-sm">No passes yet</p>
+                                                    <p className="text-center py-8 text-text-secondary text-sm">No ticket packs yet</p>
                                                 )}
                                             </div>
                                             <div className="hidden lg:block overflow-x-auto">
                                                 <table className="w-full text-sm">
                                                     <thead className="border-b border-border-subtle">
                                                         <tr className="text-text-secondary">
-                                                            <th className="text-left py-2 px-2 font-medium">Pass ID</th>
+                                                            <th className="text-left py-2 px-2 font-medium">Ticket Pack ID</th>
                                                             <th className="text-left py-2 px-2 font-medium">Name</th>
                                                             <th className="text-left py-2 px-2 font-medium">Status</th>
                                                             <th className="text-left py-2 px-2 font-medium">Date</th>
@@ -1966,14 +1964,14 @@ const AdminDashboard: React.FC = () => {
                                                                                     );
                                                                                 const confirmMsg =
                                                                                     redemptionCount > 0
-                                                                                        ? `Delete pass "${pass.passId}" (${pass.passHolderName})?\n\n⚠️ This will also delete ${
+                                                                                        ? `Delete ticket pack "${pass.passId}" (${pass.passHolderName})?\n\n⚠️ This will also delete ${
                                                                                               redemptionCount
-                                                                                          } redemption${
+                                                                                          } entr${
                                                                                               redemptionCount !== 1
-                                                                                                  ? 's'
-                                                                                                  : ''
+                                                                                                  ? 'ies'
+                                                                                                  : 'y'
                                                                                           }.\n\nThis cannot be undone.`
-                                                                                        : `Delete pass "${pass.passId}" (${pass.passHolderName})?\n\nThis cannot be undone.`;
+                                                                                        : `Delete ticket pack "${pass.passId}" (${pass.passHolderName})?\n\nThis cannot be undone.`;
                                                                                 if (window.confirm(confirmMsg)) {
                                                                                     const result = await deletePass(pass.passId);
                                                                                     if (result.success) {
@@ -1991,7 +1989,7 @@ const AdminDashboard: React.FC = () => {
                                                     </tbody>
                                                 </table>
                                                 {passes.length === 0 && (
-                                                    <p className="text-center py-8 text-text-secondary">No passes yet</p>
+                                                    <p className="text-center py-8 text-text-secondary">No ticket packs yet</p>
                                                 )}
                                             </div>
                                         </div>
@@ -2000,7 +1998,7 @@ const AdminDashboard: React.FC = () => {
                                     {activeAnalyticsSection === 'redemptions' && (
                                         <div className="bg-bg-card rounded-xl border border-border-subtle p-4 lg:p-6">
                                             <h3 className="text-base lg:text-lg font-bold text-action-primary mb-3 lg:mb-4 flex items-center gap-2 flex-wrap">
-                                                📜 Redemptions
+                                                📜 Entries
                                                 {(() => {
                                                     const passIds = new Set(passes.map(p => p.passId));
                                                     const orphanCount = redemptions.filter(r => !passIds.has(r.passId)).length;
@@ -2013,7 +2011,7 @@ const AdminDashboard: React.FC = () => {
                                             </h3>
                                             <div className="space-y-2 max-h-[60vh] overflow-y-auto">
                                                 {redemptions.length === 0 && (
-                                                    <p className="text-xs text-text-secondary text-center py-4">No redemptions yet</p>
+                                                    <p className="text-xs text-text-secondary text-center py-4">No entries yet</p>
                                                 )}
                                                 {redemptions.map((r) => {
                                                     const vendor = vendors.find(v => v.vendorId === r.vendorId);
@@ -2029,7 +2027,7 @@ const AdminDashboard: React.FC = () => {
                                                             <div className="min-w-0 flex-1">
                                                                 <p className="text-xs font-medium text-text-primary truncate">{r.dealName}</p>
                                                                 <p className="text-[11px] text-text-secondary truncate">
-                                                                    {vendor ? vendor.name : 'Unknown vendor'} • Pass {r.passId}
+                                                                    {vendor ? vendor.name : 'Unknown fundraiser'} • Ticket Pack {r.passId}
                                                                 </p>
                                                             </div>
                                                             <div className="flex items-center justify-between gap-2">

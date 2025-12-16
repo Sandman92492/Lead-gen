@@ -25,34 +25,36 @@ const HowItWorks: React.FC = () => {
     const steps = [
         {
             icon: <TicketIcon />,
-            title: 'Get the Pass',
-            description: 'One payment. All deals. Valid Dec 1 – Jan 31.',
+            title: 'Get a Ticket Pack',
+            description: 'One purchase unlocks access to prize raffles for the current fundraiser.',
         },
         {
             icon: <PhoneIcon />,
-            title: 'Flash Your Phone',
-            description: 'Show your digital pass at checkout. No codes needed.',
-            note: 'Active internet connection required to redeem deals.',
+            title: 'Choose Prizes',
+            description: 'Browse prize raffles and enter right from your phone.',
+            note: 'An active internet connection is required to verify entries.',
         },
         {
             icon: <SavingsIcon />,
-            title: 'Save Instantly',
-            description: 'Discount applied on the spot. Done.',
+            title: 'Verify Your Entry',
+            description: 'A staff member confirms with a secure PIN and your entry is recorded instantly.',
         },
     ];
 
     return (
-        <section id="how-it-works" className="py-20 md:py-32 bg-bg-card">
+        <section id="how-it-works" className="py-16 md:py-24 bg-bg-card">
             <div className="container mx-auto px-4 sm:px-6">
                 <div className="max-w-3xl mx-auto text-center mb-16 scroll-reveal">
-                    <h1 className="text-4xl md:text-5xl font-display font-black text-action-primary mb-4 md:mb-6">Howzit Work?</h1>
-                    <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">No printing. No paper coupons. Discover hidden gems and save instantly on your phone.</p>
+                    <h1 className="text-4xl md:text-5xl font-display font-black text-text-primary mb-4 md:mb-6 tracking-tight">How it works</h1>
+                    <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8 md:mb-10">
+                      Simple, secure, and designed for school & NPO fundraisers.
+                    </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                     {steps.map((step, index) => (
                         <div 
                           key={index} 
-                          className="bg-bg-primary rounded-xl p-6 text-center scroll-reveal border border-border-subtle hover:border-action-primary/30 transition-colors" 
+                          className="bg-bg-primary rounded-[calc(var(--radius)-6px)] p-6 text-center scroll-reveal border border-border-subtle hover:border-action-primary/30 transition-colors" 
                           style={{ transitionDelay: `${index * 150}ms` }}
                         >
                             <div className="flex justify-center mb-4">

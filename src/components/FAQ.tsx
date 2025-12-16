@@ -47,16 +47,16 @@ const FAQ: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="py-20 md:py-32 bg-bg-primary">
+    <section id="faq" className="py-16 md:py-24 bg-bg-primary">
       <div className="container mx-auto px-4 sm:px-6">
          <div className="text-center mb-16 scroll-reveal">
-          <h3 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-widest mb-4 md:mb-5">Got Questions?</h3>
-          <p className="text-4xl md:text-5xl font-display font-black text-action-primary mb-4 md:mb-6">We've Got Answers</p>
-          <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto mb-8 md:mb-10">Find answers to everything you need to know about the Holiday Pass</p>
+          <h3 className="text-sm md:text-base font-semibold text-action-primary uppercase tracking-[0.2em] mb-4 md:mb-5">FAQ</h3>
+          <p className="text-4xl md:text-5xl font-display font-black text-text-primary mb-4 md:mb-6 tracking-tight">Questions, answered</p>
+          <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-2xl mx-auto mb-8 md:mb-10">Everything you need to know about ticket packs, entries, and verification.</p>
          </div>
          <div className="max-w-3xl mx-auto space-y-4">
           {FAQS.map((faq, index) => (
-             <div key={index} className="bg-bg-card rounded-lg shadow-md border-4 border-action-primary overflow-hidden scroll-reveal transition-all duration-300 hover:shadow-lg hover:brightness-105" style={{ transitionDelay: `${index * 100}ms` }}>
+             <div key={index} className={`bg-bg-card rounded-[calc(var(--radius)-8px)] shadow-sm border overflow-hidden scroll-reveal transition-all duration-300 ${openIndex === index ? 'border-action-primary/30' : 'border-border-subtle'} hover:shadow-md`} style={{ transitionDelay: `${index * 100}ms` }}>
               <button
                 ref={(el) => {
                   if (el) faqHeaderRefs.current[index] = el;

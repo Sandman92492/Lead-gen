@@ -36,11 +36,11 @@ const ActivatePassModal: React.FC<ActivatePassModalProps> = ({ isOpen, onClose, 
         <BaseModal
             isOpen={isOpen}
             onClose={onClose}
-            title="Activate Shared Pass"
+            title="Activate Shared Ticket Pack"
             maxWidth="md"
         >
             <p className="text-text-secondary mb-6">
-                Enter the details from the original pass to activate it on this device.
+                Enter the details from the original ticket pack to activate it on this device.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -48,8 +48,8 @@ const ActivatePassModal: React.FC<ActivatePassModalProps> = ({ isOpen, onClose, 
                     type="text"
                     value={passId}
                     onChange={(e) => setPassId(e.target.value.toUpperCase())}
-                    placeholder="Pass ID (e.g., PAHP-XYZ123)"
-                    ariaLabel="Pass ID"
+                    placeholder="Ticket Pack ID (e.g., PAHP-XYZ123)"
+                    ariaLabel="Ticket Pack ID"
                     disabled={isLoading}
                     required
                 />
@@ -57,8 +57,8 @@ const ActivatePassModal: React.FC<ActivatePassModalProps> = ({ isOpen, onClose, 
                     type="text"
                     value={primaryName}
                     onChange={(e) => setPrimaryName(e.target.value)}
-                    placeholder="Primary Pass Holder's Name"
-                    ariaLabel="Primary Pass Holder's Name"
+                    placeholder="Primary Ticket Holder's Name"
+                    ariaLabel="Primary Ticket Holder's Name"
                     disabled={isLoading}
                     required
                 />
@@ -83,7 +83,7 @@ const ActivatePassModal: React.FC<ActivatePassModalProps> = ({ isOpen, onClose, 
                     className="w-full text-lg"
                     disabled={isLoading}
                 >
-                    {isLoading ? 'Activating...' : 'Activate Pass'}
+                    {isLoading ? 'Activating...' : 'Activate Ticket Pack'}
                 </Button>
             </form>
         </BaseModal>

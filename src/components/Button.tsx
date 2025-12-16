@@ -6,7 +6,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button: React.FC<ButtonProps> = ({ children, className, variant = 'primary', size = 'md', ...props }) => {
-  const baseStyle = "font-body font-bold rounded-md focus:outline-none focus:ring-4 transition-all duration-300 transform hover:brightness-105";
+  const baseStyle =
+    "font-body font-bold rounded-[calc(var(--radius)-8px)] focus:outline-none focus:ring-4 focus:ring-[var(--ring)] focus:ring-offset-2 focus:ring-offset-[var(--bg)] transition-all duration-300 transform hover:brightness-105";
   
   const sizeStyles = {
     sm: "px-4 py-2 md:py-1.5 text-sm",
@@ -15,11 +16,11 @@ const Button: React.FC<ButtonProps> = ({ children, className, variant = 'primary
   };
 
   const variantStyles = {
-    primary: "bg-action-primary text-white focus:ring-[var(--color-action-primary)]/30",
-    secondary: "border-2 border-action-primary text-action-primary bg-transparent focus:ring-[var(--color-action-primary)]/30 hover:bg-action-primary/10",
-    payment: "bg-brand-yellow text-gray-900 font-bold focus:ring-[var(--color-brand-yellow)]/40 hover:brightness-110",
-    outline: "border-2 border-action-primary text-action-primary bg-transparent focus:ring-[var(--color-action-primary)]/30 hover:bg-action-primary/10",
-    redeem: "bg-urgency-high text-white focus:ring-[var(--color-urgency-high)]/30",
+    primary: "bg-[var(--brand)] text-white hover:brightness-110",
+    secondary: "border-2 border-action-primary text-action-primary bg-transparent hover:bg-action-primary/10",
+    payment: "bg-[var(--accent)] text-slate-900 font-bold hover:brightness-110",
+    outline: "border-2 border-action-primary text-action-primary bg-transparent hover:bg-action-primary/10",
+    redeem: "bg-urgency-high text-white hover:brightness-110",
   };
 
   return (
