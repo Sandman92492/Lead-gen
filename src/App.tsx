@@ -28,6 +28,8 @@ import AdminDashboard from './components/AdminDashboard.tsx';
 import CookieConsentBanner from './components/CookieConsentBanner.tsx';
 import ScrollToTopButton from './components/ScrollToTopButton.tsx';
 import { UpdateBanner } from './components/UpdateBanner.tsx';
+import VendorPortal from './pages/vendor/VendorPortal.tsx';
+import { VendorAuthProvider } from './context/VendorAuthContext.tsx';
 
 import { PassType } from './types.ts';
 import { signOut } from './services/authService';
@@ -40,6 +42,7 @@ const App: React.FC = () => {
   const { user, userState, pass, isLoading, userPhotoURL, redeemedDeals, setRedeemedDeals } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const isVendorRoute = location.pathname === '/vendor' || location.pathname.startsWith('/vendor/');
 
   const [isOnline, setIsOnline] = useState(() => {
     if (typeof navigator === 'undefined') return true;
@@ -353,6 +356,17 @@ const App: React.FC = () => {
       setIsSignOutConfirmationOpen(false);
     }
   };
+
+  // Vendor portal (separate from consumer app)
+  if (isVendorRoute) {
+    return (
+      <div>
+        <VendorAuthProvider>
+          <VendorPortal />
+        </VendorAuthProvider>
+      </div>
+    );
+  }
 
   // Show admin dashboard if in admin mode
   if (isAdminMode) {
