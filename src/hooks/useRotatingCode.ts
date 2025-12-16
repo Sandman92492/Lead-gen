@@ -5,8 +5,8 @@ const mode = ((import.meta as any).env.VITE_DATA_MODE ?? 'mock') as string;
 const isFirebaseMode = mode === 'firebase';
 
 type RotatingCodeResponse = {
-  code: string;
-  expiresAt: string;
+  code: string | null;
+  expiresAt: string | null;
   rotationSeconds: number;
   credential: {
     credentialId: string;
@@ -19,6 +19,8 @@ type RotatingCodeResponse = {
     memberNo?: string | null;
     unitNo?: string | null;
   };
+  canVerify?: boolean;
+  reason?: string;
 };
 
 export type RotatingCredentialSummary = RotatingCodeResponse['credential'];
@@ -92,14 +94,14 @@ export const useRotatingCode = ({ user, guestToken }: UseRotatingCodeArgs): UseR
           return;
         }
 
-        if (!data.code || !data.expiresAt || !data.rotationSeconds || !data.credential) {
+        if (!data.rotationSeconds || !data.credential) {
           setError('Unexpected response from server.');
           setIsLoading(false);
           return;
         }
 
-        setCode(data.code);
-        setExpiresAt(data.expiresAt);
+        setCode(typeof data.code === 'string' ? data.code : null);
+        setExpiresAt(typeof data.expiresAt === 'string' ? data.expiresAt : null);
         setRotationSeconds(data.rotationSeconds);
         setCredential(data.credential as RotatingCredentialSummary);
         setIsLoading(false);
@@ -159,13 +161,21 @@ export const useRotatingCode = ({ user, guestToken }: UseRotatingCodeArgs): UseR
   }, [refresh]);
 
   useEffect(() => {
-    if (!expiresAtMs) return;
-
     if (refreshTimeoutRef.current) {
       window.clearTimeout(refreshTimeoutRef.current);
     }
     if (countdownIntervalRef.current) {
       window.clearInterval(countdownIntervalRef.current);
+    }
+
+    if (!expiresAtMs) {
+      setSecondsRemaining(null);
+      if (rotationSeconds) {
+        refreshTimeoutRef.current = window.setTimeout(() => {
+          void refresh();
+        }, Math.max(2000, rotationSeconds * 1000));
+      }
+      return;
     }
 
     const updateRemaining = () => {
@@ -180,7 +190,7 @@ export const useRotatingCode = ({ user, guestToken }: UseRotatingCodeArgs): UseR
     refreshTimeoutRef.current = window.setTimeout(() => {
       void refresh();
     }, refreshInMs);
-  }, [expiresAtMs, refresh]);
+  }, [expiresAtMs, refresh, rotationSeconds]);
 
   return {
     isLoading,
@@ -193,4 +203,3 @@ export const useRotatingCode = ({ user, guestToken }: UseRotatingCodeArgs): UseR
     refresh,
   };
 };
-

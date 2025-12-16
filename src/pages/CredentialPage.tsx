@@ -1,8 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useRotatingCode } from '../hooks/useRotatingCode';
 import { useAuth } from '../context/AuthContext';
+import Button from '../components/Button';
+import { createCredential } from '../services/accessService';
 
 const EXPIRING_SOON_DAYS = 7;
+const mode = ((import.meta as any).env.VITE_DATA_MODE ?? 'mock') as string;
 
 const formatDate = (iso: string): string => {
   const date = new Date(iso);
@@ -29,6 +32,20 @@ const computeStatus = (credential: { status: string; credentialType: string; val
 const CredentialPage: React.FC = () => {
   const { user } = useAuth();
   const { isLoading, error, code, secondsRemaining, credential } = useRotatingCode({ user });
+  const [guestName, setGuestName] = useState('');
+  const [guestValidFrom, setGuestValidFrom] = useState(() => {
+    const now = new Date();
+    now.setSeconds(0, 0);
+    return now.toISOString().slice(0, 16);
+  });
+  const [guestValidTo, setGuestValidTo] = useState(() => {
+    const later = new Date(Date.now() + 4 * 60 * 60 * 1000);
+    later.setSeconds(0, 0);
+    return later.toISOString().slice(0, 16);
+  });
+  const [guestLink, setGuestLink] = useState<string | null>(null);
+  const [guestError, setGuestError] = useState<string | null>(null);
+  const [isCreatingGuest, setIsCreatingGuest] = useState(false);
 
   const status = useMemo(() => {
     if (!credential) return null;
@@ -40,6 +57,80 @@ const CredentialPage: React.FC = () => {
     : status?.tone === 'yellow'
       ? 'bg-brand-yellow/15 border-brand-yellow text-brand-yellow'
       : 'bg-urgency-high/15 border-urgency-high text-urgency-high';
+
+  const canCreateGuest = credential?.credentialType === 'member' || credential?.credentialType === 'resident';
+
+  const handleCreateGuest = useCallback(async () => {
+    setGuestError(null);
+    setGuestLink(null);
+    if (!credential) {
+      setGuestError('Credential not loaded.');
+      return;
+    }
+
+    const validFromMs = Date.parse(guestValidFrom);
+    const validToMs = Date.parse(guestValidTo);
+    if (!Number.isFinite(validFromMs) || !Number.isFinite(validToMs)) {
+      setGuestError('Invalid dates.');
+      return;
+    }
+    if (validToMs <= validFromMs) {
+      setGuestError('validTo must be after validFrom.');
+      return;
+    }
+
+    setIsCreatingGuest(true);
+    try {
+      if (mode !== 'firebase' || !user || typeof user.getIdToken !== 'function') {
+        const result = await createCredential({
+          orgId: credential.orgId,
+          userId: null,
+          credentialType: 'guest',
+          status: 'active',
+          validFrom: new Date(validFromMs).toISOString(),
+          validTo: new Date(validToMs).toISOString(),
+          displayName: guestName.trim() || 'Guest',
+          memberNo: undefined,
+          unitNo: undefined,
+        });
+        if (!result.success || !result.credentialId) {
+          setGuestError(result.error || 'Failed to create guest pass.');
+          setIsCreatingGuest(false);
+          return;
+        }
+        setGuestLink(`/guest/${result.credentialId}`);
+        setIsCreatingGuest(false);
+        return;
+      }
+
+      const idToken = await user.getIdToken();
+      const response = await fetch('/.netlify/functions/create-guest-pass', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          guestName: guestName.trim() || undefined,
+          validFrom: new Date(validFromMs).toISOString(),
+          validTo: new Date(validToMs).toISOString(),
+        }),
+      });
+
+      const data = (await response.json()) as { guestUrl?: string; error?: string };
+      if (!response.ok || !data.guestUrl) {
+        setGuestError(data.error || 'Failed to create guest pass.');
+        setIsCreatingGuest(false);
+        return;
+      }
+
+      setGuestLink(data.guestUrl);
+      setIsCreatingGuest(false);
+    } catch {
+      setGuestError('Network error. Please try again.');
+      setIsCreatingGuest(false);
+    }
+  }, [credential, guestName, guestValidFrom, guestValidTo, user]);
 
   return (
     <main className="min-h-[calc(100vh-6rem)] pb-24 sm:pb-8 bg-bg-primary">
@@ -95,10 +186,87 @@ const CredentialPage: React.FC = () => {
         <p className="text-center text-xs text-text-secondary mt-4">
           Codes refresh automatically and can only be validated by staff.
         </p>
+
+        {canCreateGuest && (
+          <section className="mt-6 bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
+            <h2 className="font-semibold text-text-primary">Create Guest Pass</h2>
+            <p className="text-sm text-text-secondary mt-1">Generate a shareable link for a guest.</p>
+
+            <div className="mt-4 space-y-3">
+              <div>
+                <label className="block text-xs text-text-secondary mb-1">Guest name (optional)</label>
+                <input
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  placeholder="Guest"
+                  className="w-full px-4 py-3 bg-bg-primary border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary"
+                  disabled={isCreatingGuest}
+                />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-text-secondary mb-1">Valid from</label>
+                  <input
+                    type="datetime-local"
+                    value={guestValidFrom}
+                    onChange={(e) => setGuestValidFrom(e.target.value)}
+                    className="w-full px-4 py-3 bg-bg-primary border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary"
+                    disabled={isCreatingGuest}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-text-secondary mb-1">Valid to</label>
+                  <input
+                    type="datetime-local"
+                    value={guestValidTo}
+                    onChange={(e) => setGuestValidTo(e.target.value)}
+                    className="w-full px-4 py-3 bg-bg-primary border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary"
+                    disabled={isCreatingGuest}
+                  />
+                </div>
+              </div>
+
+              {guestError && (
+                <div className="bg-urgency-high/10 border border-urgency-high rounded-lg p-3">
+                  <p className="text-sm font-semibold text-urgency-high">{guestError}</p>
+                </div>
+              )}
+
+              <Button variant="primary" className="w-full" onClick={handleCreateGuest} disabled={isCreatingGuest}>
+                {isCreatingGuest ? 'Creating…' : 'Create Guest Link'}
+              </Button>
+
+              {guestLink && (
+                <div className="bg-bg-primary border border-border-subtle rounded-lg p-3">
+                  <p className="text-xs text-text-secondary mb-1">Share link</p>
+                  <div className="flex items-center gap-2">
+                    <input
+                      value={guestLink}
+                      readOnly
+                      className="flex-1 px-3 py-2 bg-bg-card border border-border-default rounded-lg font-mono text-xs"
+                    />
+                    <button
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(guestLink);
+                        } catch {
+                          // Ignore clipboard errors
+                        }
+                      }}
+                      className="text-xs font-semibold text-action-primary hover:underline"
+                      type="button"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
       </div>
     </main>
   );
 };
 
 export default CredentialPage;
-

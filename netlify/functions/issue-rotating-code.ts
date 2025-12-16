@@ -117,20 +117,47 @@ const handler: Handler = async (event) => {
         return { ok: false as const, statusCode: 400, body: { error: 'Credential has invalid validity dates' } };
       }
 
-      if (credential.status !== 'active' || nowMs < validFromMs || nowMs > validToMs) {
-        return {
-          ok: false as const,
-          statusCode: 403,
-          body: { error: 'Credential is not active', status: credential.status },
-        };
-      }
-
       const orgSnap = await tx.get(db.collection('orgs').doc(orgId));
       const rotationSecondsCandidate = Number(orgSnap.data()?.settings?.codeRotationSeconds);
       const rotationSeconds =
         Number.isFinite(rotationSecondsCandidate) && rotationSecondsCandidate >= 20 && rotationSecondsCandidate <= 60
           ? rotationSecondsCandidate
           : 30;
+
+      const credentialSummary = {
+        credentialId,
+        orgId,
+        credentialType: String(credential.credentialType || ''),
+        status: String(credential.status || ''),
+        validFrom: String(credential.validFrom || ''),
+        validTo: String(credential.validTo || ''),
+        displayName: String(credential.displayName || ''),
+        memberNo: credential.memberNo ?? null,
+        unitNo: credential.unitNo ?? null,
+      };
+
+      const canVerify = credential.status === 'active' && nowMs >= validFromMs && nowMs <= validToMs;
+      if (!canVerify) {
+        const status = String(credential.status || '');
+        const reason =
+          status === 'suspended'
+            ? 'credential_suspended'
+            : nowMs < validFromMs
+              ? 'credential_not_yet_valid'
+              : nowMs > validToMs
+                ? 'credential_expired'
+                : 'credential_inactive';
+
+        return {
+          ok: true as const,
+          code: null,
+          expiresAt: null,
+          rotationSeconds,
+          credential: credentialSummary,
+          canVerify: false,
+          reason,
+        };
+      }
 
       const currentCode = String(credential.currentCode || '');
       const currentExpiresAt = Date.parse(String(credential.currentCodeExpiresAt || ''));
@@ -140,17 +167,8 @@ const handler: Handler = async (event) => {
           code: currentCode,
           expiresAt: new Date(currentExpiresAt).toISOString(),
           rotationSeconds,
-          credential: {
-            credentialId,
-            orgId,
-            credentialType: String(credential.credentialType || ''),
-            status: String(credential.status || ''),
-            validFrom: String(credential.validFrom || ''),
-            validTo: String(credential.validTo || ''),
-            displayName: String(credential.displayName || ''),
-            memberNo: credential.memberNo ?? null,
-            unitNo: credential.unitNo ?? null,
-          },
+          credential: credentialSummary,
+          canVerify: true,
         };
       }
 
@@ -204,17 +222,8 @@ const handler: Handler = async (event) => {
           code,
           expiresAt: expiresAtIso,
           rotationSeconds,
-          credential: {
-            credentialId,
-            orgId,
-            credentialType: String(credential.credentialType || ''),
-            status: String(credential.status || ''),
-            validFrom: String(credential.validFrom || ''),
-            validTo: String(credential.validTo || ''),
-            displayName: String(credential.displayName || ''),
-            memberNo: credential.memberNo ?? null,
-            unitNo: credential.unitNo ?? null,
-          },
+          credential: credentialSummary,
+          canVerify: true,
         };
       }
 
