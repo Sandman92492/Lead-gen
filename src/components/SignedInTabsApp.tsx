@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-
 import HomePage from '../pages/HomePage';
 import DealsDirectoryV2 from '../pages/DealsDirectoryV2';
 import ProfilePage from '../pages/ProfilePage';
+import CredentialPage from '../pages/CredentialPage';
 import Footer from './Footer';
 import { HomeIcon, DealsIcon, ProfileIcon } from './TabIcons';
 import { PassInfo } from '../context/AuthContext';
@@ -58,8 +59,8 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
     useEffect(() => {
         if (!hasNavigatedRef.current) {
             hasNavigatedRef.current = true;
-            // Always start on home page when signing in
-            if (location.pathname !== '/home') {
+            // Default to home only if landing on root.
+            if (location.pathname === '/' || location.pathname === '') {
                 navigate('/home', { replace: true });
             }
         }
@@ -175,6 +176,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({
                     <Route path="/deals" element={
                         <DealsDirectoryV2 hasPass={hasPass} onRedeemClick={onRedeemClick} redeemedDeals={redeemedDeals} passExpiryDate={pass?.expiryDate} onBuyPassClick={onBuyPassClick} />
                     } />
+                    <Route path="/credential" element={<CredentialPage />} />
                     <Route path="/profile" element={
                         <ProfilePage userEmail={userEmail} userPhotoURL={userPhotoURL} onSignOut={onSignOut} hasPass={hasPass} redeemedDeals={redeemedDeals} onPrivacyClick={onPrivacyClick} onTermsClick={onTermsClick} onCharityClick={onCharityClick} onFaqClick={onFaqClick} />
                     } />

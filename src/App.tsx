@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useMatch } from 'react-router-dom';
 
 import Header from './components/Header.tsx';
 import Footer from './components/Footer.tsx';
@@ -28,6 +28,8 @@ import AdminDashboard from './components/AdminDashboard.tsx';
 import CookieConsentBanner from './components/CookieConsentBanner.tsx';
 import ScrollToTopButton from './components/ScrollToTopButton.tsx';
 import { UpdateBanner } from './components/UpdateBanner.tsx';
+import GuestCredentialPage from './pages/GuestCredentialPage.tsx';
+import VerifierPage from './pages/VerifierPage.tsx';
 
 import { PassType } from './types.ts';
 import { signOut } from './services/authService';
@@ -40,6 +42,8 @@ const App: React.FC = () => {
   const { user, userState, pass, isLoading, userPhotoURL, redeemedDeals, setRedeemedDeals } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const guestMatch = useMatch('/guest/:token');
+  const verifierMatch = useMatch('/verifier');
 
   const [isOnline, setIsOnline] = useState(() => {
     if (typeof navigator === 'undefined') return true;
@@ -355,6 +359,14 @@ const App: React.FC = () => {
   };
 
   // Show admin dashboard if in admin mode
+  if (guestMatch) {
+    return <GuestCredentialPage token={guestMatch.params.token || ''} />;
+  }
+
+  if (verifierMatch) {
+    return <VerifierPage />;
+  }
+
   if (isAdminMode) {
     return (
       <div>
