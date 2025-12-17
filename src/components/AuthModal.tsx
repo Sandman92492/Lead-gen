@@ -115,7 +115,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuccess })
         maxWidth="md"
       >
       <p className="text-text-secondary text-sm mb-6">
-        {isSignUp ? 'Join us to manage your passes' : 'Sign in to your account'}
+        {isSignUp ? 'Create an account to access your credential.' : 'Sign in to view your credential.'}
       </p>
 
         <form onSubmit={handleSubmit} className="space-y-4 mb-6">
@@ -179,7 +179,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuccess })
         <button
           onClick={handleGoogleSignIn}
           disabled={isLoading}
-          className="w-full px-4 py-3 bg-white dark:bg-slate-100 border border-gray-300 dark:border-gray-400 rounded-lg hover:shadow-md hover:border-gray-400 dark:hover:border-gray-500 transition flex items-center justify-center gap-3 text-gray-700 dark:text-gray-800 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-4 py-3 bg-bg-primary border border-border-subtle rounded-lg hover:shadow-md hover:border-action-primary/30 transition flex items-center justify-center gap-3 text-text-primary font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <svg
             className="w-5 h-5"

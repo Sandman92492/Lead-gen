@@ -1,4 +1,4 @@
-import { Handler } from '@netlify/functions';
+import type { Handler } from '@netlify/functions';
 
 const YOCO_SECRET_KEY = process.env.YOCO_SECRET_KEY;
 

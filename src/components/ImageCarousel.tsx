@@ -36,7 +36,11 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
     };
 
     if (!images || images.length === 0) {
-        return <div className={`bg-gray-200 ${heightClass} w-full flex items-center justify-center text-gray-400`}>No Image</div>;
+        return (
+            <div className={`bg-bg-primary border border-border-subtle ${heightClass} w-full flex items-center justify-center text-text-secondary`}>
+                No Image
+            </div>
+        );
     }
 
     if (images.length === 1) {

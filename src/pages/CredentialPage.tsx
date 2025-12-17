@@ -1,269 +1,99 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useRotatingCode } from '../hooks/useRotatingCode';
 import { useAuth } from '../context/AuthContext';
-import Button from '../components/Button';
-import { createCredential } from '../services/accessService';
+import CredentialCard from '../components/CredentialCard';
+import { copy } from '../copy';
 
 const EXPIRING_SOON_DAYS = 7;
-const mode = ((import.meta as any).env.VITE_DATA_MODE ?? 'mock') as string;
-
-const formatDate = (iso: string): string => {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return iso;
-  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
-};
 
 const computeStatus = (credential: { status: string; credentialType: string; validFrom: string; validTo: string }) => {
   const now = Date.now();
   const validFromMs = Date.parse(credential.validFrom);
   const validToMs = Date.parse(credential.validTo);
 
-  if (credential.status !== 'active') return { label: 'INACTIVE', tone: 'red' as const };
-  if (!Number.isFinite(validFromMs) || !Number.isFinite(validToMs)) return { label: 'INVALID', tone: 'red' as const };
-  if (now < validFromMs) return { label: 'NOT YET VALID', tone: 'yellow' as const };
-  if (now > validToMs) return { label: 'EXPIRED', tone: 'red' as const };
-  if (credential.credentialType === 'guest') return { label: 'GUEST', tone: 'yellow' as const };
+  if (credential.status !== 'active') return { label: copy.credential.status.inactive, tone: 'red' as const };
+  if (!Number.isFinite(validFromMs) || !Number.isFinite(validToMs)) return { label: copy.credential.status.invalid, tone: 'red' as const };
+  if (now < validFromMs) return { label: copy.credential.status.notYetValid, tone: 'yellow' as const };
+  if (now > validToMs) return { label: copy.credential.status.expired, tone: 'red' as const };
+  if (credential.credentialType === 'guest') return { label: copy.credential.status.guest, tone: 'yellow' as const };
 
   const expiringSoonMs = EXPIRING_SOON_DAYS * 24 * 60 * 60 * 1000;
-  if (validToMs - now <= expiringSoonMs) return { label: 'EXPIRING SOON', tone: 'yellow' as const };
-  return { label: 'ACTIVE', tone: 'green' as const };
+  if (validToMs - now <= expiringSoonMs) return { label: copy.credential.status.expiringSoon, tone: 'yellow' as const };
+  return { label: copy.credential.status.active, tone: 'green' as const };
 };
 
 const CredentialPage: React.FC = () => {
-  const { user } = useAuth();
-  const { isLoading, error, code, secondsRemaining, credential } = useRotatingCode({ user });
-  const [guestName, setGuestName] = useState('');
-  const [guestValidFrom, setGuestValidFrom] = useState(() => {
-    const now = new Date();
-    now.setSeconds(0, 0);
-    return now.toISOString().slice(0, 16);
-  });
-  const [guestValidTo, setGuestValidTo] = useState(() => {
-    const later = new Date(Date.now() + 4 * 60 * 60 * 1000);
-    later.setSeconds(0, 0);
-    return later.toISOString().slice(0, 16);
-  });
-  const [guestLink, setGuestLink] = useState<string | null>(null);
-  const [guestError, setGuestError] = useState<string | null>(null);
-  const [isCreatingGuest, setIsCreatingGuest] = useState(false);
+  const { user, userPhotoURL } = useAuth();
+  const { isLoading, error, code, secondsRemaining, rotationSeconds, credential } = useRotatingCode({ user });
 
   const status = useMemo(() => {
     if (!credential) return null;
     return computeStatus(credential);
   }, [credential]);
 
-  const toneClasses = status?.tone === 'green'
-    ? 'bg-success/15 border-success text-success'
-    : status?.tone === 'yellow'
-      ? 'bg-brand-yellow/15 border-brand-yellow text-brand-yellow'
-      : 'bg-urgency-high/15 border-urgency-high text-urgency-high';
-
-  const canCreateGuest = credential?.credentialType === 'member' || credential?.credentialType === 'resident';
-
-  const handleCreateGuest = useCallback(async () => {
-    setGuestError(null);
-    setGuestLink(null);
-    if (!credential) {
-      setGuestError('Credential not loaded.');
-      return;
-    }
-
-    const validFromMs = Date.parse(guestValidFrom);
-    const validToMs = Date.parse(guestValidTo);
-    if (!Number.isFinite(validFromMs) || !Number.isFinite(validToMs)) {
-      setGuestError('Invalid dates.');
-      return;
-    }
-    if (validToMs <= validFromMs) {
-      setGuestError('validTo must be after validFrom.');
-      return;
-    }
-
-    setIsCreatingGuest(true);
-    try {
-      if (mode !== 'firebase' || !user || typeof user.getIdToken !== 'function') {
-        const result = await createCredential({
-          orgId: credential.orgId,
-          userId: null,
-          credentialType: 'guest',
-          status: 'active',
-          validFrom: new Date(validFromMs).toISOString(),
-          validTo: new Date(validToMs).toISOString(),
-          displayName: guestName.trim() || 'Guest',
-          memberNo: undefined,
-          unitNo: undefined,
-        });
-        if (!result.success || !result.credentialId) {
-          setGuestError(result.error || 'Failed to create guest pass.');
-          setIsCreatingGuest(false);
-          return;
-        }
-        setGuestLink(`/guest/${result.credentialId}`);
-        setIsCreatingGuest(false);
-        return;
-      }
-
-      const idToken = await user.getIdToken();
-      const response = await fetch('/.netlify/functions/create-guest-pass', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({
-          guestName: guestName.trim() || undefined,
-          validFrom: new Date(validFromMs).toISOString(),
-          validTo: new Date(validToMs).toISOString(),
-        }),
-      });
-
-      const data = (await response.json()) as { guestUrl?: string; error?: string };
-      if (!response.ok || !data.guestUrl) {
-        setGuestError(data.error || 'Failed to create guest pass.');
-        setIsCreatingGuest(false);
-        return;
-      }
-
-      setGuestLink(data.guestUrl);
-      setIsCreatingGuest(false);
-    } catch {
-      setGuestError('Network error. Please try again.');
-      setIsCreatingGuest(false);
-    }
-  }, [credential, guestName, guestValidFrom, guestValidTo, user]);
+  const tierLabel = useMemo(() => {
+    const type = String(credential?.credentialType || '').toLowerCase();
+    if (type === 'resident') return 'Resident';
+    if (type === 'member') return 'Member';
+    if (type === 'staff') return 'Staff';
+    if (type === 'guest') return 'Guest';
+    return null;
+  }, [credential?.credentialType]);
 
   return (
-    <main className="min-h-[calc(100vh-6rem)] pb-24 sm:pb-8 bg-bg-primary">
-      <div className="container mx-auto px-4 sm:px-6 pt-8 max-w-md">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-display font-black text-action-primary">Digital Credential</h1>
-          <p className="text-text-secondary mt-1">Show this code at the checkpoint</p>
-        </div>
+    <main className="relative bg-bg-primary overflow-hidden">
+      <h1 className="sr-only">{copy.nav.credential}</h1>
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-action-primary opacity-[0.08] blur-3xl" />
+        <div className="absolute -bottom-24 right-0 h-80 w-80 rounded-full bg-value-highlight opacity-[0.10] blur-3xl" />
+      </div>
 
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 pt-8 pb-10">
         {error && (
-          <div className="bg-urgency-high/10 border border-urgency-high rounded-lg p-3 mb-4">
+          <div className="rounded-2xl border border-urgency-high bg-urgency-high/10 p-4 mb-5">
             <p className="text-sm font-semibold text-urgency-high">{error}</p>
           </div>
         )}
 
-        <div className="bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div className={`text-xs font-bold tracking-widest px-3 py-1 rounded-full border ${toneClasses}`}>
-              {status?.label || '—'}
-            </div>
-            <div className="text-xs text-text-secondary">
-              {secondsRemaining !== null ? `Refresh in ${secondsRemaining}s` : '—'}
-            </div>
-          </div>
+        <CredentialCard
+          status={{ label: status?.label || '—', tone: status?.tone || 'neutral' }}
+          code={code}
+          isLoading={isLoading}
+          secondsRemaining={secondsRemaining}
+          rotationSeconds={rotationSeconds}
+          displayName={credential?.displayName || user?.displayName || '—'}
+          photoUrl={userPhotoURL}
+          tierLabel={tierLabel}
+          memberOrUnit={credential?.memberNo || credential?.unitNo || null}
+          validFrom={credential?.validFrom || null}
+          validTo={credential?.validTo || null}
+          lastVerifiedAt={null}
+          variant="member"
+          layout="membership"
+          className="mx-auto max-w-md"
+        />
 
-          <div className="text-center my-6">
-            <div className="text-xs uppercase tracking-widest text-text-secondary mb-2">Verification Code</div>
-            <div className="font-mono text-6xl font-black tracking-[0.25em] text-action-primary">
-              {isLoading ? '••••' : (code || '— — — —')}
-            </div>
-          </div>
-
-          <div className="border-t border-border-subtle pt-4 space-y-2">
-            <div className="flex items-start justify-between gap-4">
-              <span className="text-xs text-text-secondary">Name</span>
-              <span className="text-sm font-semibold text-text-primary text-right">{credential?.displayName || user?.displayName || '—'}</span>
-            </div>
-            <div className="flex items-start justify-between gap-4">
-              <span className="text-xs text-text-secondary">Member / Unit</span>
-              <span className="text-sm font-semibold text-text-primary text-right">
-                {credential?.memberNo || credential?.unitNo || '—'}
-              </span>
-            </div>
-            <div className="flex items-start justify-between gap-4">
-              <span className="text-xs text-text-secondary">Valid Until</span>
-              <span className="text-sm font-semibold text-text-primary text-right">
-                {credential?.validTo ? formatDate(credential.validTo) : '—'}
-              </span>
+        <div className="mt-6 rounded-3xl border border-border-subtle bg-bg-card p-5">
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-2xl border border-border-subtle bg-bg-primary text-text-secondary">
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20Z"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                />
+                <path d="M12 10v7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                <circle cx="12" cy="7" r="1" fill="currentColor" />
+              </svg>
+            </span>
+            <div className="min-w-0">
+              <div className="kicker">Quick tips</div>
+              <p className="mt-2 text-sm text-text-secondary leading-relaxed">
+                Show the QR code to staff (or use the 4‑digit backup). Codes rotate every {rotationSeconds ?? 30}s.
+              </p>
             </div>
           </div>
         </div>
-
-        <p className="text-center text-xs text-text-secondary mt-4">
-          Codes refresh automatically and can only be validated by staff.
-        </p>
-
-        {canCreateGuest && (
-          <section className="mt-6 bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
-            <h2 className="font-semibold text-text-primary">Create Guest Pass</h2>
-            <p className="text-sm text-text-secondary mt-1">Generate a shareable link for a guest.</p>
-
-            <div className="mt-4 space-y-3">
-              <div>
-                <label className="block text-xs text-text-secondary mb-1">Guest name (optional)</label>
-                <input
-                  value={guestName}
-                  onChange={(e) => setGuestName(e.target.value)}
-                  placeholder="Guest"
-                  className="w-full px-4 py-3 bg-bg-primary border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary"
-                  disabled={isCreatingGuest}
-                />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-text-secondary mb-1">Valid from</label>
-                  <input
-                    type="datetime-local"
-                    value={guestValidFrom}
-                    onChange={(e) => setGuestValidFrom(e.target.value)}
-                    className="w-full px-4 py-3 bg-bg-primary border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary"
-                    disabled={isCreatingGuest}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-text-secondary mb-1">Valid to</label>
-                  <input
-                    type="datetime-local"
-                    value={guestValidTo}
-                    onChange={(e) => setGuestValidTo(e.target.value)}
-                    className="w-full px-4 py-3 bg-bg-primary border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary"
-                    disabled={isCreatingGuest}
-                  />
-                </div>
-              </div>
-
-              {guestError && (
-                <div className="bg-urgency-high/10 border border-urgency-high rounded-lg p-3">
-                  <p className="text-sm font-semibold text-urgency-high">{guestError}</p>
-                </div>
-              )}
-
-              <Button variant="primary" className="w-full" onClick={handleCreateGuest} disabled={isCreatingGuest}>
-                {isCreatingGuest ? 'Creating…' : 'Create Guest Link'}
-              </Button>
-
-              {guestLink && (
-                <div className="bg-bg-primary border border-border-subtle rounded-lg p-3">
-                  <p className="text-xs text-text-secondary mb-1">Share link</p>
-                  <div className="flex items-center gap-2">
-                    <input
-                      value={guestLink}
-                      readOnly
-                      className="flex-1 px-3 py-2 bg-bg-card border border-border-default rounded-lg font-mono text-xs"
-                    />
-                    <button
-                      onClick={async () => {
-                        try {
-                          await navigator.clipboard.writeText(guestLink);
-                        } catch {
-                          // Ignore clipboard errors
-                        }
-                      }}
-                      className="text-xs font-semibold text-action-primary hover:underline"
-                      type="button"
-                    >
-                      Copy
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
       </div>
     </main>
   );

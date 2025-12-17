@@ -7,20 +7,25 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button: React.FC<ButtonProps> = ({ children, className, variant = 'primary', size = 'md', ...props }) => {
   const baseStyle =
-    "font-body font-bold rounded-[calc(var(--radius)-8px)] focus:outline-none focus:ring-4 focus:ring-[var(--ring)] focus:ring-offset-2 focus:ring-offset-[var(--bg)] transition-all duration-300 transform hover:brightness-105";
-  
+    'relative inline-flex items-center justify-center font-body font-semibold rounded-[calc(var(--radius)-4px)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)] transition-all duration-300 will-change-transform';
+
   const sizeStyles = {
-    sm: "px-4 py-2 md:py-1.5 text-sm",
-    md: "px-6 py-3 md:py-2.5 text-base",
-    lg: "px-8 py-4 md:py-3.5 text-lg",
+    sm: 'text-sm px-4 py-2 md:py-1.5',
+    md: 'text-base px-6 py-3 md:py-2.5',
+    lg: 'text-lg px-8 py-3.5',
   };
 
   const variantStyles = {
-    primary: "bg-[var(--brand)] text-white hover:brightness-110",
-    secondary: "border-2 border-action-primary text-action-primary bg-transparent hover:bg-action-primary/10",
-    payment: "bg-[var(--accent)] text-slate-900 font-bold hover:brightness-110",
-    outline: "border-2 border-action-primary text-action-primary bg-transparent hover:bg-action-primary/10",
-    redeem: "bg-urgency-high text-white hover:brightness-110",
+    primary:
+      'text-white bg-action-primary shadow-[0_18px_40px_rgba(15,23,42,0.22)] hover:-translate-y-0.5 active:translate-y-0.5 hover:brightness-110',
+    secondary:
+      'bg-bg-card border border-border-subtle text-text-primary hover:border-action-primary/70 hover:text-text-primary/90 shadow-[0_12px_30px_rgba(15,23,42,0.12)]',
+    payment:
+      'bg-value-highlight text-slate-900 shadow-[0_18px_40px_rgba(245,158,11,0.24)] hover:-translate-y-0.5 hover:brightness-105',
+    outline:
+      'border border-action-primary text-action-primary bg-transparent hover:bg-action-primary/10 hover:text-text-primary',
+    redeem:
+      'bg-action-primary text-white shadow-[0_22px_50px_rgba(15,23,42,0.28)] hover:-translate-y-1 hover:brightness-110',
   };
 
   return (

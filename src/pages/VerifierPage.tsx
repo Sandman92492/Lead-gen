@@ -2,6 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Button from '../components/Button';
 import { useAuth } from '../context/AuthContext';
 import { getCheckpointsByOrgId } from '../services/accessService';
+import VerifierUnlockModal from '../components/VerifierUnlockModal';
+import VerifierResultCard from '../components/VerifierResultCard';
+import { copy } from '../copy';
+import { mockVerify } from '../services/mockVerify';
 
 const mode = ((import.meta as any).env.VITE_DATA_MODE ?? 'mock') as string;
 const isFirebaseMode = mode === 'firebase';
@@ -44,6 +48,7 @@ const VerifierPage: React.FC = () => {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [sessionError, setSessionError] = useState<string | null>(null);
   const [isUnlocking, setIsUnlocking] = useState(false);
+  const [showUnlockModal, setShowUnlockModal] = useState(true);
 
   const [checkpoints, setCheckpoints] = useState<{ checkpointId: string; name: string }[]>([]);
   const [checkpointId, setCheckpointId] = useState<string>('');
@@ -85,7 +90,7 @@ const VerifierPage: React.FC = () => {
     }
 
     if (!user) {
-      setSessionError('Sign in required.');
+      setSessionError(copy.verifier.lockedHint);
       return;
     }
 
@@ -94,7 +99,7 @@ const VerifierPage: React.FC = () => {
       if (!isFirebaseMode || typeof user.getIdToken !== 'function') {
         // Mock/local fallback
         if (pin !== '1234') {
-          setSessionError('Invalid PIN (mock: use 1234).');
+          setSessionError('Invalid PIN.');
           setIsUnlocking(false);
           return;
         }
@@ -108,6 +113,7 @@ const VerifierPage: React.FC = () => {
           deviceId,
         };
         setSessionToken(`${btoa(JSON.stringify(mockPayload))}.mock_signature`);
+        setShowUnlockModal(false);
         setIsUnlocking(false);
         return;
       }
@@ -131,6 +137,7 @@ const VerifierPage: React.FC = () => {
 
       setSessionToken(data.sessionToken);
       setPin('');
+      setShowUnlockModal(false);
       setIsUnlocking(false);
     } catch {
       setSessionError('Network error. Please try again.');
@@ -141,30 +148,18 @@ const VerifierPage: React.FC = () => {
   const handleVerify = useCallback(async () => {
     setResult(null);
     if (!sessionToken) return;
-    if (!/^\d{4}$/.test(code)) return;
+    if (!/^\d{6}$/.test(code)) return;
     if (!checkpointId) return;
 
     setIsVerifying(true);
     try {
-      const response = await fetch('/.netlify/functions/validate-rotating-code', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Verifier-Session': sessionToken,
-        },
-        body: JSON.stringify({ code, checkpointId }),
-      });
-      const data = (await response.json()) as { result?: 'allowed' | 'denied'; reason?: string; error?: string };
-      if (!response.ok) {
-        setResult({ result: 'denied', reason: data.error || 'Request failed' });
-        setIsVerifying(false);
-        return;
-      }
-      setResult({ result: data.result || 'denied', reason: data.reason || 'unknown' });
+      // MVP: stub verification response (ready to be replaced with a real API call).
+      const data = await mockVerify({ code, checkpointId, sessionToken });
+      setResult({ result: data.result, reason: data.reason });
       setIsVerifying(false);
       setCode('');
     } catch {
-      setResult({ result: 'denied', reason: 'network_error' });
+      setResult({ result: 'denied', reason: 'Invalid code' });
       setIsVerifying(false);
     }
   }, [checkpointId, code, sessionToken]);
@@ -175,15 +170,15 @@ const VerifierPage: React.FC = () => {
     <main className="min-h-screen bg-bg-primary px-4 py-8">
       <div className="max-w-md mx-auto">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-display font-black text-action-primary">Verifier Mode</h1>
-          <p className="text-text-secondary mt-1">Unlock with staff PIN, then verify codes</p>
+          <h1 className="text-2xl font-display font-black text-text-primary">{copy.verifier.title}</h1>
+          <p className="text-text-secondary mt-1">{copy.verifier.subtitle}</p>
         </div>
 
         {!user && (
           <div className="bg-bg-card border border-border-subtle rounded-2xl p-5">
             <p className="text-text-primary font-semibold">Sign in required</p>
             <p className="text-text-secondary text-sm mt-1">
-              Open the main app and sign in, then return to <span className="font-mono">/verifier</span>.
+              Open the main app and sign in, then return to <span className="font-mono">/verify</span>.
             </p>
           </div>
         )}
@@ -191,33 +186,14 @@ const VerifierPage: React.FC = () => {
         {user && (
           <div className="bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
             {locked ? (
-              <>
-                <div className="text-xs uppercase tracking-widest text-text-secondary mb-2">Staff PIN</div>
-                <input
-                  type="password"
-                  inputMode="numeric"
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                  placeholder="••••"
-                  className="w-full px-4 py-3 text-center text-2xl font-mono bg-bg-primary border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary"
-                  disabled={isUnlocking}
-                />
-                {sessionError && (
-                  <div className="bg-urgency-high/10 border border-urgency-high rounded-lg p-3 mt-4">
-                    <p className="text-sm font-semibold text-urgency-high">{sessionError}</p>
-                  </div>
-                )}
-                <div className="mt-4">
-                  <Button
-                    variant="primary"
-                    className="w-full"
-                    onClick={handleUnlock}
-                    disabled={isUnlocking || pin.length !== 4}
-                  >
-                    {isUnlocking ? 'Unlocking…' : 'Unlock Verifier'}
-                  </Button>
-                </div>
-              </>
+              <div className="space-y-3">
+                <p className="text-sm text-text-secondary">
+                  Enter your staff PIN to unlock verification tools for this device.
+                </p>
+                <Button variant="primary" className="w-full" onClick={() => setShowUnlockModal(true)}>
+                  {copy.verifier.unlock}
+                </Button>
+              </div>
             ) : (
               <>
                 <div className="flex items-center justify-between mb-4">
@@ -229,6 +205,7 @@ const VerifierPage: React.FC = () => {
                       setSessionToken(null);
                       setResult(null);
                       setCode('');
+                      setShowUnlockModal(true);
                     }}
                     className="text-xs font-semibold text-text-secondary hover:text-text-primary"
                   >
@@ -238,12 +215,12 @@ const VerifierPage: React.FC = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <div className="text-xs uppercase tracking-widest text-text-secondary mb-2">Checkpoint</div>
+                    <div className="text-xs uppercase tracking-widest text-text-secondary mb-2">{copy.verifier.checkpointLabel}</div>
                     {checkpoints.length > 0 ? (
                       <select
                         value={checkpointId}
                         onChange={(e) => setCheckpointId(e.target.value)}
-                        className="w-full px-4 py-3 bg-bg-primary border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary"
+                        className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-sm text-text-primary transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                       >
                         {checkpoints.map((c) => (
                           <option key={c.checkpointId} value={c.checkpointId}>
@@ -256,49 +233,41 @@ const VerifierPage: React.FC = () => {
                         value={checkpointId}
                         onChange={(e) => setCheckpointId(e.target.value)}
                         placeholder="checkpointId"
-                        className="w-full px-4 py-3 bg-bg-primary border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary"
+                        className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-sm text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                       />
                     )}
                   </div>
 
                   <div>
-                    <div className="text-xs uppercase tracking-widest text-text-secondary mb-2">Enter 4-digit code</div>
+                    <div className="text-xs uppercase tracking-widest text-text-secondary mb-2">{copy.verifier.codeLabel}</div>
                     <input
                       inputMode="numeric"
                       value={code}
-                      onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                      placeholder="1234"
-                      className="w-full px-4 py-3 text-center text-2xl font-mono bg-bg-primary border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary"
+                      onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                      placeholder="123 456"
+                      className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-center text-2xl font-mono text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                       disabled={isVerifying}
                     />
                   </div>
 
                   <Button
-                    variant="redeem"
+                    variant="primary"
                     className="w-full text-lg"
                     onClick={handleVerify}
-                    disabled={isVerifying || code.length !== 4 || !checkpointId}
+                    disabled={isVerifying || code.length !== 6 || !checkpointId}
                   >
-                    {isVerifying ? 'Verifying…' : 'Verify'}
+                    {isVerifying ? copy.verifier.verifying : copy.verifier.verify}
                   </Button>
 
                   {result && (
-                    <div
-                      className={`rounded-2xl p-4 border ${
-                        result.result === 'allowed'
-                          ? 'bg-success/10 border-success'
-                          : 'bg-urgency-high/10 border-urgency-high'
-                      }`}
-                    >
-                      <p
-                        className={`text-2xl font-display font-black ${
-                          result.result === 'allowed' ? 'text-success' : 'text-urgency-high'
-                        }`}
-                      >
-                        {result.result === 'allowed' ? 'ALLOWED' : 'DENIED'}
-                      </p>
-                      <p className="text-sm text-text-secondary mt-1">Reason: {result.reason}</p>
-                    </div>
+                    <VerifierResultCard
+                      result={result.result}
+                      reason={result.reason}
+                      onNext={() => {
+                        setResult(null);
+                        setCode('');
+                      }}
+                    />
                   )}
                 </div>
               </>
@@ -312,9 +281,18 @@ const VerifierPage: React.FC = () => {
           </p>
         )}
       </div>
+
+      <VerifierUnlockModal
+        isOpen={!!user && locked && showUnlockModal}
+        pin={pin}
+        onPinChange={setPin}
+        onUnlock={handleUnlock}
+        isUnlocking={isUnlocking}
+        error={sessionError}
+        onClose={() => setShowUnlockModal(false)}
+      />
     </main>
   );
 };
 
 export default VerifierPage;
-

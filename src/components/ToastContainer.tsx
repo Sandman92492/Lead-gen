@@ -5,7 +5,7 @@ const ToastContainer: React.FC = () => {
   const { toasts, removeToast } = useToast();
 
   return (
-    <div className="fixed bottom-24 sm:bottom-6 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-sm z-50 space-y-2 pointer-events-none">
+    <div className="fixed bottom-[calc(var(--bottom-ui-offset)+4.5rem)] sm:bottom-6 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-sm z-50 space-y-2 pointer-events-none">
       {toasts.map(toast => (
         <div
           key={toast.id}

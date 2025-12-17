@@ -24,27 +24,27 @@
 
   /* Primary CTA buttons - Ocean blue (Buy/Redeem) */
    .btn-primary {
-     @apply bg-action-primary text-white hover:brightness-110 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-md font-bold shadow-lg;
+     @apply bg-action-primary text-text-primary hover:brightness-105 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold shadow-lg;
    }
 
    /* Secondary buttons - Outline style (Directions) */
    .btn-secondary {
-     @apply bg-bg-primary border-2 border-action-primary text-action-primary hover:bg-action-primary/10 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-md font-bold;
+     @apply bg-bg-card border-2 border-action-primary text-action-primary hover:bg-action-primary/10 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold;
    }
 
    /* Redeem buttons - Coral electric (Primary CTA) */
    .btn-redeem {
-     @apply bg-action-primary text-white hover:brightness-110 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-md font-bold text-base shadow-lg;
+     @apply bg-action-primary text-text-primary hover:brightness-105 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base shadow-lg;
    }
 
    /* Redeemed buttons - Emerald success background */
    .btn-redeemed {
-     @apply bg-success text-white hover:brightness-110 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-md font-bold text-base whitespace-nowrap;
+     @apply bg-success text-white hover:brightness-110 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base whitespace-nowrap;
    }
 
    /* Directions button - Secondary (Outline) style */
    .btn-directions {
-     @apply bg-bg-primary border-2 border-action-primary text-action-primary hover:bg-action-primary/10 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-md font-bold text-base inline-flex items-center gap-2;
+     @apply bg-bg-card border-2 border-action-primary text-action-primary hover:bg-action-primary/10 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base inline-flex items-center gap-2;
    }
 
   /* WhatsApp button - Brand green #25D366 */
@@ -54,7 +54,7 @@
 
   /* Outline/secondary buttons - Neutral background with border */
   .btn-outline {
-    @apply bg-bg-primary border-2 border-border-subtle text-text-primary hover:bg-bg-card transition-all duration-300 px-6 py-3 md:py-2.5 rounded-md font-bold text-base;
+    @apply bg-bg-card border-2 border-border-subtle text-text-primary hover:bg-bg-primary transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base;
   }
 
   /* Ghost/text buttons - Minimal style (Tertiary) */
@@ -88,7 +88,7 @@
 
   /* Inverted text - Light text on dark backgrounds */
   .text-inverted {
-    @apply text-white dark:text-black;
+    @apply text-text-inverted;
   }
 
   /* Success text - Green confirmations */
@@ -544,5 +544,72 @@
   /* Dark mode heading color - Warm coastal sand */
   .dark .text-accent-primary {
     @apply text-[var(--color-heading-dark-mode)];
+  }
+
+  .gradient-panel {
+    @apply relative overflow-hidden rounded-[32px] border border-border-subtle shadow-[0_30px_60px_rgba(11,23,42,0.2)];
+    background-color: var(--color-bg-card);
+  }
+
+  .filter-pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-transparent px-4 py-2 text-[13px] font-semibold transition-all duration-300;
+    background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+    color: var(--color-text-secondary);
+  }
+
+  .filter-pill.active {
+    @apply border-action-primary bg-action-primary text-white shadow-[0_18px_35px_rgba(29,78,216,0.35)];
+    color: white;
+  }
+
+  .offer-card-hero {
+    @apply relative overflow-hidden rounded-xl border border-border-subtle bg-bg-card shadow-xl shadow-black/5 transition-all duration-300;
+  }
+
+  .offer-card-hero:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.08);
+  }
+
+  .offer-card-hero img {
+    @apply object-cover transition-transform duration-500 ease-out;
+  }
+
+  .offer-card-hero:hover img {
+    transform: scale(1.03);
+  }
+
+  .premium-icon {
+    @apply inline-flex h-8 w-8 items-center justify-center rounded-full border border-border-subtle bg-bg-card text-text-secondary shadow-sm;
+    transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+  }
+
+  .premium-icon.active {
+    @apply border-action-primary bg-action-primary text-white;
+    transform: scale(1.05);
+  }
+
+  .kicker {
+    @apply text-[11px] font-medium uppercase tracking-[0.22em] text-text-secondary;
+  }
+
+  @keyframes float-hero {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-6px);
+    }
+
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  .floating-spot {
+    @apply absolute inset-0;
+    animation: float-hero 6s ease-in-out infinite alternate;
+    pointer-events: none;
   }
 }

@@ -125,7 +125,7 @@ const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
               onChange={handlePinChange}
               placeholder="••••"
               maxLength={4}
-              className="w-full px-4 py-3 text-center text-2xl font-mono bg-bg-primary border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-action-primary focus:border-transparent"
+              className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-center text-2xl font-mono text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
               disabled={isLoading}
             />
           </div>

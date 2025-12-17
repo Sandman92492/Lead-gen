@@ -42,7 +42,7 @@ export function UpdateBanner() {
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[1000] bg-blue-500 text-white shadow-lg animate-slide-down">
+    <div className="fixed top-0 left-0 right-0 z-[1000] bg-action-primary text-white shadow-lg animate-slide-down">
       <div className="flex items-center justify-between px-4 py-3 max-w-7xl mx-auto">
         <div className="flex items-center gap-3 flex-1">
           <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
@@ -51,13 +51,13 @@ export function UpdateBanner() {
         <div className="flex items-center gap-2">
           <button
             onClick={handleUpdate}
-            className="px-4 py-2 bg-white text-blue-500 font-semibold text-sm rounded-lg hover:bg-blue-50 transition cursor-pointer whitespace-nowrap"
+            className="px-4 py-2 bg-bg-card text-action-primary font-semibold text-sm rounded-lg hover:bg-bg-primary transition cursor-pointer whitespace-nowrap"
           >
             Update
           </button>
           <button
             onClick={handleDismiss}
-            className="px-3 py-2 hover:bg-blue-600 transition cursor-pointer"
+            className="px-3 py-2 hover:bg-white/15 transition cursor-pointer"
             aria-label="Dismiss"
           >
             ✕

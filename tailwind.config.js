@@ -11,6 +11,11 @@ export default {
         'background': 'var(--color-background)',
         'background-alt': 'var(--color-background-alt)',
         /* Semantic UI tokens */
+        'surface-primary': 'var(--surface-primary)',
+        'surface-card': 'var(--surface-card)',
+        'brand-accent': 'var(--brand-accent)',
+        'text-main': 'var(--text-main)',
+        'text-muted': 'var(--text-muted)',
         'bg-primary': 'var(--color-bg-primary)',
         'bg-card': 'var(--color-bg-card)',
         'action-primary': 'var(--color-action-primary)',
@@ -50,8 +55,17 @@ export default {
         'button-text-dark': 'var(--color-text-primary)',
       },
       fontFamily: {
-        'display': ['Poppins', 'sans-serif'],
-        'body': ['Poppins', 'sans-serif'],
+        display: ['ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+        body: [
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif',
+        ],
       }
     }
   },

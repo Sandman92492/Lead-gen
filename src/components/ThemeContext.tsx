@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useEffect, useRef, ReactNode } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -10,14 +10,25 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>('light');
+  const hasExplicitPreference = useRef(false);
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as Theme | null;
-    // Set initial theme based on saved preference, defaulting to light mode.
-    const initialTheme = savedTheme || 'light';
-    setTheme(initialTheme);
-  }, []);
+  const [theme, setTheme] = useState<Theme>(() => {
+    try {
+      const savedTheme = localStorage.getItem('theme') as Theme | null;
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        hasExplicitPreference.current = true;
+        return savedTheme;
+      }
+    } catch {
+      // Ignore localStorage access failures.
+    }
+
+    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    return 'light';
+  });
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -25,10 +36,44 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } else {
       document.documentElement.classList.remove('dark');
     }
-    localStorage.setItem('theme', theme);
+    if (hasExplicitPreference.current) {
+      try {
+        localStorage.setItem('theme', theme);
+      } catch {
+        // Ignore localStorage write failures.
+      }
+    }
+
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) {
+      const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+      if (bg) themeColorMeta.setAttribute('content', bg);
+    }
+    // Enforce the 'estate' theme flavor
+    document.documentElement.setAttribute('data-theme', 'estate');
   }, [theme]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      if (hasExplicitPreference.current) return;
+      setTheme(event.matches ? 'dark' : 'light');
+    };
+
+    if (typeof media.addEventListener === 'function') {
+      media.addEventListener('change', handleChange);
+      return () => media.removeEventListener('change', handleChange);
+    }
+
+    // Safari < 14
+    media.addListener(handleChange);
+    return () => media.removeListener(handleChange);
+  }, []);
+
   const toggleTheme = () => {
+    hasExplicitPreference.current = true;
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 

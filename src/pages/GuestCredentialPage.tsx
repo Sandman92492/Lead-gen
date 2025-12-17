@@ -1,18 +1,14 @@
 import React, { useMemo } from 'react';
 import { useRotatingCode } from '../hooks/useRotatingCode';
+import CredentialCard from '../components/CredentialCard';
+import { copy } from '../copy';
 
 type GuestCredentialPageProps = {
   token: string;
 };
 
-const formatDate = (iso: string): string => {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return iso;
-  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
-};
-
 const GuestCredentialPage: React.FC<GuestCredentialPageProps> = ({ token }) => {
-  const { isLoading, error, code, secondsRemaining, credential } = useRotatingCode({ guestToken: token });
+  const { isLoading, error, code, secondsRemaining, rotationSeconds, credential } = useRotatingCode({ guestToken: token });
 
   const tone = useMemo(() => {
     if (!credential) return 'yellow' as const;
@@ -26,17 +22,17 @@ const GuestCredentialPage: React.FC<GuestCredentialPageProps> = ({ token }) => {
     return 'yellow' as const;
   }, [credential]);
 
-  const toneClasses =
-    tone === 'red'
-      ? 'bg-urgency-high/15 border-urgency-high text-urgency-high'
-      : 'bg-brand-yellow/15 border-brand-yellow text-brand-yellow';
-
   return (
-    <main className="min-h-screen bg-bg-primary flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-md">
+    <main className="relative min-h-screen bg-bg-primary flex items-center justify-center px-4 py-8 overflow-hidden">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-brand-yellow opacity-[0.10] blur-3xl" />
+        <div className="absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-action-primary opacity-[0.10] blur-3xl" />
+      </div>
+
+      <div className="relative w-full max-w-md">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-display font-black text-action-primary">Guest Pass</h1>
-          <p className="text-text-secondary mt-1">Show this code at the checkpoint</p>
+          <h1 className="text-2xl font-display font-black text-text-primary">{copy.credential.guestTitle}</h1>
+          <p className="text-text-secondary mt-1">{copy.credential.subtitle}</p>
         </div>
 
         {error && (
@@ -45,36 +41,20 @@ const GuestCredentialPage: React.FC<GuestCredentialPageProps> = ({ token }) => {
           </div>
         )}
 
-        <div className="bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div className={`text-xs font-bold tracking-widest px-3 py-1 rounded-full border ${toneClasses}`}>
-              {tone === 'red' ? 'EXPIRED' : 'ACTIVE GUEST'}
-            </div>
-            <div className="text-xs text-text-secondary">
-              {secondsRemaining !== null ? `Refresh in ${secondsRemaining}s` : '—'}
-            </div>
-          </div>
-
-          <div className="text-center my-6">
-            <div className="text-xs uppercase tracking-widest text-text-secondary mb-2">Verification Code</div>
-            <div className="font-mono text-6xl font-black tracking-[0.25em] text-action-primary">
-              {isLoading ? '••••' : (code || '— — — —')}
-            </div>
-          </div>
-
-          <div className="border-t border-border-subtle pt-4 space-y-2">
-            <div className="flex items-start justify-between gap-4">
-              <span className="text-xs text-text-secondary">Guest</span>
-              <span className="text-sm font-semibold text-text-primary text-right">{credential?.displayName || 'Guest'}</span>
-            </div>
-            <div className="flex items-start justify-between gap-4">
-              <span className="text-xs text-text-secondary">Valid Until</span>
-              <span className="text-sm font-semibold text-text-primary text-right">
-                {credential?.validTo ? formatDate(credential.validTo) : '—'}
-              </span>
-            </div>
-          </div>
-        </div>
+        <CredentialCard
+          status={{ label: tone === 'red' ? copy.credential.status.expired : copy.credential.status.active, tone: tone === 'red' ? 'red' : 'yellow' }}
+          code={code}
+          isLoading={isLoading}
+          secondsRemaining={secondsRemaining}
+          rotationSeconds={rotationSeconds}
+          displayName={credential?.displayName || 'Guest'}
+          tierLabel="Guest"
+          memberOrUnit={null}
+          validFrom={credential?.validFrom || null}
+          validTo={credential?.validTo || null}
+          lastVerifiedAt={null}
+          variant="guest"
+        />
 
         <p className="text-center text-xs text-text-secondary mt-4">
           This pass expires automatically after its valid window.
@@ -85,4 +65,3 @@ const GuestCredentialPage: React.FC<GuestCredentialPageProps> = ({ token }) => {
 };
 
 export default GuestCredentialPage;
-

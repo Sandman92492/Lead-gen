@@ -28,7 +28,7 @@ const FormInput: React.FC<FormInputProps> = ({
       required={required}
       disabled={disabled}
       aria-label={ariaLabel}
-      className="w-full px-4 py-3 bg-bg-card border border-border-subtle rounded-[calc(var(--radius)-10px)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:border-action-primary/40 transition text-text-primary placeholder:text-text-secondary/70"
+      className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-sm text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent disabled:opacity-60"
     />
   );
 };

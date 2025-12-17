@@ -36,6 +36,8 @@ export interface CredentialDocument {
   unitNo?: string;
   displayName: string;
   createdAt: string;
+  createdByUserId?: string | null;
+  createdByCredentialId?: string | null;
   suspendedReason?: string;
   currentCode?: string;
   currentCodeIssuedAt?: string;

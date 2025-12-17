@@ -18,7 +18,7 @@ const SignOutConfirmationModal: React.FC<SignOutConfirmationModalProps> = ({ isO
         </p>
 
         <p className="text-text-secondary text-center mb-8">
-          Are you sure you want to sign out? You'll need to sign in again to access your pass.
+          Are you sure you want to sign out? You'll need to sign in again to access your credential.
         </p>
 
         <div className="space-y-3">

@@ -37,8 +37,10 @@ const seedState = (): AccessMockState => {
   const now = new Date().toISOString();
   const orgId = 'mock_org_1';
   const credentialId = 'mock_cred_1';
-  const checkpointId = 'mock_checkpoint_gate';
   const staffId = 'mock_staff_1';
+  const checkpointGateId = 'mock_checkpoint_gate';
+  const checkpointGymId = 'mock_checkpoint_gym';
+  const checkpointProShopId = 'mock_checkpoint_proshop';
 
   return {
     version: 1,
@@ -69,10 +71,26 @@ const seedState = (): AccessMockState => {
       },
     },
     checkpoints: {
-      [checkpointId]: {
-        checkpointId,
+      [checkpointGateId]: {
+        checkpointId: checkpointGateId,
         orgId,
-        name: 'Main Gate',
+        name: 'Gate',
+        allowedTypes: ['resident', 'member', 'guest'],
+        isActive: true,
+        createdAt: now,
+      },
+      [checkpointGymId]: {
+        checkpointId: checkpointGymId,
+        orgId,
+        name: 'Gym',
+        allowedTypes: ['resident', 'member', 'guest'],
+        isActive: true,
+        createdAt: now,
+      },
+      [checkpointProShopId]: {
+        checkpointId: checkpointProShopId,
+        orgId,
+        name: 'Pro Shop',
         allowedTypes: ['resident', 'member', 'guest'],
         isActive: true,
         createdAt: now,
@@ -304,4 +322,3 @@ export const getCheckinsByCheckpointId = async (checkpointId: string): Promise<C
   const state = readState();
   return Object.values(state.checkins).filter((c) => c.checkpointId === checkpointId);
 };
-
