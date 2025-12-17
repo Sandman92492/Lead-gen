@@ -9,6 +9,7 @@ import { mockVerify } from '../services/mockVerify';
 
 const mode = ((import.meta as any).env.VITE_DATA_MODE ?? 'mock') as string;
 const isFirebaseMode = mode === 'firebase';
+const verifierPin = String(((import.meta as any).env.VITE_VERIFIER_PIN ?? '1234') as string);
 
 const DEVICE_ID_KEY = 'access_device_id_v1';
 
@@ -89,16 +90,11 @@ const VerifierPage: React.FC = () => {
       return;
     }
 
-    if (!user) {
-      setSessionError(copy.verifier.lockedHint);
-      return;
-    }
-
     setIsUnlocking(true);
     try {
-      if (!isFirebaseMode || typeof user.getIdToken !== 'function') {
+      if (!isFirebaseMode || !user || typeof user.getIdToken !== 'function') {
         // Mock/local fallback
-        if (pin !== '1234') {
+        if (pin !== verifierPin) {
           setSessionError('Invalid PIN.');
           setIsUnlocking(false);
           return;
@@ -109,7 +105,7 @@ const VerifierPage: React.FC = () => {
           exp: Math.floor(Date.now() / 1000) + 900,
           staffId: 'mock_staff_1',
           orgId: 'mock_org_1',
-          userId: user.uid || 'mock_user_1',
+          userId: user?.uid || 'mock_user_1',
           deviceId,
         };
         setSessionToken(`${btoa(JSON.stringify(mockPayload))}.mock_signature`);
@@ -148,14 +144,30 @@ const VerifierPage: React.FC = () => {
   const handleVerify = useCallback(async () => {
     setResult(null);
     if (!sessionToken) return;
-    if (!/^\d{6}$/.test(code)) return;
+    if (!/^\d{4}$/.test(code)) return;
     if (!checkpointId) return;
 
     setIsVerifying(true);
     try {
-      // MVP: stub verification response (ready to be replaced with a real API call).
-      const data = await mockVerify({ code, checkpointId, sessionToken });
-      setResult({ result: data.result, reason: data.reason });
+      if (isFirebaseMode) {
+        const response = await fetch('/.netlify/functions/validate-rotating-code', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Verifier-Session': `Bearer ${sessionToken}`,
+          },
+          body: JSON.stringify({ code, checkpointId }),
+        });
+        const data = (await response.json()) as { result?: 'allowed' | 'denied'; reason?: string; error?: string };
+        if (!response.ok || !data.result) {
+          setResult({ result: 'denied', reason: data.error || 'Verification failed' });
+        } else {
+          setResult({ result: data.result, reason: data.reason || '—' });
+        }
+      } else {
+        const data = await mockVerify({ code, checkpointId, sessionToken });
+        setResult({ result: data.result, reason: data.reason });
+      }
       setIsVerifying(false);
       setCode('');
     } catch {
@@ -174,14 +186,14 @@ const VerifierPage: React.FC = () => {
           <p className="text-text-secondary mt-1">{copy.verifier.subtitle}</p>
         </div>
 
-        {!user && (
+        {!user && isFirebaseMode && (
           <div className="bg-bg-card border border-border-subtle rounded-2xl p-5">
             <p className="text-text-primary font-semibold">Sign in required</p>
             <p className="text-text-secondary text-sm mt-1"><span className="font-mono">/verify</span></p>
           </div>
         )}
 
-        {user && (
+        {(!isFirebaseMode || user) && (
           <div className="bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
             {locked ? (
               <div className="space-y-3">
@@ -238,8 +250,8 @@ const VerifierPage: React.FC = () => {
                     <input
                       inputMode="numeric"
                       value={code}
-                      onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                      placeholder="123 456"
+                      onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                      placeholder="1234"
                       className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-center text-2xl font-mono text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                       disabled={isVerifying}
                     />
@@ -249,7 +261,7 @@ const VerifierPage: React.FC = () => {
                     variant="primary"
                     className="w-full text-lg"
                     onClick={handleVerify}
-                    disabled={isVerifying || code.length !== 6 || !checkpointId}
+                    disabled={isVerifying || code.length !== 4 || !checkpointId}
                   >
                     {isVerifying ? copy.verifier.verifying : copy.verifier.verify}
                   </Button>
@@ -278,7 +290,7 @@ const VerifierPage: React.FC = () => {
       </div>
 
       <VerifierUnlockModal
-        isOpen={!!user && locked && showUnlockModal}
+        isOpen={locked && showUnlockModal && (!isFirebaseMode || !!user)}
         pin={pin}
         onPinChange={setPin}
         onUnlock={handleUnlock}

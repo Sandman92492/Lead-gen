@@ -4,6 +4,7 @@ import { getFirebaseAdmin } from './lib/firebaseAdmin';
 import { verifyHmacToken } from './lib/hmacToken';
 
 const VERIFIER_SESSION_SECRET = process.env.VERIFIER_SESSION_SECRET || '';
+const VERIFIER_MOCK_MODE = (process.env.VERIFIER_MOCK_MODE || '').toLowerCase() === 'true';
 
 type SessionPayload = {
   v: 1;
@@ -21,6 +22,14 @@ type ValidateBody = {
 };
 
 const CODE_RE = /^\d{4}$/;
+
+const hashString = (value: string): number => {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+};
 
 const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -64,6 +73,20 @@ const handler: Handler = async (event) => {
   }
 
   try {
+    if (VERIFIER_MOCK_MODE) {
+      const hash = hashString(`${checkpointId}:${code}`);
+      const allowed = hash % 2 === 0;
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          result: allowed ? 'allowed' : 'denied',
+          reason: allowed ? 'mock_ok' : 'mock_denied',
+          checkpoint: { checkpointId, name: '' },
+          credential: null,
+        }),
+      };
+    }
+
     const { db } = getFirebaseAdmin();
     const nowMs = Date.now();
     const orgId = String(session.payload.orgId || '');

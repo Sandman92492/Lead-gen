@@ -19,7 +19,7 @@ const hashString = (value: string): number => {
 
 export const mockVerify = async ({ code, checkpointId }: MockVerifyArgs): Promise<MockVerifyResult> => {
   const normalized = String(code || '').replace(/\D/g, '');
-  if (normalized.length !== 6) {
+  if (normalized.length !== 4) {
     return { result: 'denied', reason: 'Invalid code' };
   }
 
@@ -35,4 +35,3 @@ export const mockVerify = async ({ code, checkpointId }: MockVerifyArgs): Promis
   if (reasonPick === 1) return { result: 'denied', reason: 'Not permitted' };
   return { result: 'denied', reason: 'Invalid code' };
 };
-

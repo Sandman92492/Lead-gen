@@ -5,6 +5,9 @@ import { verifyPin } from './lib/pin';
 
 const VERIFIER_SESSION_SECRET = process.env.VERIFIER_SESSION_SECRET || '';
 const VERIFIER_SESSION_TTL_SECONDS = Number.parseInt(process.env.VERIFIER_SESSION_TTL_SECONDS || '900', 10);
+const VERIFIER_PIN_HASH = process.env.VERIFIER_PIN_HASH || '';
+const VERIFIER_PIN = process.env.VERIFIER_PIN || '';
+const VERIFIER_ORG_ID = process.env.VERIFIER_ORG_ID || '';
 
 type UnlockBody = {
   pin?: string;
@@ -18,12 +21,6 @@ const handler: Handler = async (event) => {
 
   if (!VERIFIER_SESSION_SECRET) {
     return { statusCode: 500, body: JSON.stringify({ error: 'Verifier session not configured' }) };
-  }
-
-  const authHeader = event.headers.authorization || (event.headers as any).Authorization || '';
-  const idToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
-  if (!idToken) {
-    return { statusCode: 401, body: JSON.stringify({ error: 'Missing Authorization token' }) };
   }
 
   let body: UnlockBody;
@@ -40,6 +37,40 @@ const handler: Handler = async (event) => {
   }
 
   try {
+    const envPinStored = (VERIFIER_PIN_HASH || VERIFIER_PIN).trim();
+    if (envPinStored) {
+      if (!verifyPin(pin, envPinStored)) {
+        return { statusCode: 401, body: JSON.stringify({ error: 'Invalid PIN' }) };
+      }
+
+      const now = Math.floor(Date.now() / 1000);
+      const exp = now + Math.max(60, Number.isFinite(VERIFIER_SESSION_TTL_SECONDS) ? VERIFIER_SESSION_TTL_SECONDS : 900);
+
+      const sessionToken = signHmacToken(
+        {
+          v: 1,
+          iat: now,
+          exp,
+          staffId: 'env_staff',
+          orgId: VERIFIER_ORG_ID,
+          userId: 'env_user',
+          deviceId,
+        },
+        VERIFIER_SESSION_SECRET
+      );
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ sessionToken, expiresAt: new Date(exp * 1000).toISOString() }),
+      };
+    }
+
+    const authHeader = event.headers.authorization || (event.headers as any).Authorization || '';
+    const idToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+    if (!idToken) {
+      return { statusCode: 401, body: JSON.stringify({ error: 'Missing Authorization token' }) };
+    }
+
     const { auth, db } = getFirebaseAdmin();
     const decoded = await auth.verifyIdToken(idToken);
     const uid = decoded.uid;
@@ -94,4 +125,3 @@ const handler: Handler = async (event) => {
 };
 
 export { handler };
-
