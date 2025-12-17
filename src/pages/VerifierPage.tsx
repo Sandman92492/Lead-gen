@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { getCheckpointsByOrgId } from '../services/accessService';
 import VerifierUnlockModal from '../components/VerifierUnlockModal';
 import VerifierResultCard from '../components/VerifierResultCard';
+import QrScanModal from '../components/QrScanModal';
 import { copy } from '../copy';
 import { mockVerify } from '../services/mockVerify';
 
@@ -50,6 +51,7 @@ const VerifierPage: React.FC = () => {
   const [sessionError, setSessionError] = useState<string | null>(null);
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(true);
+  const [isScanModalOpen, setIsScanModalOpen] = useState(false);
 
   const [checkpoints, setCheckpoints] = useState<{ checkpointId: string; name: string }[]>([]);
   const [checkpointId, setCheckpointId] = useState<string>('');
@@ -258,6 +260,15 @@ const VerifierPage: React.FC = () => {
                   </div>
 
                   <Button
+                    variant="secondary"
+                    className="w-full"
+                    onClick={() => setIsScanModalOpen(true)}
+                    disabled={isVerifying}
+                  >
+                    Scan QR code
+                  </Button>
+
+                  <Button
                     variant="primary"
                     className="w-full text-lg"
                     onClick={handleVerify}
@@ -297,6 +308,12 @@ const VerifierPage: React.FC = () => {
         isUnlocking={isUnlocking}
         error={sessionError}
         onClose={() => setShowUnlockModal(false)}
+      />
+
+      <QrScanModal
+        isOpen={!locked && isScanModalOpen}
+        onClose={() => setIsScanModalOpen(false)}
+        onDetected={(next) => setCode(next)}
       />
     </main>
   );
