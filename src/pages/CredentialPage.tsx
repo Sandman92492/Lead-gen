@@ -44,8 +44,8 @@ const CredentialPage: React.FC = () => {
     <main className="relative bg-bg-primary overflow-hidden">
       <h1 className="sr-only">{copy.nav.credential}</h1>
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-action-primary opacity-[0.08] blur-3xl" />
-        <div className="absolute -bottom-24 right-0 h-80 w-80 rounded-full bg-value-highlight opacity-[0.10] blur-3xl" />
+        <div className="absolute -top-28 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-action-primary opacity-[0.05] blur-3xl" />
+        <div className="absolute -bottom-28 right-0 h-80 w-80 rounded-full bg-value-highlight opacity-[0.06] blur-3xl" />
       </div>
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 pt-8 pb-10">
@@ -73,26 +73,14 @@ const CredentialPage: React.FC = () => {
           className="mx-auto max-w-md"
         />
 
-        <div className="mt-6 rounded-3xl border border-border-subtle bg-bg-card p-5">
-          <div className="flex items-start gap-3">
-            <span className="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-2xl border border-border-subtle bg-bg-primary text-text-secondary">
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20Z"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                />
-                <path d="M12 10v7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                <circle cx="12" cy="7" r="1" fill="currentColor" />
-              </svg>
-            </span>
-            <div className="min-w-0">
-              <div className="kicker">Quick tips</div>
-              <p className="mt-2 text-sm text-text-secondary leading-relaxed">
-                Show the QR code to staff (or use the 4‑digit backup). Codes rotate every {rotationSeconds ?? 30}s.
-              </p>
-            </div>
-          </div>
+        <div className="relative mx-auto mt-6 max-w-md">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-10 -top-6 h-16 rounded-full bg-action-primary/10 blur-3xl"
+          />
+          <p className="relative rounded-full bg-bg-card/80 px-4 py-2 text-center text-xs text-text-secondary shadow-[0_12px_32px_rgba(15,23,42,0.08)] ring-1 ring-border-subtle/70">
+            Show QR at checkpoint. Code rotates every {rotationSeconds ?? 30}s.
+          </p>
         </div>
       </div>
     </main>

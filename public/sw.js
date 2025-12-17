@@ -1,5 +1,5 @@
-// Service Worker for Estate Pass PWA
-// Build timestamp: 2025-12-17T08:45:34.521Z
+// Service Worker for Raffle Tickets PWA
+// Build timestamp: 2025-12-17T12:32:16.337Z
 const CACHE_NAME = 'holiday-pass-v5';
 const RUNTIME_CACHE = 'holiday-pass-runtime-v5';
 const ASSETS_CACHE = 'holiday-pass-assets-v5';

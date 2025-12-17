@@ -250,10 +250,10 @@ const AppShell: React.FC<AppShellProps> = ({
       </div>
 
       {/* Mobile bottom navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden" aria-label="Primary">
         <div className="mx-auto max-w-md px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
-          <div className="rounded-2xl border border-border-subtle bg-bg-card shadow-xl shadow-black/5">
-            <div className="grid grid-cols-4 gap-2 p-2">
+          <div className="rounded-2xl border border-border-subtle/80 bg-bg-card shadow-[0_-12px_32px_rgba(15,23,42,0.10)]">
+            <div className="grid grid-cols-4 gap-1 p-1.5">
               {nav.map((item) => {
                 const active = isActivePath(item.path, currentPath);
                 return (
@@ -261,16 +261,18 @@ const AppShell: React.FC<AppShellProps> = ({
                     key={item.id}
                     type="button"
                     onClick={() => onNavigate(item.path)}
-                    className={`group relative flex flex-col items-center justify-center gap-1 rounded-xl px-2 pb-3 pt-2.5 text-[11px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
+                    className={`group relative flex flex-col items-center justify-center gap-1 rounded-xl px-2 pb-3 pt-2.5 text-[11px] font-medium leading-tight tracking-[0.01em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
                       active
-                        ? 'border-t-2 border-brand-accent text-brand-accent'
-                        : 'border-t-2 border-transparent text-text-secondary hover:bg-bg-primary hover:text-text-primary'
+                        ? "font-semibold text-brand-accent after:content-[''] after:absolute after:bottom-1.5 after:h-1 after:w-1 after:rounded-full after:bg-brand-accent"
+                        : 'text-text-secondary hover:bg-bg-primary/60 hover:text-text-primary'
                     }`}
                     aria-current={active ? 'page' : undefined}
                   >
                     <span
-                      className={`flex h-9 w-9 items-center justify-center rounded-xl border bg-bg-primary text-current ${
-                        active ? 'border-brand-accent/30' : 'border-border-subtle'
+                      className={`grid h-9 w-9 place-items-center rounded-xl transition-colors ${
+                        active
+                          ? 'bg-brand-accent/10 text-brand-accent'
+                          : 'bg-transparent text-current group-hover:bg-bg-primary/60'
                       }`}
                     >
                       {item.icon}

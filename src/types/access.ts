@@ -38,6 +38,7 @@ export interface CredentialDocument {
   createdAt: string;
   createdByUserId?: string | null;
   createdByCredentialId?: string | null;
+  guestToken?: string | null;
   suspendedReason?: string;
   currentCode?: string;
   currentCodeIssuedAt?: string;

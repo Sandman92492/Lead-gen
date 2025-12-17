@@ -49,6 +49,8 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
                 src={images[0]}
                 alt={alt}
                 className={`w-full ${heightClass} object-cover ${className}`}
+                loading="lazy"
+                decoding="async"
             />
         );
     }
@@ -64,6 +66,8 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
                     src={images[currentIndex]}
                     alt={`${alt} ${currentIndex + 1}`}
                     className="w-full h-full object-cover transition-transform duration-500"
+                    loading="lazy"
+                    decoding="async"
                 />
             </div>
 

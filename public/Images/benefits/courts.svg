@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-label="Courts access benefit">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111827"/>
+      <stop offset="0.55" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="40%" cy="28%" r="70%">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.06"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <rect width="1200" height="800" fill="url(#glow)"/>
+
+  <g opacity="0.2">
+    <path d="M0 610 C 220 560, 420 700, 650 640 S 980 560, 1200 640 V 800 H 0 Z" fill="#0B1220"/>
+  </g>
+
+  <g transform="translate(720 170)">
+    <rect x="-60" y="-60" width="360" height="360" rx="56" fill="url(#card)" stroke="#FFFFFF" stroke-opacity="0.18"/>
+    <g transform="translate(55 55)" fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="0" y="0" width="250" height="250" rx="26" stroke-width="10" stroke-opacity="0.9"/>
+      <path d="M125 0v250" stroke-width="10" stroke-opacity="0.55"/>
+      <path d="M0 125h250" stroke-width="10" stroke-opacity="0.55"/>
+      <circle cx="200" cy="65" r="18" fill="#FFFFFF" fill-opacity="0.95" stroke="none"/>
+    </g>
+  </g>
+</svg>

@@ -4,8 +4,10 @@ import { useWindowSize } from 'react-use';
 import { useTheme } from './ThemeContext.tsx';
 import { PassType } from '../types.ts';
 import { isPassExpired, getExpiryStatus } from '../utils/passExpiry';
+import CardModal from './CardModal';
 
 interface PassProps {
+    isOpen: boolean;
     name: string;
     passId: string;
     onClose: () => void;
@@ -16,7 +18,7 @@ interface PassProps {
     userEmail?: string;
 }
 
-const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, passType = 'holiday', expiryDate }) => {
+const Pass: React.FC<PassProps> = ({ isOpen, name, passId, onClose, onCardClick, isNew, passType = 'holiday', expiryDate }) => {
     const { theme } = useTheme();
     const [time, setTime] = useState(new Date());
     const { width, height } = useWindowSize();
@@ -55,34 +57,38 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
     };
 
     return (
-        <div className="modal-backdrop flex items-center justify-center z-50 p-4" onClick={onClose}>
-            {showConfetti && width > 0 && height > 0 && <Confetti width={width} height={height} recycle={false} numberOfPieces={400} colors={getConfettiColors()} />}
+        <CardModal isOpen={isOpen} onClose={onClose} variant="pass" maxWidth="sm">
+            {showConfetti && width > 0 && height > 0 && (
+                <Confetti width={width} height={height} recycle={false} numberOfPieces={400} colors={getConfettiColors()} />
+            )}
+
             <div
                 className={`relative text-brand-white w-full max-w-sm aspect-[9/16] rounded-3xl shadow-2xl overflow-hidden p-8 sm:p-10 flex flex-col justify-between border-4 drop-shadow-2xl ${passIsExpired ? 'border-red-500' : 'border-brand-yellow'} ${isNew && onCardClick ? 'cursor-pointer hover:scale-105 transition-transform duration-300' : ''}`}
                 style={{ background: passIsExpired ? 'linear-gradient(135deg, #4a2020 0%, #6b0000 50%, #4a2020 100%)' : 'linear-gradient(135deg, var(--color-brand-dark-blue) 0%, #004A7A 50%, var(--color-brand-dark-blue) 100%)' }}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    if (isNew && onCardClick) {
-                        onCardClick();
-                    }
+                onClick={() => {
+                    if (isNew && onCardClick) onCardClick();
                 }}
             >
                 {/* Texture overlay for authenticity */}
-                <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: "url('data:image/svg+xml;utf8,<svg width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\"><filter id=\"noise\"><feTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"4\" seed=\"1\"/></filter><rect width=\"100\" height=\"100\" filter=\"url(%23noise)\" opacity=\"1\"/></svg>')" }} >
-                </div>
+                <div
+                    className="absolute inset-0 opacity-5 pointer-events-none"
+                    style={{
+                        backgroundImage:
+                            "url('data:image/svg+xml;utf8,<svg width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\"><filter id=\"noise\"><feTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"4\" seed=\"1\"/></filter><rect width=\"100\" height=\"100\" filter=\"url(%23noise)\" opacity=\"1\"/></svg>')",
+                    }}
+                />
 
                 {/* Shine sweep animation */}
-                <div 
-                  className="absolute inset-0 pointer-events-none z-30 overflow-hidden"
-                >
-                  <div 
-                    className="absolute inset-0"
-                    style={{
-                      background: 'linear-gradient(105deg, transparent 0%, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%, transparent 100%)',
-                      animation: 'shine-sweep 0.6s ease-out forwards',
-                      transform: 'translateX(-100%)',
-                    }}
-                  />
+                <div className="absolute inset-0 pointer-events-none z-30 overflow-hidden">
+                    <div
+                        className="absolute inset-0"
+                        style={{
+                            background:
+                                'linear-gradient(105deg, transparent 0%, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%, transparent 100%)',
+                            animation: 'shine-sweep 0.6s ease-out forwards',
+                            transform: 'translateX(-100%)',
+                        }}
+                    />
                 </div>
                 <style>{`
                   @keyframes shine-sweep {
@@ -90,8 +96,6 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
                     100% { transform: translateX(200%); }
                   }
                 `}</style>
-
-
 
                 {passType === 'annual' && !passIsExpired && (
                     <div className="absolute top-0 right-0 bg-brand-red text-white text-xs font-bold py-1 px-4 rounded-bl-lg z-20 shadow-lg">VIP</div>
@@ -103,20 +107,12 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
                     </div>
                 )}
 
-
-
-                <button onClick={onClose} className="absolute top-4 right-4 text-brand-white/70 hover:text-brand-white transition-colors z-20 focus:outline-none focus:ring-2 focus:ring-[var(--color-action-primary)] rounded-md p-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-
                 <header className="text-center relative z-10 mb-6">
                     <div className="mx-auto mb-6 w-20 h-20 flex-shrink-0 rounded-2xl p-2" aria-label="Raffle Tickets Logo Icon">
-                        <img 
-                          src={theme === 'dark' ? '/Images/logo-ocean.svg' : '/Images/logo-sand.svg'} 
-                          alt="Raffle Tickets Logo"
-                          className="w-full h-full object-contain"
+                        <img
+                            src={theme === 'dark' ? '/Images/logo-ocean.svg' : '/Images/logo-sand.svg'}
+                            alt="Raffle Tickets Logo"
+                            className="w-full h-full object-contain"
                         />
                     </div>
                     <h1 className="font-display text-brand-white text-xl sm:text-2xl mb-1">Raffle Tickets</h1>
@@ -129,33 +125,33 @@ const Pass: React.FC<PassProps> = ({ name, passId, onClose, onCardClick, isNew, 
                 </main>
 
                 <footer className="text-center relative z-10 space-y-2 sm:space-y-3 pt-2 sm:pt-4">
-                     <div className="border-t-2 border-dashed border-brand-yellow/40"></div>
-                     <div className="space-y-2 sm:space-y-3 text-center text-sm">
-                         <div>
-                             <p className="text-success text-xs font-semibold tracking-wider uppercase">Ticket Pack ID</p>
-                             <p className="font-mono text-xs text-brand-white/80 mt-0.5">{passId}</p>
-                         </div>
-                         <div>
-                             <p className="text-success text-xs font-semibold tracking-wider uppercase">Valid Until</p>
-                             <p className="font-mono text-xs text-brand-white/80 mt-0.5">{formattedExpiryDate}</p>
-                             <p className={`text-xs font-semibold mt-1 ${passIsExpired ? 'text-red-400' : 'text-brand-yellow'}`}>
-                                 {expiryStatusMessage}
-                             </p>
-                         </div>
-                     </div>
-                     {/* Simplified footer: clock + verified combined */}
-                     <div className="pt-1 sm:pt-2">
-                         <div className="flex items-center justify-center gap-2" aria-live="off" title="Live verification indicator">
-                             <div className="w-2.5 h-2.5 rounded-full bg-success animate-live-pulse" aria-hidden="true"></div>
-                         <p className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold tracking-wider text-brand-yellow">
-                                 {time.toLocaleTimeString('en-GB')}
-                             </p>
-                         </div>
-                         <p className="text-center text-xs text-brand-white/60 mt-2">Show this screen to enter</p>
-                     </div>
-                 </footer>
+                    <div className="border-t-2 border-dashed border-brand-yellow/40"></div>
+                    <div className="space-y-2 sm:space-y-3 text-center text-sm">
+                        <div>
+                            <p className="text-success text-xs font-semibold tracking-wider uppercase">Ticket Pack ID</p>
+                            <p className="font-mono text-xs text-brand-white/80 mt-0.5">{passId}</p>
+                        </div>
+                        <div>
+                            <p className="text-success text-xs font-semibold tracking-wider uppercase">Valid Until</p>
+                            <p className="font-mono text-xs text-brand-white/80 mt-0.5">{formattedExpiryDate}</p>
+                            <p className={`text-xs font-semibold mt-1 ${passIsExpired ? 'text-red-400' : 'text-brand-yellow'}`}>
+                                {expiryStatusMessage}
+                            </p>
+                        </div>
+                    </div>
+                    {/* Simplified footer: clock + verified combined */}
+                    <div className="pt-1 sm:pt-2">
+                        <div className="flex items-center justify-center gap-2" aria-live="off" title="Live verification indicator">
+                            <div className="w-2.5 h-2.5 rounded-full bg-success animate-live-pulse" aria-hidden="true"></div>
+                            <p className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold tracking-wider text-brand-yellow">
+                                {time.toLocaleTimeString('en-GB')}
+                            </p>
+                        </div>
+                        <p className="text-center text-xs text-brand-white/60 mt-2">Show this screen to enter</p>
+                    </div>
+                </footer>
             </div>
-        </div>
+        </CardModal>
     );
 };
 

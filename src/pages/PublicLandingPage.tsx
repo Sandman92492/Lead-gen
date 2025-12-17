@@ -30,7 +30,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onSignIn }) => {
           />
 
           <div className="relative">
-            <div className="text-xs uppercase tracking-widest text-text-secondary">Digital access</div>
             <h1 className="mt-2 text-3xl font-display font-black text-text-primary">{copy.landing.title}</h1>
             <p className="mt-2 text-text-secondary">{copy.landing.subtitle}</p>
 
@@ -41,7 +40,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onSignIn }) => {
             </div>
 
             <div className="mt-4 text-xs text-text-secondary">
-              Staff? Open <span className="font-mono">/verify</span>.
+              Staff: <span className="font-mono">/verify</span>
             </div>
           </div>
         </div>

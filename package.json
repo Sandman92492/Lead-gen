@@ -5,8 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:full": "node scripts/dev-full.cjs",
     "build": "node scripts/update-version.js && tsc && vite build && tsc --project tsconfig.netlify.json",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "functions:build": "tsc --project tsconfig.netlify.json",
+    "functions:watch": "tsc --project tsconfig.netlify.json --watch --preserveWatchOutput",
+    "functions:serve": "node scripts/functions-dev-server.cjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.0",

@@ -1,7 +1,7 @@
 import type { Deal, Vendor } from '../types';
 import type { PassDocument, RedemptionDocument } from './firestoreService.firebase';
 
-export const MOCK_DB_STORAGE_KEY = 'raffle_mock_v1';
+export const MOCK_DB_STORAGE_KEY = 'estate_mock_v2';
 
 export type MockUser = {
   uid: string;
@@ -12,7 +12,7 @@ export type MockUser = {
 };
 
 export type MockDbState = {
-  version: 1;
+  version: 2;
   seededAt: string;
   passes: PassDocument[];
   redemptions: RedemptionDocument[];
@@ -37,7 +37,7 @@ const safeJsonParse = (raw: string): unknown => {
 const isValidState = (value: unknown): value is MockDbState => {
   if (!value || typeof value !== 'object') return false;
   const candidate = value as Partial<MockDbState>;
-  if (candidate.version !== 1) return false;
+  if (candidate.version !== 2) return false;
   if (typeof candidate.seededAt !== 'string') return false;
   if (!Array.isArray(candidate.passes)) return false;
   if (!Array.isArray(candidate.redemptions)) return false;
@@ -59,14 +59,14 @@ const seedState = (): MockDbState => {
   const vendors: Vendor[] = [
     {
       vendorId: 'mock_vendor_1',
-      name: 'Riverside Primary School',
-      email: 'riverside@example.com',
+      name: 'Estate Golf & Leisure',
+      email: 'golf@example.com',
       phone: '+27 12 345 6789',
       pin: '1234',
       category: 'activity',
       city: 'Port Alfred',
-      address: 'Port Alfred, South Africa',
-      mapsUrl: 'https://maps.google.com/?q=Port+Alfred',
+      address: 'Estate Golf Club, Port Alfred, South Africa',
+      mapsUrl: 'https://maps.google.com/?q=Estate+Golf+Club+Port+Alfred',
       imageUrl: '',
       images: [],
       createdAt: now,
@@ -74,14 +74,14 @@ const seedState = (): MockDbState => {
     },
     {
       vendorId: 'mock_vendor_2',
-      name: 'Seaside High Fundraiser',
-      email: 'seaside@example.com',
+      name: 'Estate Clubhouse',
+      email: 'clubhouse@example.com',
       phone: '+27 98 765 4321',
       pin: '4321',
-      category: 'shopping',
+      category: 'restaurant',
       city: 'Port Alfred',
-      address: 'Port Alfred, South Africa',
-      mapsUrl: 'https://maps.google.com/?q=Port+Alfred',
+      address: 'Estate Clubhouse, Port Alfred, South Africa',
+      mapsUrl: 'https://maps.google.com/?q=Estate+Clubhouse+Port+Alfred',
       imageUrl: '',
       images: [],
       createdAt: now,
@@ -93,75 +93,80 @@ const seedState = (): MockDbState => {
     {
       id: 'mock_deal_1',
       vendorId: vendors[0].vendorId,
-      name: 'Raffle: Sports Gear Hamper',
-      offer: 'Win a sports hamper worth R2,000',
-      description: 'Support the fundraiser and stand a chance to win.',
-      savings: 2000,
-      category: vendors[0].category,
+      name: 'Golf Course Access',
+      offer: 'Member access to the 18‑hole course with priority tee times.',
+      description: 'Book via the clubhouse and play at member rates. Great for regular rounds and weekend sessions.',
+      terms: 'Subject to booking availability. Excludes cart hire and tournaments unless stated.',
+      savings: 500,
+      category: 'activity',
       city: vendors[0].city,
       featured: true,
       sortOrder: 1,
-      imageUrl: '',
+      imageUrl: '/Images/benefits/golf.svg',
       images: [],
       createdAt: now,
     },
     {
       id: 'mock_deal_2',
       vendorId: vendors[0].vendorId,
-      name: 'Raffle: Weekend Getaway',
-      offer: 'Win a weekend stay for 2',
-      description: 'Entries support school projects and activities.',
-      savings: 3500,
-      category: vendors[0].category,
+      name: 'Tennis & Padel Courts',
+      offer: 'Court bookings included with your membership (peak and off‑peak).',
+      description: 'Reserve your slot and play. Equipment hire available at the clubhouse.',
+      terms: 'Bookings required. No‑show policy may apply.',
+      savings: 350,
+      category: 'activity',
       city: vendors[0].city,
       featured: true,
       sortOrder: 2,
-      imageUrl: '',
+      imageUrl: '/Images/benefits/courts.svg',
       images: [],
       createdAt: now,
     },
     {
       id: 'mock_deal_3',
       vendorId: vendors[1].vendorId,
-      name: 'Raffle: Grocery Voucher',
-      offer: 'Win a R1,000 grocery voucher',
-      description: 'A simple raffle to support the fundraiser.',
-      savings: 1000,
-      category: vendors[1].category,
+      name: 'Clubhouse Dining Credit',
+      offer: 'Get R250 off your clubhouse bill (food and non‑alcoholic drinks).',
+      description: 'Use your member benefit when dining at the estate clubhouse.',
+      terms: 'Valid once per member per month. Excludes alcohol and special events.',
+      savings: 250,
+      category: 'restaurant',
       city: vendors[1].city,
       featured: false,
       sortOrder: 10,
-      imageUrl: '',
+      imageUrl: '/Images/benefits/dining.svg',
       images: [],
       createdAt: now,
     },
     {
       id: 'mock_deal_4',
       vendorId: vendors[1].vendorId,
-      name: 'Raffle: Tech Bundle',
-      offer: 'Win a tech bundle worth R5,000',
-      description: 'Support the fundraiser and stand a chance to win.',
-      savings: 5000,
-      category: vendors[1].category,
+      name: 'Pro Shop Member Discount',
+      offer: 'Save R500 on pro shop purchases over R2,500.',
+      description: 'Stock up on essentials and gear with a members‑only discount.',
+      terms: 'One discount per purchase. Not valid on already discounted items.',
+      savings: 500,
+      category: 'shopping',
       city: vendors[1].city,
       featured: false,
       sortOrder: 11,
-      imageUrl: '',
+      imageUrl: '/Images/benefits/shop.svg',
       images: [],
       createdAt: now,
     },
     {
       id: 'mock_deal_5',
       vendorId: vendors[0].vendorId,
-      name: 'Raffle: Family Day Out',
-      offer: 'Win a family day out package',
-      description: 'Entries go towards school resources.',
-      savings: 1500,
-      category: vendors[0].category,
+      name: 'Wellness & Spa Access',
+      offer: 'Save R400 on massages and wellness treatments.',
+      description: 'Relax after a round or a workout with member‑rate treatments.',
+      terms: 'Booking required. Subject to therapist availability.',
+      savings: 400,
+      category: 'lifestyle',
       city: vendors[0].city,
       featured: false,
       sortOrder: 12,
-      imageUrl: '',
+      imageUrl: '/Images/benefits/wellness.svg',
       images: [],
       createdAt: now,
     },
@@ -208,7 +213,7 @@ const seedState = (): MockDbState => {
   ];
 
   return {
-    version: 1,
+    version: 2,
     seededAt: now,
     passes,
     redemptions,
@@ -263,4 +268,3 @@ export const generateMockId = (prefix: string): string => {
       : `${Math.random().toString(16).slice(2)}${Date.now().toString(16)}`;
   return `${prefix}_${randomPart}`;
 };
-

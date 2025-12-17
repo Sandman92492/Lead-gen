@@ -270,6 +270,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
       {/* Pass Modal */}
       {isPassModalOpen && pass && (
         <Pass
+          isOpen={isPassModalOpen}
           name={pass.passHolderName}
           passId={pass.passId}
           expiryDate={pass.expiryDate}

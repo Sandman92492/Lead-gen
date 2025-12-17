@@ -5,13 +5,13 @@ export const copy = {
   nav: {
     credential: 'My Pass',
     guests: 'Guest Passes',
-    offers: 'Offers',
+    offers: 'Benefits',
     help: 'Account',
   },
 
   landing: {
     title: 'Estate Pass',
-    subtitle: 'Secure digital membership, guest access, and checkpoint verification.',
+    subtitle: 'Access • Guests • Verification',
     signIn: 'Sign in',
     staffLink: 'Verifier mode',
   },
@@ -19,7 +19,7 @@ export const copy = {
   credential: {
     title: 'Credential',
     guestTitle: 'Guest Pass',
-    subtitle: 'Present this screen at checkpoints for validation.',
+    subtitle: 'Show at checkpoint.',
     codeLabel: 'Rotating Code',
     codeSubtitle: 'Changes every 30 seconds',
     lastVerifiedLabel: 'Last verified',
@@ -39,10 +39,10 @@ export const copy = {
 
   guests: {
     title: 'Guests',
-    subtitle: 'Create time-bound guest access for arrivals.',
-    createCta: 'Create Guest Pass',
+    subtitle: 'Create a time-bound link.',
+    createCta: 'Create link',
     form: {
-      guestNameLabel: 'Guest name (optional)',
+      guestNameLabel: 'Name (optional)',
       startLabel: 'Start date/time',
       endLabel: 'End date/time',
       submit: 'Create pass link',
@@ -58,7 +58,7 @@ export const copy = {
 
   help: {
     title: 'Help & Profile',
-    subtitle: 'Account details and device setup.',
+    subtitle: 'Account, device, support.',
     accountSectionTitle: 'Account',
     installSectionTitle: 'Add to Home Screen',
     supportSectionTitle: 'Support',
@@ -66,13 +66,13 @@ export const copy = {
     installButton: 'Add to Home Screen',
     installIos: 'iPhone/iPad: Share → Add to Home Screen',
     installAndroid: 'Android: Browser menu → Add to Home screen',
-    supportEmailLabel: 'Email support',
-    supportWhatsappLabel: 'WhatsApp support',
+    supportEmailLabel: 'Email',
+    supportWhatsappLabel: 'WhatsApp',
   },
 
   verifier: {
     title: 'Verifier Mode',
-    subtitle: 'Unlock with staff PIN, then validate rotating codes.',
+    subtitle: 'Unlock, then verify codes.',
     pinTitle: 'Staff PIN',
     pinHint: 'Enter 4 digits',
     unlock: 'Unlock',

@@ -1,16 +1,38 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Button from '../components/Button';
+import CardModal from '../components/CardModal';
 import GuestPassShareCard from '../components/GuestPassShareCard';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useRotatingCode } from '../hooks/useRotatingCode';
-import { createCredential } from '../services/accessService';
+import { createCredential, getGuestCredentialsByCreatorCredentialId } from '../services/accessService';
 import { copy } from '../copy';
 
 const mode = ((import.meta as any).env.VITE_DATA_MODE ?? 'mock') as string;
 
 const formatDate = (date: Date) => date.toISOString().slice(0, 10);
 const formatTime = (date: Date) => date.toISOString().slice(11, 16);
+
+type GuestPassSummary = {
+  credentialId: string;
+  displayName: string;
+  validFrom: string;
+  validTo: string;
+  guestToken?: string | null;
+  createdAt?: string;
+};
+
+const getGuestPassLink = (pass: GuestPassSummary): string | null => {
+  const hasToken = typeof pass.guestToken === 'string' && pass.guestToken.length > 0;
+  if (mode === 'firebase' && !hasToken) return null;
+  const token = hasToken ? pass.guestToken! : pass.credentialId;
+  return `/guest/${token}`;
+};
+
+const safeParseMs = (iso: string): number | null => {
+  const ms = Date.parse(iso);
+  return Number.isFinite(ms) ? ms : null;
+};
 
 const GuestsPage: React.FC = () => {
   const { user } = useAuth();
@@ -37,8 +59,11 @@ const GuestsPage: React.FC = () => {
   const [endDate, setEndDate] = useState(initialTimes.endDate);
   const [endTime, setEndTime] = useState(initialTimes.endTime);
   const [guestLink, setGuestLink] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [savedGuestPasses, setSavedGuestPasses] = useState<GuestPassSummary[]>([]);
+  const [nowMs, setNowMs] = useState(() => Date.now());
 
   const canCreateGuest = credential?.credentialType === 'member' || credential?.credentialType === 'resident';
 
@@ -50,10 +75,49 @@ const GuestsPage: React.FC = () => {
   const startIso = `${startDate}T${startTime}`;
   const endIso = `${endDate}T${endTime}`;
 
+  const creatorCredentialId = credential?.credentialId || null;
+
+  const refreshSaved = useCallback(async () => {
+    if (!creatorCredentialId) {
+      setSavedGuestPasses([]);
+      return;
+    }
+    const passes = await getGuestCredentialsByCreatorCredentialId(creatorCredentialId);
+    const normalized = passes
+      .map((p) => ({
+        credentialId: p.credentialId,
+        displayName: p.displayName,
+        validFrom: p.validFrom,
+        validTo: p.validTo,
+        guestToken: p.guestToken ?? null,
+        createdAt: p.createdAt,
+      }))
+      .sort((a, b) => (Date.parse(b.createdAt || '') || 0) - (Date.parse(a.createdAt || '') || 0));
+    setSavedGuestPasses(normalized);
+  }, [creatorCredentialId]);
+
+  useEffect(() => {
+    void refreshSaved();
+  }, [refreshSaved]);
+
+  useEffect(() => {
+    if (savedGuestPasses.length === 0) return;
+    const id = window.setInterval(() => setNowMs(Date.now()), 60_000);
+    return () => window.clearInterval(id);
+  }, [savedGuestPasses.length]);
+
+  const activeGuestPasses = useMemo(() => {
+    return savedGuestPasses.filter((pass) => {
+      const validToMs = safeParseMs(pass.validTo);
+      return validToMs ? validToMs > nowMs : true;
+    });
+  }, [nowMs, savedGuestPasses]);
+
   const handleCreate = useCallback(async () => {
     if (!canCreateGuest) return;
     setError(null);
     setGuestLink(null);
+    setIsShareModalOpen(false);
 
     const fromMs = Date.parse(startIso);
     const toMs = Date.parse(endIso);
@@ -98,8 +162,10 @@ const GuestsPage: React.FC = () => {
         }
 
         setGuestLink(data.guestUrl);
+        setIsShareModalOpen(true);
         showToast('Guest pass ready. Share the link below.', 'success');
         setIsCreating(false);
+        void refreshSaved();
         return;
       }
 
@@ -113,6 +179,9 @@ const GuestsPage: React.FC = () => {
         displayName: guestName.trim() || 'Guest',
         memberNo: undefined,
         unitNo: undefined,
+        createdByUserId: user?.uid ?? null,
+        createdByCredentialId: credential?.credentialId ?? null,
+        guestToken: undefined,
       });
 
       if (!result.success || !result.credentialId) {
@@ -122,8 +191,10 @@ const GuestsPage: React.FC = () => {
       }
 
       setGuestLink(`/guest/${result.credentialId}`);
+      setIsShareModalOpen(true);
       showToast('Guest pass ready. Share the link below.', 'success');
       setIsCreating(false);
+      void refreshSaved();
     } catch {
       setError('Network error. Please try again.');
       setIsCreating(false);
@@ -136,6 +207,7 @@ const GuestsPage: React.FC = () => {
     endTime,
     guestName,
     mode,
+    refreshSaved,
     showToast,
     startDate,
     startIso,
@@ -153,7 +225,6 @@ const GuestsPage: React.FC = () => {
       <div className="relative mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 pt-10 sm:px-6">
         <section className="gradient-panel overflow-hidden p-6 sm:p-10">
           <div className="relative space-y-4">
-            <p className="kicker">Guest passes</p>
             <div className="flex items-center gap-3">
               <div className="premium-icon">
                 <svg className="h-5 w-5 text-text-secondary" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -167,46 +238,14 @@ const GuestsPage: React.FC = () => {
                   <path d="M8 10h8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                 </svg>
               </div>
-              <h1 className="text-3xl font-display font-bold tracking-tight text-text-primary sm:text-4xl">
-                Grant Access
-              </h1>
+              <h1 className="text-3xl font-display font-bold tracking-tight text-text-primary sm:text-4xl">Guest link</h1>
             </div>
             <p className="text-sm text-text-secondary leading-relaxed">{subtitle}</p>
-            <div className="flex flex-wrap gap-3">
-              <div className="flex items-center gap-2 rounded-2xl border border-border-subtle bg-bg-primary px-4 py-2 text-xs font-semibold text-text-secondary shadow-sm">
-                <span className="text-[11px] font-medium text-text-secondary">Valid for</span>
-                <span className="text-text-primary">{canCreateGuest ? 'Residents & members' : 'Restricted'}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-2xl bg-value-highlight/10 px-4 py-2 text-xs font-semibold text-value-highlight shadow-sm">
-                <svg className="h-4 w-4 text-value-highlight" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M12 5l7 7-7 7-7-7 7-7Z" />
-                </svg>
-                Instant link
-              </div>
-            </div>
           </div>
         </section>
 
         <section ref={formRef} className="gradient-panel p-6 sm:p-10">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="kicker">{copy.guests.createCta}</p>
-              <h2 className="text-2xl font-display font-black text-text-primary">
-                Set a precise welcome window
-              </h2>
-            </div>
-            <span className="premium-icon">
-              <svg className="h-5 w-5 text-text-secondary" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M12 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 6c-3 0-5.5 2-6 5h12c-.5-3-3-5-6-5Z"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          </div>
+          <h2 className="text-xl font-display font-black text-text-primary">{copy.guests.createCta}</h2>
 
           <div className="mt-6 space-y-4">
             <div>
@@ -226,7 +265,7 @@ const GuestsPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-text-secondary">
-                  Start date
+                  From date
                 </label>
                 <input
                   type="date"
@@ -238,7 +277,7 @@ const GuestsPage: React.FC = () => {
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-text-secondary">
-                  Start time
+                  From time
                 </label>
                 <input
                   type="time"
@@ -253,7 +292,7 @@ const GuestsPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-text-secondary">
-                  End date
+                  To date
                 </label>
                 <input
                   type="date"
@@ -265,7 +304,7 @@ const GuestsPage: React.FC = () => {
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-text-secondary">
-                  End time
+                  To time
                 </label>
                 <input
                   type="time"
@@ -294,13 +333,76 @@ const GuestsPage: React.FC = () => {
           </div>
         </section>
 
-        {guestLink && (
-          <div className="relative mx-auto w-full max-w-3xl">
-            <GuestPassShareCard link={guestLink} />
-          </div>
+        {activeGuestPasses.length > 0 && (
+          <section className="relative mx-auto mt-8 w-full max-w-3xl">
+            <div className="flex items-end justify-between gap-4 px-2">
+              <div>
+                <p className="kicker">Saved</p>
+                <h2 className="text-lg font-semibold text-text-primary">Your guest passes</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => void refreshSaved()}
+                className="text-sm font-semibold text-text-secondary hover:text-text-primary transition-colors"
+              >
+                Refresh
+              </button>
+            </div>
+
+            <div className="mt-4 space-y-4">
+              {activeGuestPasses.map((pass) => (
+                <div key={pass.credentialId} className="gradient-panel p-5 sm:p-6">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <div className="text-base font-semibold text-text-primary truncate">{pass.displayName || 'Guest'}</div>
+                      <div className="mt-1 text-sm text-text-secondary">
+                        Valid until{' '}
+                        <span className="font-semibold text-text-primary">
+                          {new Date(pass.validTo).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                    {(() => {
+                      const link = getGuestPassLink(pass);
+                      return (
+                    <Button
+                      variant="secondary"
+                      disabled={!link}
+                      onClick={() => {
+                        if (!link) return;
+                        setGuestLink(link);
+                        setIsShareModalOpen(true);
+                      }}
+                      className="shrink-0"
+                    >
+                      {link ? 'Share' : 'Unavailable'}
+                    </Button>
+                      );
+                    })()}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         )}
       </div>
 
+      <CardModal
+        isOpen={isShareModalOpen && !!guestLink}
+        onClose={() => {
+          setIsShareModalOpen(false);
+          setGuestLink(null);
+        }}
+        variant="guest"
+        maxWidth="md"
+        zIndex={60}
+      >
+        {guestLink && (
+          <div className="w-full max-w-md">
+            <GuestPassShareCard link={guestLink} />
+          </div>
+        )}
+      </CardModal>
     </main>
   );
 };

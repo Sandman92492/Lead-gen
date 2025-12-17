@@ -81,20 +81,6 @@ const handler: Handler = async (event) => {
     const guestCredentialId = `guest_${randomUUID().replace(/-/g, '')}`;
     const createdAt = new Date(nowMs).toISOString();
 
-    await db.collection('credentials').doc(guestCredentialId).set({
-      credentialId: guestCredentialId,
-      orgId,
-      userId: null,
-      credentialType: 'guest',
-      status: 'active',
-      validFrom: new Date(validFromMs).toISOString(),
-      validTo: new Date(validToMs).toISOString(),
-      displayName: guestName,
-      createdAt,
-      createdByUserId: uid,
-      createdByCredentialId: creatorDoc.id,
-    });
-
     const iat = Math.floor(nowMs / 1000);
     const exp = Math.floor((validToMs + 7 * 24 * 60 * 60 * 1000) / 1000);
     const token = signHmacToken(
@@ -108,6 +94,21 @@ const handler: Handler = async (event) => {
       },
       GUEST_TOKEN_SECRET
     );
+
+    await db.collection('credentials').doc(guestCredentialId).set({
+      credentialId: guestCredentialId,
+      orgId,
+      userId: null,
+      credentialType: 'guest',
+      status: 'active',
+      validFrom: new Date(validFromMs).toISOString(),
+      validTo: new Date(validToMs).toISOString(),
+      displayName: guestName,
+      createdAt,
+      createdByUserId: uid,
+      createdByCredentialId: creatorDoc.id,
+      guestToken: token,
+    });
 
     const baseUrl =
       process.env.SITE_URL ||
@@ -126,4 +127,3 @@ const handler: Handler = async (event) => {
 };
 
 export { handler };
-

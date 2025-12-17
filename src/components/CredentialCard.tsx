@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import StatusPill, { StatusTone } from './StatusPill';
-import BrandMark from './BrandMark';
 import QrCode from './QrCode';
 import TimerProgress from './TimerProgress';
 import { copy } from '../copy';
@@ -42,6 +41,27 @@ const stripClasses: Record<StatusTone, string> = {
   neutral: 'bg-border-subtle',
 };
 
+const glowClasses: Record<StatusTone, string> = {
+  green: 'bg-success/30',
+  yellow: 'bg-brand-yellow/34',
+  red: 'bg-urgency-high/30',
+  neutral: 'bg-border-subtle/28',
+};
+
+const tintClasses: Record<StatusTone, string> = {
+  green: 'from-success/16 via-success/5',
+  yellow: 'from-brand-yellow/18 via-brand-yellow/6',
+  red: 'from-urgency-high/16 via-urgency-high/5',
+  neutral: 'from-border-subtle/16 via-border-subtle/6',
+};
+
+const stripGradientClasses: Record<StatusTone, string> = {
+  green: 'from-success via-success/70 to-success/0',
+  yellow: 'from-brand-yellow via-brand-yellow/70 to-brand-yellow/0',
+  red: 'from-urgency-high via-urgency-high/70 to-urgency-high/0',
+  neutral: 'from-border-subtle via-border-subtle/70 to-border-subtle/0',
+};
+
 const CredentialCard: React.FC<CredentialCardProps> = ({
   status,
   code,
@@ -67,77 +87,72 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
 
   if (layout === 'membership') {
     return (
-      <section
-        className={`relative overflow-hidden rounded-2xl border border-border-subtle bg-bg-card shadow-xl shadow-black/5 text-text-primary aspect-[3/4] sm:aspect-[4/5] ${className}`}
-        aria-label={variant === 'guest' ? copy.credential.guestTitle : copy.nav.credential}
-      >
-        <div className={`h-1.5 w-full ${stripClasses[status.tone]}`} />
+      <div className={`relative ${className}`}>
+        <section
+          className="relative overflow-hidden rounded-[28px] bg-bg-card text-text-primary shadow-[0_22px_70px_rgba(15,23,42,0.14)] ring-1 ring-border-subtle/70"
+          aria-label={variant === 'guest' ? copy.credential.guestTitle : copy.nav.credential}
+        >
+          <div
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-bg-primary/50 via-transparent to-transparent"
+            aria-hidden="true"
+          />
+          <div className={`h-1 w-full bg-gradient-to-r ${stripGradientClasses[status.tone]}`} />
 
-        <div className="flex h-full flex-col p-5">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="text-brand-accent">
-                <BrandMark className="h-10 w-10" />
+          <div className="relative flex flex-col px-6 pb-6 pt-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-border-subtle bg-bg-primary shadow-sm">
+                  {photoUrl ? (
+                    <img
+                      src={photoUrl}
+                      alt={displayName || 'Member'}
+                      className="h-full w-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="h-full w-full grid place-items-center text-sm font-bold text-text-secondary">
+                      {(displayName || '?').charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+
+                <div className="min-w-0">
+                  <div className="text-xl font-display font-extrabold leading-tight tracking-tight truncate">{displayName || '—'}</div>
+                  <div className="mt-0.5 text-sm font-medium text-text-secondary truncate">
+                    {variant === 'member' ? memberOrUnit || copy.productShortName : tierLabel || copy.credential.guestTitle}
+                  </div>
+                </div>
               </div>
-              <div className="min-w-0 leading-tight">
-                <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-text-secondary">
-                  {copy.productName}
-                </div>
-                <div className="text-sm font-semibold truncate">
-                  {variant === 'guest' ? copy.credential.guestTitle : copy.nav.credential}
-                </div>
-              </div>
-            </div>
 
-            <StatusPill label={status.label} tone={status.tone} />
-          </div>
-
-          <div className="mt-4 flex items-center gap-3">
-            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-border-subtle bg-bg-primary">
-              {photoUrl ? (
-                <img
-                  src={photoUrl}
-                  alt={displayName || 'Member'}
-                  className="h-full w-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
-              ) : (
-                <div className="h-full w-full grid place-items-center text-sm font-bold text-text-secondary">
-                  {(displayName || '?').charAt(0).toUpperCase()}
-                </div>
-              )}
-            </div>
-
-            <div className="min-w-0">
-              <div className="text-lg font-display font-black leading-tight truncate">{displayName || '—'}</div>
-              <div className="mt-0.5 text-sm text-text-secondary truncate">
-                {variant === 'member' ? memberOrUnit || copy.productShortName : tierLabel || copy.credential.guestTitle}
+              <div className="pt-1">
+                <StatusPill label={status.label} tone={status.tone} />
               </div>
             </div>
-            </div>
 
-            <div className="mt-5 flex-1 rounded-xl border border-border-subtle bg-bg-primary p-4">
-              <div className="flex items-center justify-between text-[11px] font-medium tracking-[0.12em] uppercase text-text-secondary">
-                <span>QR</span>
-                <span className="font-semibold normal-case tracking-normal text-text-secondary">
+            <div className="mt-6 rounded-3xl bg-bg-primary p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] ring-1 ring-border-subtle/70">
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-[11px] font-semibold tracking-[0.22em] uppercase text-text-secondary">Scan</span>
+                <span className="text-[11px] font-semibold text-text-secondary tabular-nums">
                   {showTimer ? `Refresh ${secondsRemaining}s` : `Every ${cadence}s`}
                 </span>
               </div>
 
-              <div className="mt-3 grid place-items-center">
+              <div className="mt-4 grid place-items-center">
                 {canShowCode ? (
-                  <QrCode value={normalizedCode} sizePx={176} className="h-44 w-44 sm:h-48 sm:w-48" label="Access QR code" />
+                  <div className="rounded-3xl bg-white p-3 shadow-sm ring-1 ring-black/10">
+                    <QrCode value={normalizedCode} sizePx={176} className="h-44 w-44 sm:h-48 sm:w-48" label="Access QR code" />
+                  </div>
                 ) : (
-                  <div className="h-44 w-44 sm:h-48 sm:w-48 rounded-xl bg-black/10 dark:bg-white/10 animate-pulse" aria-label="QR code loading" />
+                  <div className="h-44 w-44 sm:h-48 sm:w-48 rounded-3xl bg-black/10 dark:bg-white/10 animate-pulse" aria-label="QR code loading" />
                 )}
               </div>
 
               <div className="mt-4 text-center">
-                <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-text-secondary">{copy.credential.codeLabel}</div>
-                <div className="mt-2 font-mono text-4xl font-black tracking-widest text-text-primary">
-                  {isLoading ? '••••' : groupedCode.replace(' ', '')}
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-text-secondary">{copy.credential.codeLabel}</div>
+                <div className="mt-2 font-mono text-5xl font-extrabold tracking-[0.12em] text-text-primary tabular-nums">
+                  {isLoading ? '• • • •' : groupedCode}
                 </div>
               </div>
 
@@ -146,53 +161,49 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
+            <div className="mt-5 grid grid-cols-2 gap-3 text-xs">
               {validTo && (
-                <div className="rounded-xl border border-border-subtle bg-bg-primary px-4 py-3">
+                <div className="rounded-2xl bg-bg-primary px-4 py-3 ring-1 ring-border-subtle/70">
                   <div className="text-text-secondary font-medium">{copy.credential.validToLabel}</div>
                   <div className="mt-1 font-semibold text-text-primary">{formatDateTime(validTo)}</div>
-              </div>
-            )}
-            {variant === 'member' && (
-              <div className="rounded-xl border border-border-subtle bg-bg-primary px-4 py-3">
-                <div className="text-text-secondary font-medium">{copy.credential.memberLabel}</div>
-                <div className="mt-1 font-semibold text-brand-accent">{memberOrUnit || '—'}</div>
-              </div>
-            )}
+                </div>
+              )}
+              {variant === 'member' && (
+                <div className="rounded-2xl bg-bg-primary px-4 py-3 ring-1 ring-border-subtle/70">
+                  <div className="text-text-secondary font-medium">{copy.credential.memberLabel}</div>
+                  <div className="mt-1 font-semibold text-text-primary tabular-nums">{memberOrUnit || '—'}</div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     );
   }
 
   return (
-    <section className={`relative overflow-hidden rounded-[28px] border border-border-subtle shadow-2xl text-[var(--credential-card-ink)] ${className}`}>
-      <div className="absolute inset-0 bg-[var(--credential-card-bg)]" />
-      <div className="absolute -right-10 -top-10 opacity-[0.04] sm:opacity-[0.06] text-[var(--credential-card-muted)]" aria-hidden="true">
-        <BrandMark className="h-52 w-52" />
-      </div>
+    <div className={`relative ${className}`}>
+      <div
+        className={`pointer-events-none absolute -inset-12 rounded-[36px] blur-3xl ${glowClasses[status.tone]}`}
+        aria-hidden="true"
+      />
 
-      <div className="relative">
-        <div className={`h-2.5 w-full ${stripClasses[status.tone]}`} />
+      <section className="relative overflow-hidden rounded-[28px] border border-border-subtle shadow-2xl text-[var(--credential-card-ink)]">
+        <div className="absolute inset-0 bg-[var(--credential-card-bg)]" />
 
-        <div className="p-6 sm:p-8">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="text-[var(--accent)]">
-                <BrandMark className="h-10 w-10" />
-              </div>
-              <div className="leading-tight">
-                <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--credential-card-muted)]">
-                  {copy.productName}
-                </div>
-                <div className="text-sm font-semibold text-[var(--credential-card-ink)]">
-                  {variant === 'guest' ? copy.credential.guestTitle : copy.nav.credential}
-                </div>
-              </div>
+        <div className="relative">
+          <div className={`h-2.5 w-full ${stripClasses[status.tone]}`} />
+          <div
+            className={`pointer-events-none absolute inset-0 bg-gradient-to-b ${tintClasses[status.tone]} to-transparent`}
+            aria-hidden="true"
+          />
+
+          <div className="relative p-6 sm:p-8">
+            <div className="flex items-start justify-between gap-4">
+              <div />
+
+              <StatusPill label={status.label} tone={status.tone} />
             </div>
-
-            <StatusPill label={status.label} tone={status.tone} />
-          </div>
 
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-6 items-start">
             <div>
@@ -216,13 +227,15 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
 
                 <div className="min-w-0">
                   <div className="text-xl font-display font-black leading-tight truncate">{displayName || '—'}</div>
-                  <div className="mt-1 text-sm text-[var(--credential-card-muted)] truncate">
-                    {variant === 'member' ? memberOrUnit || copy.productShortName : tierLabel || copy.credential.guestTitle}
-                  </div>
-                  {(tierLabel || variant === 'guest') && (
+                  {variant === 'member' && (
+                    <div className="mt-1 text-sm text-[var(--credential-card-muted)] truncate">
+                      {memberOrUnit || copy.productShortName}
+                    </div>
+                  )}
+                  {variant === 'member' && tierLabel && (
                     <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] px-3 py-1 text-xs font-semibold text-[var(--credential-card-ink)]">
                       <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" aria-hidden="true" />
-                      <span>{tierLabel || (variant === 'guest' ? 'Guest access' : '')}</span>
+                      <span>{tierLabel}</span>
                     </div>
                   )}
                 </div>
@@ -309,9 +322,10 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
               </div>
             )}
           </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };
 

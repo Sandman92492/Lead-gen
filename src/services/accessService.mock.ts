@@ -179,6 +179,15 @@ export const getCredentialsByUserId = async (userId: string): Promise<Credential
   return Object.values(state.credentials).filter((c) => c.userId === userId);
 };
 
+export const getGuestCredentialsByCreatorCredentialId = async (
+  creatorCredentialId: string
+): Promise<CredentialDocument[]> => {
+  const state = readState();
+  return Object.values(state.credentials).filter(
+    (c) => c.credentialType === 'guest' && c.createdByCredentialId === creatorCredentialId
+  );
+};
+
 export const createCredential = async (
   credential: NewCredentialInput
 ): Promise<{ success: boolean; credentialId?: string; error?: string }> => {

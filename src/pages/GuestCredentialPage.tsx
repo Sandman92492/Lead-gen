@@ -48,17 +48,12 @@ const GuestCredentialPage: React.FC<GuestCredentialPageProps> = ({ token }) => {
           secondsRemaining={secondsRemaining}
           rotationSeconds={rotationSeconds}
           displayName={credential?.displayName || 'Guest'}
-          tierLabel="Guest"
           memberOrUnit={null}
           validFrom={credential?.validFrom || null}
           validTo={credential?.validTo || null}
           lastVerifiedAt={null}
           variant="guest"
         />
-
-        <p className="text-center text-xs text-text-secondary mt-4">
-          This pass expires automatically after its valid window.
-        </p>
       </div>
     </main>
   );

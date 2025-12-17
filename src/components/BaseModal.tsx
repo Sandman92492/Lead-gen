@@ -9,6 +9,11 @@ interface BaseModalProps {
   showCloseButton?: boolean;
   closeButtonPosition?: 'top-right' | 'bottom'; // Default top-right
   zIndex?: number; // Default 50 (z-50)
+  backdropClassName?: string;
+  panelClassName?: string;
+  titleClassName?: string;
+  contentClassName?: string;
+  closeButtonClassName?: string;
 }
 
 const BaseModal: React.FC<BaseModalProps> = ({
@@ -20,6 +25,11 @@ const BaseModal: React.FC<BaseModalProps> = ({
   showCloseButton = true,
   closeButtonPosition = 'top-right',
   zIndex = 50,
+  backdropClassName = '',
+  panelClassName = '',
+  titleClassName = '',
+  contentClassName = '',
+  closeButtonClassName = '',
 }) => {
   if (!isOpen) return null;
 
@@ -32,21 +42,21 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black/55 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto transition-opacity duration-200"
+      className={`fixed inset-0 bg-black/55 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto transition-opacity duration-200 ${backdropClassName}`}
       style={{ zIndex }}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className={`bg-bg-card rounded-[var(--radius)] shadow-[var(--shadow)] p-4 sm:p-6 md:p-8 ${maxWidthClasses[maxWidth]} w-full relative border border-border-subtle my-3 sm:my-8`}
+        className={`bg-bg-card rounded-[var(--radius)] shadow-[var(--shadow)] p-4 sm:p-6 md:p-8 ${maxWidthClasses[maxWidth]} w-full relative border border-border-subtle my-3 sm:my-8 ${panelClassName}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button - Top Right (default) */}
         {showCloseButton && closeButtonPosition === 'top-right' && (
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:ring-offset-2 focus:ring-offset-[var(--card)] rounded-md p-1"
+            className={`absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:ring-offset-2 focus:ring-offset-[var(--card)] rounded-md p-1 ${closeButtonClassName}`}
             aria-label="Close modal"
           >
             <svg
@@ -68,13 +78,13 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
         {/* Title (optional) */}
         {title && (
-          <h2 className="text-2xl sm:text-3xl font-display font-black text-text-primary mb-4 tracking-tight">
+          <h2 className={`text-2xl sm:text-3xl font-display font-black text-text-primary mb-4 tracking-tight ${titleClassName}`}>
             {title}
           </h2>
         )}
 
         {/* Content */}
-        <div>
+        <div className={contentClassName}>
           {children}
         </div>
 

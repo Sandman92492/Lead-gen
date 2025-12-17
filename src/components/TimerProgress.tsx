@@ -50,7 +50,7 @@ const TimerProgress: React.FC<TimerProgressProps> = ({
   }, [remainingSeconds, totalSeconds]);
 
   return (
-    <div className={`h-1.5 w-full overflow-hidden rounded-full bg-black/5 ${className}`}>
+    <div className={`h-1.5 w-full overflow-hidden rounded-full bg-border-subtle/50 ${className}`}>
       <div
         className={`h-full rounded-full bg-brand-accent transition-[width] ease-linear ${disableTransition ? 'duration-0' : ''}`}
         style={{ width: barWidth, transitionDuration: `${transitionMs}ms` }}
@@ -61,4 +61,3 @@ const TimerProgress: React.FC<TimerProgressProps> = ({
 };
 
 export default TimerProgress;
-

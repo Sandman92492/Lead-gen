@@ -177,9 +177,7 @@ const VerifierPage: React.FC = () => {
         {!user && (
           <div className="bg-bg-card border border-border-subtle rounded-2xl p-5">
             <p className="text-text-primary font-semibold">Sign in required</p>
-            <p className="text-text-secondary text-sm mt-1">
-              Open the main app and sign in, then return to <span className="font-mono">/verify</span>.
-            </p>
+            <p className="text-text-secondary text-sm mt-1"><span className="font-mono">/verify</span></p>
           </div>
         )}
 
@@ -187,9 +185,6 @@ const VerifierPage: React.FC = () => {
           <div className="bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
             {locked ? (
               <div className="space-y-3">
-                <p className="text-sm text-text-secondary">
-                  Enter your staff PIN to unlock verification tools for this device.
-                </p>
                 <Button variant="primary" className="w-full" onClick={() => setShowUnlockModal(true)}>
                   {copy.verifier.unlock}
                 </Button>

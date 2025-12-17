@@ -15,7 +15,7 @@ import { PassType, PassStatus, Vendor, Deal } from '../types';
 import { triggerFirstRedemptionEmail } from './emailService';
 import { createEntryLedgerItem } from './entryLedger';
 
-const PAHP_CACHED_DEALS_KEY = 'pahp_cached_deals_v1';
+const PAHP_CACHED_DEALS_KEY = 'pahp_cached_deals_v2';
 
 const isNavigatorOffline = (): boolean => {
     return typeof navigator !== 'undefined' && navigator.onLine === false;

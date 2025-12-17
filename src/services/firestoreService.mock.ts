@@ -3,7 +3,7 @@ import type { PassDocument, RedemptionDocument } from './firestoreService.fireba
 import { generateMockId, readMockDb, writeMockDb } from './mockDb';
 import { createEntryLedgerItem } from './entryLedger';
 
-const PAHP_CACHED_DEALS_KEY = 'pahp_cached_deals_v1';
+const PAHP_CACHED_DEALS_KEY = 'pahp_cached_deals_v2';
 
 const isNavigatorOffline = (): boolean => {
   return typeof navigator !== 'undefined' && navigator.onLine === false;

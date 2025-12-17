@@ -30,6 +30,7 @@ export const upsertOrg = service.upsertOrg;
 export const getCredentialById = service.getCredentialById;
 export const getCredentialsByOrgId = service.getCredentialsByOrgId;
 export const getCredentialsByUserId = service.getCredentialsByUserId;
+export const getGuestCredentialsByCreatorCredentialId = service.getGuestCredentialsByCreatorCredentialId;
 export const createCredential = service.createCredential;
 export const updateCredential = service.updateCredential;
 export const deleteCredential = service.deleteCredential;
@@ -50,4 +51,3 @@ export const deleteStaff = service.deleteStaff;
 export const getCheckinsByOrgId = service.getCheckinsByOrgId;
 export const getCheckinsByCredentialId = service.getCheckinsByCredentialId;
 export const getCheckinsByCheckpointId = service.getCheckinsByCheckpointId;
-

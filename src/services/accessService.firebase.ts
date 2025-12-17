@@ -96,6 +96,21 @@ export const getCredentialsByUserId = async (userId: string): Promise<Credential
   }
 };
 
+export const getGuestCredentialsByCreatorCredentialId = async (
+  creatorCredentialId: string
+): Promise<CredentialDocument[]> => {
+  try {
+    const q = query(collection(db, 'credentials'), where('createdByCredentialId', '==', creatorCredentialId));
+    const snapshot = await getDocs(q);
+    return snapshot.docs
+      .map((docSnap) => docSnap.data() as CredentialDocument)
+      .filter((cred) => cred.credentialType === 'guest');
+  } catch (error) {
+    console.error('Error getting guest credentials by creator credential:', error);
+    return [];
+  }
+};
+
 export const createCredential = async (
   credential: NewCredentialInput
 ): Promise<{ success: boolean; credentialId?: string; error?: string }> => {

@@ -2,14 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Button from '../components/Button';
 import { isPWAPromptAvailable, showPWAPrompt } from '../utils/pwaPrompt';
 import { copy } from '../copy';
-import { useToast } from '../context/ToastContext';
 
 const ProfilePage: React.FC<{ userEmail?: string; userPhotoURL?: string; onSignOut: () => void }> = ({
   userEmail,
   userPhotoURL,
   onSignOut,
 }) => {
-  const { showToast } = useToast();
   const [pwaAvailable, setPwaAvailable] = useState(isPWAPromptAvailable());
 
   useEffect(() => {
@@ -47,38 +45,8 @@ const ProfilePage: React.FC<{ userEmail?: string; userPhotoURL?: string; onSignO
             </div>
 
             <div className="flex-1 space-y-1">
-              <p className="kicker">Account</p>
-              <h1 className="text-2xl font-display font-black text-text-primary">Profile & Support</h1>
-              <p className="text-sm text-text-secondary">Manage your access, device setup, and support routes.</p>
-            </div>
-
-            <button
-              type="button"
-              className="premium-icon rounded-full border border-border-subtle bg-bg-card text-text-secondary transition hover:border-action-primary hover:bg-action-primary hover:text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--ring)]"
-              aria-label="Account settings"
-            >
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M12 8a4 4 0 1 0 4 4 4 4 0 0 0-4-4Zm0 10.5c-3.86 0-7-3.62-7-8s3.14-8 7-8 7 3.62 7 8-3.14 8-7 8Z"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-3xl border border-border-subtle bg-bg-primary p-4 text-sm text-text-secondary shadow-sm">
-              <p className="kicker">Signed in as</p>
-              <p className="mt-2 text-base font-semibold text-text-primary">{userEmail || '—'}</p>
-              <p className="mt-1 text-xs font-medium text-text-secondary">Estate resident</p>
-            </div>
-            <div className="rounded-3xl border border-border-subtle bg-bg-primary p-4 text-sm text-text-secondary shadow-sm">
-              <p className="kicker">Security</p>
-              <p className="mt-2 text-base font-semibold text-text-primary">Protected login</p>
-              <p className="mt-1 text-xs text-text-secondary">Codes refresh every 30 sec.</p>
+              <h1 className="text-2xl font-display font-black text-text-primary">Account</h1>
+              <p className="text-sm text-text-secondary">{userEmail || '—'}</p>
             </div>
           </div>
 
@@ -94,42 +62,14 @@ const ProfilePage: React.FC<{ userEmail?: string; userPhotoURL?: string; onSignO
               </svg>
               {copy.help.signOut}
             </Button>
-            <Button
-              variant="outline"
-              className="flex-1 gap-2 text-sm sm:flex-initial"
-              onClick={() => showToast('Security settings coming soon', 'info')}
-            >
-              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M12 6v2M12 16v2M8 12H6M18 12h-2M9.5 9.5l-1.5-1.5M16.5 16.5l-1.5-1.5M9.5 14.5l-1.5 1.5M16.5 7.5l-1.5 1.5"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8" />
-              </svg>
-              Security settings
-            </Button>
           </div>
         </section>
 
         <section className="gradient-panel p-6 sm:p-8">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="kicker">Add to home screen</p>
-              <h2 className="text-2xl font-display font-black text-text-primary">Stay ready</h2>
-            </div>
-            <span className="premium-icon">
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
-            </span>
-          </div>
-          <div className="mt-4 space-y-2 text-sm text-text-secondary">
-            <p>{copy.help.installIos}</p>
-            <p>{copy.help.installAndroid}</p>
-          </div>
+          <h2 className="text-2xl font-display font-black text-text-primary">Install</h2>
+          <p className="mt-2 text-sm text-text-secondary">
+            {copy.help.installIos} • {copy.help.installAndroid}
+          </p>
           {pwaAvailable ? (
             <div className="mt-6">
               <Button
@@ -160,25 +100,7 @@ const ProfilePage: React.FC<{ userEmail?: string; userPhotoURL?: string; onSignO
         </section>
 
         <section className="gradient-panel p-6 sm:p-8">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="kicker">Support</p>
-              <h2 className="text-2xl font-display font-black text-text-primary">Always-on help</h2>
-            </div>
-            <span className="premium-icon active">
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M12 2a10 10 0 0 0-10 10c0 4.2 2.8 7.8 6.5 9.3l.5.2v-3.1l-.4-.1A6.5 6.5 0 0 1 6 12 6 6 0 0 1 12 6a6 6 0 0 1 6 6c0 1.1-.3 2.1-.9 3l.3.9h2.9l.2-.9A10 10 0 0 0 12 2Z"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path d="M12 11v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                <circle cx="12" cy="7" r="1" fill="currentColor" />
-              </svg>
-            </span>
-          </div>
+          <h2 className="text-2xl font-display font-black text-text-primary">Support</h2>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <a
