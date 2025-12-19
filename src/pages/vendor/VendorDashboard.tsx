@@ -88,21 +88,21 @@ const VendorDashboard: React.FC = () => {
         </header>
 
         <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <div className="bg-bg-card rounded-xl border border-border-subtle p-4">
+          <div className="bg-bg-card rounded-[var(--r-lg)] border border-border-subtle p-4">
             <p className="text-xs text-text-secondary font-semibold uppercase tracking-widest">Today</p>
             <p className="text-3xl font-display font-black text-action-primary mt-2">{summary.today}</p>
           </div>
-          <div className="bg-bg-card rounded-xl border border-border-subtle p-4">
+          <div className="bg-bg-card rounded-[var(--r-lg)] border border-border-subtle p-4">
             <p className="text-xs text-text-secondary font-semibold uppercase tracking-widest">Last 7 Days</p>
             <p className="text-3xl font-display font-black text-action-primary mt-2">{summary.last7}</p>
           </div>
-          <div className="bg-bg-card rounded-xl border border-border-subtle p-4">
+          <div className="bg-bg-card rounded-[var(--r-lg)] border border-border-subtle p-4">
             <p className="text-xs text-text-secondary font-semibold uppercase tracking-widest">Loaded</p>
             <p className="text-3xl font-display font-black text-action-primary mt-2">{summary.total}</p>
           </div>
         </section>
 
-        <section className="bg-bg-card rounded-2xl border border-border-subtle p-4 sm:p-6 mb-6">
+        <section className="bg-bg-card rounded-[var(--r-lg)] border border-border-subtle p-4 sm:p-6 mb-6">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -111,7 +111,7 @@ const VendorDashboard: React.FC = () => {
                   type="date"
                   value={fromDate}
                   onChange={(e) => setFromDate(e.target.value)}
-                  className="w-full px-4 py-3 bg-bg-primary border-2 border-accent-primary/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-secondary transition text-text-primary"
+                  className="w-full px-4 py-3 bg-bg-primary border-2 border-accent-primary/30 rounded-[var(--r-md)] focus:outline-none focus:ring-2 focus:ring-accent-secondary transition text-text-primary"
                 />
               </div>
               <div>
@@ -120,7 +120,7 @@ const VendorDashboard: React.FC = () => {
                   type="date"
                   value={toDate}
                   onChange={(e) => setToDate(e.target.value)}
-                  className="w-full px-4 py-3 bg-bg-primary border-2 border-accent-primary/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-secondary transition text-text-primary"
+                  className="w-full px-4 py-3 bg-bg-primary border-2 border-accent-primary/30 rounded-[var(--r-md)] focus:outline-none focus:ring-2 focus:ring-accent-secondary transition text-text-primary"
                 />
               </div>
             </div>
@@ -143,13 +143,13 @@ const VendorDashboard: React.FC = () => {
           </div>
 
           {error && (
-            <div className="mt-4 bg-urgency-high/10 border border-urgency-high rounded-lg p-3">
+            <div className="mt-4 bg-urgency-high/10 border border-urgency-high rounded-[var(--r-md)] p-3">
               <p className="text-sm font-medium text-urgency-high">{error}</p>
             </div>
           )}
         </section>
 
-        <section className="bg-bg-card rounded-2xl border border-border-subtle overflow-hidden">
+        <section className="bg-bg-card rounded-[var(--r-lg)] border border-border-subtle overflow-hidden">
           <div className="px-4 sm:px-6 py-4 border-b border-border-subtle flex items-center justify-between">
             <h2 className="font-semibold text-text-primary">Latest Redemptions</h2>
             <p className="text-xs text-text-secondary">Newest first</p>

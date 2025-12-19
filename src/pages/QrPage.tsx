@@ -129,7 +129,7 @@ const QrPage: React.FC = () => {
 
             <div className="mt-5 flex flex-col items-center">
               <div className="rounded-[16px] border border-border-subtle bg-white p-5">
-                <UrlQrCode value={url} sizePx={360} onDataUrl={setQrDataUrl} />
+                <UrlQrCode value={url} sizePx={160} onDataUrl={setQrDataUrl} />
               </div>
               <div className="mt-3 text-[12px] leading-4 font-medium text-text-secondary">Scan to claim the offer</div>
             </div>

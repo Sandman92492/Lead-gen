@@ -117,7 +117,7 @@ const PublicLeadCapturePage: React.FC<{ campaignSlug: string }> = ({ campaignSlu
           {isLoading && <div className="text-sm text-text-secondary">Loading…</div>}
 
           {!isLoading && error && (
-            <div className="rounded-2xl border border-urgency-high bg-urgency-high/10 p-4 text-sm font-semibold text-urgency-high">
+            <div className="rounded-[var(--r-lg)] border border-urgency-high bg-urgency-high/10 p-4 text-sm font-semibold text-urgency-high">
               {error}
             </div>
           )}
@@ -161,7 +161,7 @@ const PublicLeadCapturePage: React.FC<{ campaignSlug: string }> = ({ campaignSlu
                   onChange={(e) => setFullName(e.target.value)}
                   required
                   autoComplete="name"
-                  className="w-full rounded-xl border border-border-subtle bg-bg-primary px-4 py-3 text-sm text-text-primary focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+                  className="w-full rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3 text-sm text-text-primary focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                 />
               </div>
 
@@ -174,7 +174,7 @@ const PublicLeadCapturePage: React.FC<{ campaignSlug: string }> = ({ campaignSlu
                   autoComplete="tel"
                   inputMode="tel"
                   placeholder="e.g. 082 123 4567"
-                  className="w-full rounded-xl border border-border-subtle bg-bg-primary px-4 py-3 text-sm text-text-primary placeholder:text-text-secondary/60 focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+                  className="w-full rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3 text-sm text-text-primary placeholder:text-text-secondary/60 focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                 />
               </div>
 
@@ -185,7 +185,7 @@ const PublicLeadCapturePage: React.FC<{ campaignSlug: string }> = ({ campaignSlu
                   onChange={(e) => setSuburb(e.target.value)}
                   required
                   autoComplete="address-level2"
-                  className="w-full rounded-xl border border-border-subtle bg-bg-primary px-4 py-3 text-sm text-text-primary focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+                  className="w-full rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3 text-sm text-text-primary focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                 />
               </div>
 
@@ -194,7 +194,7 @@ const PublicLeadCapturePage: React.FC<{ campaignSlug: string }> = ({ campaignSlu
                 <select
                   value={monthlyBillRange}
                   onChange={(e) => setMonthlyBillRange(e.target.value as Lead['monthlyBillRange'])}
-                  className="w-full rounded-xl border border-border-subtle bg-bg-primary px-4 py-3 text-sm font-semibold text-text-primary focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+                  className="w-full rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3 text-sm font-semibold text-text-primary focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                 >
                   {budgetOptions.map((b) => (
                     <option key={b} value={b}>
@@ -209,7 +209,7 @@ const PublicLeadCapturePage: React.FC<{ campaignSlug: string }> = ({ campaignSlu
                 <select
                   value={timeline}
                   onChange={(e) => setTimeline(e.target.value as Lead['timeline'])}
-                  className="w-full rounded-xl border border-border-subtle bg-bg-primary px-4 py-3 text-sm font-semibold text-text-primary focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+                  className="w-full rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3 text-sm font-semibold text-text-primary focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                 >
                   {timelineOptions.map((t) => (
                     <option key={t} value={t}>
@@ -227,7 +227,7 @@ const PublicLeadCapturePage: React.FC<{ campaignSlug: string }> = ({ campaignSlu
                   <select
                     value={serviceType}
                     onChange={(e) => setServiceType(e.target.value)}
-                    className="w-full rounded-xl border border-border-subtle bg-bg-primary px-4 py-3 text-sm font-semibold text-text-primary focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+                    className="w-full rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3 text-sm font-semibold text-text-primary focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                   >
                     {serviceTypeOptions.length === 0 && <option value="">—</option>}
                     {serviceTypeOptions.map((t) => (

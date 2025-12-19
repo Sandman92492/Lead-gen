@@ -62,7 +62,7 @@ const RedemptionSuccessModal: React.FC<RedemptionSuccessModalProps> = ({
                 </h1>
 
                 {/* Venue name - what staff should see */}
-                <div className="bg-success/10 rounded-xl p-6 border-2 border-success/30 space-y-4">
+                <div className="bg-success/10 rounded-[var(--r-lg)] p-6 border-2 border-success/30 space-y-4">
                     <div>
                         <p className="text-sm font-semibold uppercase tracking-wider text-text-secondary mb-2">
                             School/Fundraiser
@@ -83,7 +83,7 @@ const RedemptionSuccessModal: React.FC<RedemptionSuccessModalProps> = ({
                 </div>
 
                 {/* Timestamp for verification */}
-                <div className="bg-bg-primary rounded-lg px-6 py-4 space-y-2 border border-border-subtle">
+                <div className="bg-bg-primary rounded-[var(--r-md)] px-6 py-4 space-y-2 border border-border-subtle">
                     <p className="text-5xl font-mono font-black text-action-primary">
                         {currentTime}
                     </p>

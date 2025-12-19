@@ -150,7 +150,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuccess })
 
 
           {error && (
-            <p className="text-action-primary text-sm bg-action-primary/20 border border-action-primary/50 p-3 rounded-lg">
+            <p className="text-action-primary text-sm bg-action-primary/20 border border-action-primary/50 p-3 rounded-[var(--r-md)]">
               {error}
             </p>
           )}
@@ -179,7 +179,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuccess })
         <button
           onClick={handleGoogleSignIn}
           disabled={isLoading}
-          className="w-full px-4 py-3 bg-bg-primary border border-border-subtle rounded-lg hover:shadow-md hover:border-action-primary/30 transition flex items-center justify-center gap-3 text-text-primary font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-4 py-3 bg-bg-primary border border-border-subtle rounded-[var(--r-md)] hover:shadow-md hover:border-action-primary/30 transition flex items-center justify-center gap-3 text-text-primary font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <svg
             className="w-5 h-5"

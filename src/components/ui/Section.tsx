@@ -19,7 +19,7 @@ const Section: React.FC<SectionProps> = ({ className, padded = true, padding, ..
 
   return (
     <div
-      className={`bg-bg-card border border-border-subtle rounded-[18px] overflow-hidden shadow-md ${paddingClass} ${className || ''}`}
+      className={`bg-bg-card border border-border-subtle rounded-[var(--r-lg)] overflow-hidden shadow-md ${paddingClass} ${className || ''}`}
       {...props}
     />
   );

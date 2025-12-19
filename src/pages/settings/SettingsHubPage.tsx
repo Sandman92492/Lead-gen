@@ -102,7 +102,7 @@ const SettingsHubPage: React.FC<SettingsHubPageProps> = ({ settings, onSignOut, 
       >
         <div className="space-y-6">
           <section>
-            <div className="overflow-hidden rounded-[22px] border border-border-subtle bg-bg-card">
+            <div className="overflow-hidden rounded-[var(--r-section)] border border-border-subtle bg-bg-card">
               <div className="h-16 px-4 flex items-center gap-3">
                 <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border-subtle bg-bg-card">
                   {userPhotoURL ? (
@@ -130,7 +130,7 @@ const SettingsHubPage: React.FC<SettingsHubPageProps> = ({ settings, onSignOut, 
 
           <section>
             <div className="kicker px-1">Setup</div>
-            <div className="mt-2 overflow-hidden rounded-[22px] border border-border-subtle bg-bg-card divide-y divide-border-subtle/70">
+            <div className="mt-2 overflow-hidden rounded-[var(--r-section)] border border-border-subtle bg-bg-card divide-y divide-border-subtle/70">
               <ListRow
                 title="Business setup"
                 subtitle={settings?.businessName ? `Business: ${settings.businessName}` : 'Basics, lead form fields'}
@@ -181,7 +181,7 @@ const SettingsHubPage: React.FC<SettingsHubPageProps> = ({ settings, onSignOut, 
 
           <section>
             <div className="kicker px-1">Support</div>
-            <div className="mt-2 overflow-hidden rounded-[22px] border border-border-subtle bg-bg-card divide-y divide-border-subtle/70">
+            <div className="mt-2 overflow-hidden rounded-[var(--r-section)] border border-border-subtle bg-bg-card divide-y divide-border-subtle/70">
               <ListRow
                 title="Help / How to use"
                 subtitle="Quick tips and best practices"
@@ -196,7 +196,7 @@ const SettingsHubPage: React.FC<SettingsHubPageProps> = ({ settings, onSignOut, 
 
           <section>
             <div className="kicker px-1">Account</div>
-            <div className="mt-2 overflow-hidden rounded-[22px] border border-border-subtle bg-bg-card divide-y divide-border-subtle/70">
+            <div className="mt-2 overflow-hidden rounded-[var(--r-section)] border border-border-subtle bg-bg-card divide-y divide-border-subtle/70">
               <ListRow
                 title="Logout"
                 subtitle="Sign out of your account"

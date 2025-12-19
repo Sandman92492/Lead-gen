@@ -55,7 +55,7 @@ const CompactDealCard: React.FC<CompactDealCardProps> = ({
       {/* Card Container - Use div instead of button to avoid nesting buttons inside ImageCarousel */}
       <div
         onClick={handleCardClick}
-        className={`${isInGrid ? 'w-full max-w-48' : 'flex-shrink-0 w-60'} cursor-pointer group rounded-lg focus-within:ring-2 focus-within:ring-action-primary`}
+        className={`${isInGrid ? 'w-full max-w-48' : 'flex-shrink-0 w-60'} cursor-pointer group rounded-[var(--r-md)] focus-within:ring-2 focus-within:ring-action-primary`}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
@@ -66,7 +66,7 @@ const CompactDealCard: React.FC<CompactDealCardProps> = ({
         aria-label={`View details for ${deal.name}`}
       >
         {/* Image Container (1:1 aspect ratio) */}
-        <div className={`relative ${isInGrid ? 'w-full aspect-square' : 'w-60 h-60'} rounded-lg overflow-hidden bg-gray-300 dark:bg-gray-600 shadow-md group-hover:shadow-lg transition-shadow`}>
+        <div className={`relative ${isInGrid ? 'w-full aspect-square' : 'w-60 h-60'} rounded-[var(--r-md)] overflow-hidden bg-gray-300 dark:bg-gray-600 shadow-md group-hover:shadow-lg transition-shadow`}>
           {displayImages && displayImages.length > 0 ? (
             <ImageCarousel
               images={displayImages}
@@ -102,7 +102,7 @@ const CompactDealCard: React.FC<CompactDealCardProps> = ({
         </div>
 
         {/* Text Content - White Box Below Image (Uniform Height) */}
-         <div className="mt-2 bg-bg-card rounded-xl p-4 border border-border-subtle shadow-md group-hover:border-primary/40 group-hover:shadow-lg transition-all min-h-32 flex flex-col">
+         <div className="mt-2 bg-bg-card rounded-[var(--r-lg)] p-4 border border-border-subtle shadow-md group-hover:border-primary/40 group-hover:shadow-lg transition-all min-h-32 flex flex-col">
            {/* Deal Name */}
            <h3 className="text-base font-bold text-text-primary line-clamp-2 mb-1.5">
              {deal.name}

@@ -75,7 +75,7 @@ const ExportSettingsPage: React.FC = () => {
         <div className="space-y-6">
           <section>
             <div className="kicker px-1">Export</div>
-            <div className="mt-2 rounded-[22px] border border-border-subtle bg-bg-card p-4">
+            <div className="mt-2 rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
               <div className="text-[13px] leading-5 text-text-primary font-semibold">Leads CSV</div>
               <div className="mt-1 text-[12px] leading-4 text-text-secondary/80">Download your latest leads for Google Sheets or Excel.</div>
               <div className="mt-3 text-[12px] leading-4 text-text-secondary/80">This exports up to 5,000 leads.</div>

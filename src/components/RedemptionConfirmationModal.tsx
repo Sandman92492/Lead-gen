@@ -56,7 +56,7 @@ const RedemptionConfirmationModal: React.FC<RedemptionConfirmationModalProps> = 
           Are you sure you want to enter:
         </p>
 
-        <div className="bg-bg-primary border border-accent-primary/30 rounded-lg p-4 mb-6">
+        <div className="bg-bg-primary border border-accent-primary/30 rounded-[var(--r-md)] p-4 mb-6">
           <p className="text-sm text-text-secondary mb-2">{dealName}</p>
           <p className="font-display font-bold text-lg text-accent-primary">{dealOffer}</p>
         </div>

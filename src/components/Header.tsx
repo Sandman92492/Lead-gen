@@ -73,7 +73,7 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                     <div className="flex items-center justify-between h-14">
                         {/* Logo Area - Text based for Premium Feel */}
                         <div className="flex items-center gap-2 cursor-pointer" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
-                            <div className="w-8 h-8 rounded-lg bg-action-primary flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-action-primary/20">
+                            <div className="w-8 h-8 rounded-[var(--r-md)] bg-action-primary flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-action-primary/20">
                                 {copy.productShortName.charAt(0).toUpperCase()}
                             </div>
                             <div className="flex flex-col leading-none">

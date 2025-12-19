@@ -201,7 +201,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({ isOpen, onClose, passType
         </Button>
 
         {/* Trust Signals */}
-        <div className="bg-bg-primary rounded-lg p-3 text-xs text-text-secondary space-y-2">
+        <div className="bg-bg-primary rounded-[var(--r-md)] p-3 text-xs text-text-secondary space-y-2">
           <div className="flex items-center gap-2">
             <span>🔒</span>
             <span>Secure payment powered by <strong>Yoco</strong></span>

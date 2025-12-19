@@ -15,127 +15,187 @@ body {
 :root[data-theme='raffle'],
 :root[data-theme='solar'] {
   /* ============================================
-     LEAD WALLET 2025/2026 - TEAL PRIMACY
+     LEAD WALLET 2025 - PRIVYR-INSPIRED
+     Teal accent, pink/purple gradients, clean white
      ============================================ */
-  --primary: #06B6B4;
-  --primary-pressed: #048A89;
-  --primary-glow: rgba(6, 182, 180, 0.3);
-  --accent: #F59E0B;
+  --primary: #00BCD4;
+  --primary-pressed: #00ACC1;
+  --primary-glow: transparent;
+  --accent: #00BCD4;
+  --accent-secondary: #00BCD4;
   --whatsapp: #25D366;
 
-  --bg: #F1F5F9;
-  --surface: #E2E8F0;
-  --card: #FFFFFF;
-  --border: rgba(15, 23, 42, 0.12);
-  --text: #0F172A;
-  --muted: #475569;
+  /* No gradients - solid colors only */
+  --gradient-hero: #00BCD4;
+  --gradient-banner: #00BCD4;
 
-  /* Typographic Scale for Legibility */
+  --bg: #FFFFFF;
+  --surface: #FAFAFA;
+  --card: #FFFFFF;
+  --border: #E5E5E5;
+  --text: #111111;
+  --muted: #666666;
+
+  /* Typographic Scale */
   --fs-micro: 0.75rem;
-  /* ~12.75px */
   --fs-tiny: 0.825rem;
-  /* ~14px */
-  --fs-small: 0.9rem;
-  /* ~15.3px */
+  --fs-small: 0.875rem;
   --fs-base: 1rem;
-  /* 17px */
   --fs-lg: 1.125rem;
-  /* ~19px */
   --fs-xl: 1.25rem;
-  /* ~21px */
 
   --lh-tight: 1.2;
   --lh-base: 1.5;
 
-  --r-card: 24px;
-  --r-btn: 14px;
-  --r-xl: 24px;
+  /* Consistent radii - 8px base unit */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-card: 12px;
+  --r-btn: 8px;
+  --r-xl: 12px;
   --r-pill: 9999px;
+  --r-section: 16px;
 
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.08);
-  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.12), 0 2px 6px -2px rgb(0 0 0 / 0.08);
-  --shadow-lg: 0 12px 28px -4px rgb(0 0 0 / 0.15), 0 4px 8px -4px rgb(0 0 0 / 0.1);
-  --shadow-tactile: 0 25px 40px -5px rgb(0 0 0 / 0.18), 0 12px 20px -8px rgb(0 0 0 / 0.12);
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-blur: 16px;
-  --glass-border: 1px solid rgba(255, 255, 255, 0.4);
+  /* Spacing scale - 4px base unit */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Typography scale */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+
+  /* Font weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Minimal shadows - just enough depth */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --shadow-tactile: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --glass-bg: #FFFFFF;
+  --glass-blur: 0;
+  --glass-border: 1px solid #E5E5E5;
+
+  /* Functional colors */
+  --success: #4CAF50;
+  --warning: #FF9800;
+  --danger: #F44336;
+  --info: #2196F3;
 
   /* Global Semantic Mappings */
   --brand: var(--primary);
   --color-action-primary: var(--primary);
-  --color-accent-primary: var(--primary);
+  --color-accent-primary: var(--accent);
   --color-text-primary: var(--text);
   --color-text-secondary: var(--muted);
   --color-bg-primary: var(--bg);
   --color-bg-card: var(--card);
   --color-border-subtle: var(--border);
   --color-turquoise: var(--primary);
-  --color-brand-dark-blue: var(--primary);
-  --color-accent-secondary: var(--accent);
+  --color-brand-dark-blue: #0D47A1;
+  --color-accent-secondary: var(--accent-secondary);
   --ring: var(--primary-glow);
 
   --color-background: var(--bg);
-  --color-background-alt: var(--card);
+  --color-background-alt: var(--surface);
   --color-text-inverted: #FFFFFF;
   --color-button-text: #FFFFFF;
-  --color-redemption-green: #10B981;
+  --color-redemption-green: var(--success);
+  --color-success: var(--success);
   --color-deep-teal: var(--primary);
-  --color-warm-coral: #F43F5E;
-  --color-light-turquoise: #34D399;
-  --color-warm-gold: var(--accent);
-  --color-fresh-green: #34D399;
+  --color-warm-coral: var(--accent);
+  --color-light-turquoise: #4DD0E1;
+  --color-warm-gold: var(--warning);
+  --color-fresh-green: var(--success);
   --color-cream: var(--bg);
   --color-light-cream: var(--card);
+  --color-urgency-high: var(--danger);
+  --color-value-highlight: var(--warning);
+  --color-alert: var(--danger);
 }
 
 :root.dark,
 :root.dark[data-theme='solar'],
 :root.dark[data-theme='raffle'] {
-  /* Solar Theme - Deep Jungle / Midnight Jade */
-  --bg: #03120E;
-  /* Deep distinct green-black, not generic black */
-  --surface: #061F1A;
-  --card: rgba(6, 31, 26, 0.85);
-  /* Translucent jungle card */
-  --border: rgba(6, 182, 180, 0.25);
-  /* Teal border, more visible */
-  --text: #F0FDF4;
-  /* Minty white text */
-  --muted: #94A3B8;
+  /* ============================================
+     DARK MODE - Softer, easier on the eyes
+     ============================================ */
+  --primary: #2DD4BF;
+  --primary-pressed: #14B8A6;
+  --primary-glow: rgba(45, 212, 191, 0.2);
+  --accent: #2DD4BF;
+  --accent-secondary: #2DD4BF;
 
-  --shadow-tactile: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(6, 182, 180, 0.1);
-  --glass-bg: rgba(3, 18, 14, 0.8);
+  --gradient-hero: #2DD4BF;
+  --gradient-banner: #2DD4BF;
 
-  /* Legacy Semantic Mappings (Dark Override) */
+  --bg: #18181B;
+  --surface: #27272A;
+  --card: #27272A;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #FAFAFA;
+  --muted: #A1A1AA;
+
+  /* Functional colors */
+  --success: #4ADE80;
+  --warning: #FBBF24;
+  --danger: #F87171;
+  --info: #42A5F5;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-tactile: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --glass-bg: rgba(30, 30, 30, 0.95);
+  --glass-blur: 12px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+
+  /* Semantic Mappings */
   --color-action-primary: var(--primary);
-  --color-accent-primary: var(--primary);
+  --color-accent-primary: var(--accent);
   --color-text-primary: var(--text);
   --color-text-secondary: var(--muted);
   --color-bg-primary: var(--bg);
   --color-bg-card: var(--card);
   --color-border-subtle: var(--border);
+  --color-success: var(--success);
+  --color-urgency-high: var(--danger);
+  --color-value-highlight: var(--warning);
+  --color-alert: var(--danger);
 }
 
 /* PREMIUM UTILITIES 2025 */
 .lw-glass-premium {
-  background: color-mix(in srgb, var(--card) 70%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--card);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-tactile);
 }
 
 .lw-tactile-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--r-card);
-  box-shadow: var(--shadow-md);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--r-lg);
+  transition: all 0.15s ease;
 }
 
 .lw-tactile-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  border-color: var(--primary);
 }
 
 .lw-glow-primary {
@@ -152,9 +212,7 @@ body {
 
 .lw-sticky-top-bar {
   @apply sticky top-0 z-40 border-b border-border-subtle transition-all duration-300;
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--bg);
 }
 
 :root[data-theme='estate'] {
@@ -666,12 +724,9 @@ body::before {
 }
 
 .blurred-panel {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--card);
   border-radius: var(--radius);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border);
 }
 
 @keyframes gold-glow {
@@ -825,17 +880,15 @@ body {
   /* Firefox */
 }
 
-/* Glassmorphism Utility */
+/* Solid panel - no glass effects */
 .glass-panel {
   background: var(--card);
   border: 1px solid var(--border);
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16);
 }
 
 :root.dark .glass-panel {
   background: var(--card);
   border: 1px solid var(--border);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
 }
 
 @media (prefers-reduced-motion: reduce) {

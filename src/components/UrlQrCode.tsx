@@ -37,7 +37,7 @@ const UrlQrCode: React.FC<UrlQrCodeProps> = ({ value, sizePx = 320, className = 
 
   if (!dataUrl) {
     return (
-      <div className={`grid place-items-center rounded-2xl border border-border-subtle bg-bg-primary ${className}`} style={{ width: sizePx, height: sizePx }}>
+      <div className={`grid place-items-center rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary ${className}`} style={{ width: sizePx, height: sizePx }}>
         <div className="text-xs font-semibold text-text-secondary">Generating QR…</div>
       </div>
     );

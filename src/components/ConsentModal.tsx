@@ -41,7 +41,7 @@ const ConsentModal: React.FC<ConsentModalProps> = ({ userEmail, onAccept, onDecl
         <div className="space-y-2 mb-6">
           <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">Legal Requirements</p>
           
-          <label className="flex items-start gap-3 p-3 rounded-lg border-2 border-accent-primary/20 hover:border-accent-primary/50 hover:bg-accent-primary/5 transition cursor-pointer group">
+          <label className="flex items-start gap-3 p-3 rounded-[var(--r-md)] border-2 border-accent-primary/20 hover:border-accent-primary/50 hover:bg-accent-primary/5 transition cursor-pointer group">
             <div className="flex-shrink-0 flex items-center h-5 pt-1">
               <input
                 type="checkbox"
@@ -67,7 +67,7 @@ const ConsentModal: React.FC<ConsentModalProps> = ({ userEmail, onAccept, onDecl
             </div>
           </label>
 
-          <label className="flex items-start gap-3 p-3 rounded-lg border-2 border-accent-primary/20 hover:border-accent-primary/50 hover:bg-accent-primary/5 transition cursor-pointer group">
+          <label className="flex items-start gap-3 p-3 rounded-[var(--r-md)] border-2 border-accent-primary/20 hover:border-accent-primary/50 hover:bg-accent-primary/5 transition cursor-pointer group">
             <div className="flex-shrink-0 flex items-center h-5 pt-1">
               <input
                 type="checkbox"
@@ -93,7 +93,7 @@ const ConsentModal: React.FC<ConsentModalProps> = ({ userEmail, onAccept, onDecl
             </div>
           </label>
 
-          <label className="flex items-start gap-3 p-3 rounded-lg border-2 border-accent-primary/20 hover:border-accent-primary/50 hover:bg-accent-primary/5 transition cursor-pointer group">
+          <label className="flex items-start gap-3 p-3 rounded-[var(--r-md)] border-2 border-accent-primary/20 hover:border-accent-primary/50 hover:bg-accent-primary/5 transition cursor-pointer group">
             <div className="flex-shrink-0 flex items-center h-5 pt-1">
               <input
                 type="checkbox"
@@ -122,7 +122,7 @@ const ConsentModal: React.FC<ConsentModalProps> = ({ userEmail, onAccept, onDecl
 
         <div className="space-y-2">
           {!allAgreed && (
-            <p className="text-xs text-action-primary bg-action-primary/10 border border-action-primary/30 p-3 rounded-lg text-center">
+            <p className="text-xs text-action-primary bg-action-primary/10 border border-action-primary/30 p-3 rounded-[var(--r-md)] text-center">
               You must agree to all terms to continue
             </p>
           )}

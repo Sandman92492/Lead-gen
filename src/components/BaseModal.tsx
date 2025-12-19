@@ -42,14 +42,14 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-black/55 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto transition-opacity duration-200 ${backdropClassName}`}
+      className={`fixed inset-0 bg-black/50 flex items-center justify-center p-4 overflow-y-auto transition-opacity duration-200 ${backdropClassName}`}
       style={{ zIndex }}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className={`bg-bg-card rounded-[var(--radius)] shadow-[var(--shadow)] p-4 sm:p-6 md:p-8 ${maxWidthClasses[maxWidth]} w-full relative border border-border-subtle my-3 sm:my-8 ${panelClassName}`}
+        className={`bg-bg-card rounded-[var(--r-lg)] p-4 sm:p-6 md:p-8 ${maxWidthClasses[maxWidth]} w-full relative border border-border-subtle my-3 sm:my-8 ${panelClassName}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button - Top Right (default) */}
@@ -92,7 +92,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
         {showCloseButton && closeButtonPosition === 'bottom' && (
           <button
             onClick={onClose}
-            className="w-full mt-6 px-4 py-2 rounded-lg bg-bg-primary text-text-primary font-medium hover:bg-bg-primary/80 transition-colors"
+            className="w-full mt-6 px-4 py-2 rounded-[var(--r-md)] bg-bg-primary text-text-primary font-medium hover:bg-bg-primary/80 transition-colors"
           >
             Close
           </button>

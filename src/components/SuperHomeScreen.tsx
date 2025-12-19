@@ -136,7 +136,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
                 /* Active Pass Card */
                 <button
                   onClick={() => setIsPassModalOpen(true)}
-                  className="w-full h-52 rounded-2xl p-5 flex flex-col justify-between text-white shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-value-highlight/50 relative overflow-hidden"
+                  className="w-full h-52 rounded-[var(--r-lg)] p-5 flex flex-col justify-between text-white shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-value-highlight/50 relative overflow-hidden"
                   style={{
                     background: 'linear-gradient(135deg, #0077B6 0%, #00A8E8 50%, #0077B6 100%)',
                   }}
@@ -179,7 +179,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
                 /* Inactive/Preview Pass Card */
                 <button
                   onClick={onBuyPassClick}
-                  className="w-full h-52 rounded-2xl p-5 flex flex-col justify-between text-white shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-action-primary/50 relative overflow-hidden"
+                  className="w-full h-52 rounded-[var(--r-lg)] p-5 flex flex-col justify-between text-white shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-action-primary/50 relative overflow-hidden"
                   style={{
                     background: 'linear-gradient(135deg, #6B7280 0%, #9CA3AF 50%, #6B7280 100%)',
                   }}
@@ -209,7 +209,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
                         Unlock for R{passPrice.price}
                       </p>
                     </div>
-                    <div className="bg-white text-gray-700 px-4 py-2 rounded-lg font-bold text-sm">
+                    <div className="bg-white text-gray-700 px-4 py-2 rounded-[var(--r-md)] font-bold text-sm">
                       Get Ticket Pack →
                     </div>
                   </div>
@@ -226,7 +226,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-2 gap-4 md:gap-6">
               {/* Deals Redeemed */}
-              <div className={`bg-bg-card rounded-lg p-4 md:p-6 border border-border-subtle text-center ${!hasPass ? 'opacity-50' : ''}`}>
+              <div className={`bg-bg-card rounded-[var(--r-md)] p-4 md:p-6 border border-border-subtle text-center ${!hasPass ? 'opacity-50' : ''}`}>
                 <p className="text-xs md:text-sm text-text-secondary font-semibold uppercase tracking-wide mb-2">
                   Entries
                 </p>
@@ -236,7 +236,7 @@ const SuperHomeScreen: React.FC<SuperHomeScreenProps> = ({
               </div>
 
               {/* Total Savings */}
-              <div className={`bg-bg-card rounded-lg p-4 md:p-6 border border-border-subtle text-center ${!hasPass ? 'opacity-50' : ''}`}>
+              <div className={`bg-bg-card rounded-[var(--r-md)] p-4 md:p-6 border border-border-subtle text-center ${!hasPass ? 'opacity-50' : ''}`}>
                 <p className="text-xs md:text-sm text-text-secondary font-semibold uppercase tracking-wide mb-2">
                   Total Prize Value
                 </p>

@@ -88,13 +88,13 @@ const AdminDashboard: React.FC = () => {
           </Button>
         </div>
 
-        <div className="mt-6 bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
+        <div className="mt-6 bg-bg-card border border-border-subtle rounded-[var(--r-lg)] shadow-[var(--shadow)] p-5">
           <div className="text-xs uppercase tracking-widest text-text-secondary mb-2">Organisation</div>
           <input
             value={orgId}
             onChange={(e) => setOrgId(e.target.value)}
             placeholder="orgId"
-            className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-sm text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+            className="w-full rounded-[var(--r-lg)] bg-bg-primary border border-border-subtle px-4 py-3 text-sm text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
           />
           <p className="text-xs text-text-secondary mt-2">
             Tip: set <span className="font-mono">VITE_ORG_ID</span> to avoid entering this each time.
@@ -106,7 +106,7 @@ const AdminDashboard: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-3 py-2 rounded-lg text-sm font-semibold border transition-colors whitespace-nowrap ${
+              className={`px-3 py-2 rounded-[var(--r-md)] text-sm font-semibold border transition-colors whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'bg-action-primary/10 border-action-primary text-action-primary'
                   : 'bg-bg-card border-border-subtle text-text-secondary hover:text-text-primary'
@@ -119,14 +119,14 @@ const AdminDashboard: React.FC = () => {
         </div>
 
         {error && (
-          <div className="mt-4 bg-urgency-high/10 border border-urgency-high rounded-lg p-3">
+          <div className="mt-4 bg-urgency-high/10 border border-urgency-high rounded-[var(--r-md)] p-3">
             <p className="text-sm font-semibold text-urgency-high">{error}</p>
           </div>
         )}
 
         {activeTab === 'credentials' && (
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
+            <div className="bg-bg-card border border-border-subtle rounded-[var(--r-lg)] shadow-[var(--shadow)] p-5">
               <h2 className="text-sm font-semibold text-text-primary">Members</h2>
               <p className="text-xs text-text-secondary mt-1">Credentials linked to residents, members, and guests.</p>
 
@@ -135,7 +135,7 @@ const AdminDashboard: React.FC = () => {
                   <div className="text-sm text-text-secondary">No credentials found.</div>
                 ) : (
                   credentials.map((c) => (
-                    <div key={c.credentialId} className="bg-bg-primary border border-border-subtle rounded-xl p-4">
+                    <div key={c.credentialId} className="bg-bg-primary border border-border-subtle rounded-[var(--r-lg)] p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <div className="text-sm font-semibold text-text-primary truncate">{c.displayName}</div>
@@ -161,7 +161,7 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
+            <div className="bg-bg-card border border-border-subtle rounded-[var(--r-lg)] shadow-[var(--shadow)] p-5">
               <h2 className="text-sm font-semibold text-text-primary">{copy.admin.importMembers.title}</h2>
               <p className="text-sm text-text-secondary mt-1">{copy.admin.importMembers.hint}</p>
               <p className="text-xs text-text-secondary mt-2">{copy.admin.importMembers.fieldHint}</p>
@@ -172,7 +172,7 @@ const AdminDashboard: React.FC = () => {
                   type="file"
                   accept=".csv,text/csv"
                   onChange={(e) => setCsvFile(e.target.files?.[0] ?? null)}
-                  className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-sm text-text-primary file:mr-4 file:rounded-lg file:border-0 file:bg-bg-card file:px-3 file:py-2 file:text-sm file:font-semibold file:text-text-primary hover:file:bg-bg-card/90"
+                  className="w-full rounded-[var(--r-lg)] bg-bg-primary border border-border-subtle px-4 py-3 text-sm text-text-primary file:mr-4 file:rounded-[var(--r-md)] file:border-0 file:bg-bg-card file:px-3 file:py-2 file:text-sm file:font-semibold file:text-text-primary hover:file:bg-bg-card/90"
                 />
                 {csvFile && (
                   <div className="mt-3 text-xs text-text-secondary">
@@ -185,7 +185,7 @@ const AdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'staff' && (
-          <div className="mt-6 bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
+          <div className="mt-6 bg-bg-card border border-border-subtle rounded-[var(--r-lg)] shadow-[var(--shadow)] p-5">
             <h2 className="text-sm font-semibold text-text-primary">Staff</h2>
             <p className="text-xs text-text-secondary mt-1">Staff accounts that can unlock verifier mode.</p>
 
@@ -194,7 +194,7 @@ const AdminDashboard: React.FC = () => {
                 <div className="text-sm text-text-secondary">No staff found.</div>
               ) : (
                 staff.map((s) => (
-                  <div key={s.staffId} className="bg-bg-primary border border-border-subtle rounded-xl p-4">
+                  <div key={s.staffId} className="bg-bg-primary border border-border-subtle rounded-[var(--r-lg)] p-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="text-sm font-semibold text-text-primary truncate">{s.staffId}</div>
@@ -215,7 +215,7 @@ const AdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'checkpoints' && (
-          <div className="mt-6 bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
+          <div className="mt-6 bg-bg-card border border-border-subtle rounded-[var(--r-lg)] shadow-[var(--shadow)] p-5">
             <h2 className="text-sm font-semibold text-text-primary">Checkpoints</h2>
             <p className="text-xs text-text-secondary mt-1">Locations where credentials can be validated.</p>
 
@@ -224,7 +224,7 @@ const AdminDashboard: React.FC = () => {
                 <div className="text-sm text-text-secondary">No checkpoints found.</div>
               ) : (
                 checkpoints.map((c) => (
-                  <div key={c.checkpointId} className="bg-bg-primary border border-border-subtle rounded-xl p-4">
+                  <div key={c.checkpointId} className="bg-bg-primary border border-border-subtle rounded-[var(--r-lg)] p-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="text-sm font-semibold text-text-primary truncate">{c.name}</div>
@@ -242,7 +242,7 @@ const AdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'logs' && (
-          <div className="mt-6 bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
+          <div className="mt-6 bg-bg-card border border-border-subtle rounded-[var(--r-lg)] shadow-[var(--shadow)] p-5">
             <h2 className="text-sm font-semibold text-text-primary">Logs</h2>
             <p className="text-xs text-text-secondary mt-1">Recent access checks (allowed/denied).</p>
 
@@ -251,7 +251,7 @@ const AdminDashboard: React.FC = () => {
                 <div className="text-sm text-text-secondary">No logs found.</div>
               ) : (
                 logs.map((l) => (
-                  <div key={l.checkinId} className="bg-bg-primary border border-border-subtle rounded-xl p-4">
+                  <div key={l.checkinId} className="bg-bg-primary border border-border-subtle rounded-[var(--r-lg)] p-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="text-sm font-semibold text-text-primary truncate">

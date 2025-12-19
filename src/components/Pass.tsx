@@ -108,7 +108,7 @@ const Pass: React.FC<PassProps> = ({ isOpen, name, passId, onClose, onCardClick,
                 )}
 
                 <header className="text-center relative z-10 mb-6">
-                    <div className="mx-auto mb-6 w-20 h-20 flex-shrink-0 rounded-2xl p-2" aria-label="Raffle Tickets Logo Icon">
+                    <div className="mx-auto mb-6 w-20 h-20 flex-shrink-0 rounded-[var(--r-lg)] p-2" aria-label="Raffle Tickets Logo Icon">
                         <img
                             src={theme === 'dark' ? '/Images/logo-ocean.svg' : '/Images/logo-sand.svg'}
                             alt="Raffle Tickets Logo"

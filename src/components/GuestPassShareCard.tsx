@@ -55,7 +55,7 @@ const GuestPassShareCard: React.FC<GuestPassShareCardProps> = ({ link }) => {
           </span>
         </div>
 
-        <div className="rounded-2xl border border-border-subtle bg-bg-primary/80 px-4 py-3 font-mono text-[13px] text-text-primary break-words shadow-sm">
+        <div className="rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary/80 px-4 py-3 font-mono text-[13px] text-text-primary break-words shadow-sm">
           {fullLink}
         </div>
 
@@ -83,7 +83,7 @@ const GuestPassShareCard: React.FC<GuestPassShareCardProps> = ({ link }) => {
             href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-2xl bg-[#25D366] px-4 py-3 text-sm font-semibold text-white transition hover:brightness-110"
+            className="flex items-center gap-2 rounded-[var(--r-lg)] bg-[#25D366] px-4 py-3 text-sm font-semibold text-white transition hover:brightness-110"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12 3a9 9 0 0 0-8.48 11.83L3 21l6.24-1.68A9 9 0 1 0 12 3Z" fill="currentColor" />

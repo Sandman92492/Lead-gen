@@ -32,7 +32,7 @@ const ThemeToggle: React.FC<{ className?: string }> = ({ className }) => {
     <button
       type="button"
       onClick={toggleTheme}
-      className={`h-11 w-11 inline-flex items-center justify-center rounded-[14px] border border-border-subtle bg-bg-card/70 hover:bg-bg-card text-text-secondary hover:text-text-primary transition-colors focus:outline-none focus:ring-4 focus:ring-[var(--ring)] ${className || ''}`}
+      className={`h-11 w-11 inline-flex items-center justify-center rounded-[var(--r-lg)] border border-border-subtle bg-bg-card/70 hover:bg-bg-card text-text-secondary hover:text-text-primary transition-colors focus:outline-none focus:ring-4 focus:ring-[var(--ring)] ${className || ''}`}
       aria-label="Switch theme"
     >
       {theme === 'dark' ? <IconSun /> : <IconMoon />}

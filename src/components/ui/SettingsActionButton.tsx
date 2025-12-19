@@ -6,7 +6,7 @@ type SettingsActionButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
 
 const SettingsActionButton: React.FC<SettingsActionButtonProps> = ({ className, variant = 'primary', ...props }) => {
   const base =
-    'h-12 w-full inline-flex items-center justify-center rounded-[18px] px-5 text-[15px] font-semibold focus:outline-none focus:ring-4 focus:ring-[var(--ring)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
+    'h-12 w-full inline-flex items-center justify-center rounded-[var(--r-lg)] px-5 text-[15px] font-semibold focus:outline-none focus:ring-4 focus:ring-[var(--ring)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variants: Record<NonNullable<SettingsActionButtonProps['variant']>, string> = {
     primary: 'bg-action-primary text-white hover:brightness-105 active:brightness-95',

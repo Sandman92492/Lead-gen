@@ -68,7 +68,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, title, onClose, child
                 <button
                   type="button"
                   onClick={onClose}
-                  className="h-10 w-10 grid place-items-center rounded-[14px] border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary hover:bg-bg-primary focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
+                  className="h-10 w-10 grid place-items-center rounded-[var(--r-lg)] border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary hover:bg-bg-primary focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
                   aria-label="Close"
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">

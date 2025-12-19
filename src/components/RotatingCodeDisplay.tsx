@@ -95,7 +95,7 @@ const RotatingCodeDisplay: React.FC<RotatingCodeDisplayProps> = ({
       </div>
 
       {showTimer && hasMeta && (
-        <div className={`mt-2 flex items-center justify-between gap-3 rounded-2xl px-4 py-2 ${variant === 'transparent' ? 'bg-black/20 border border-white/10 text-white' : 'bg-bg-primary border border-border-subtle'
+        <div className={`mt-2 flex items-center justify-between gap-3 rounded-[var(--r-lg)] px-4 py-2 ${variant === 'transparent' ? 'bg-black/20 border border-white/10 text-white' : 'bg-bg-primary border border-border-subtle'
           }`}>
           <div className={`text-xs ${variant === 'transparent' ? 'text-white/70' : 'text-text-secondary'}`}>{subtitle || 'Rotates automatically'}</div>
           {hasTimer && (
@@ -106,7 +106,7 @@ const RotatingCodeDisplay: React.FC<RotatingCodeDisplayProps> = ({
         </div>
       )}
 
-      <div className={`mt-4 rounded-2xl px-4 py-5 ${containerClass} backdrop-blur-sm transition-colors duration-300`}>
+      <div className={`mt-4 rounded-[var(--r-lg)] px-4 py-5 ${containerClass} backdrop-blur-sm transition-colors duration-300`}>
         <div
           className={`font-mono text-5xl sm:text-6xl font-black tracking-[0.14em] whitespace-pre ${displayClass}`}
           aria-label={a11yValue ? `Code ${a11yValue}` : 'Code unavailable'}

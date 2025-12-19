@@ -99,12 +99,12 @@ const CampaignDetailPage: React.FC = () => {
               </div>
 
               <div className="mt-4 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
-                <div className="rounded-[18px] border border-border-subtle bg-bg-primary px-4 py-3 text-[13px] leading-5 font-semibold text-text-primary break-all">
+                <div className="rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3 text-[13px] leading-5 font-semibold text-text-primary break-all">
                   {displayLink}
                 </div>
                 <button
                   type="button"
-                  className="h-12 w-12 grid place-items-center rounded-[18px] border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary hover:bg-bg-primary focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
+                  className="h-12 w-12 grid place-items-center rounded-[var(--r-lg)] border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary hover:bg-bg-primary focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
                   aria-label="Share"
                   onClick={() => setShareOpen(true)}
                 >
@@ -135,12 +135,12 @@ const CampaignDetailPage: React.FC = () => {
                   Use this link on your website’s Contact / Get Quote button.
                 </div>
                 <div className="mt-4 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
-                  <div className="rounded-[18px] border border-border-subtle bg-bg-primary px-4 py-3 text-[13px] leading-5 font-semibold text-text-primary break-all">
+                  <div className="rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3 text-[13px] leading-5 font-semibold text-text-primary break-all">
                     {displayLink}
                   </div>
                   <button
                     type="button"
-                    className="h-12 w-12 grid place-items-center rounded-[18px] border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary hover:bg-bg-primary focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
+                    className="h-12 w-12 grid place-items-center rounded-[var(--r-lg)] border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary hover:bg-bg-primary focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
                     aria-label="Share"
                     onClick={() => setShareOpen(true)}
                   >
@@ -167,8 +167,8 @@ const CampaignDetailPage: React.FC = () => {
 
             <Card className="p-6">
               <div className="flex flex-col items-center">
-                <div className="rounded-[22px] border border-border-subtle bg-white p-5 shadow-[var(--shadow-card)]">
-                  <UrlQrCode value={campaignUrl} sizePx={320} onDataUrl={setQrDataUrl} />
+                <div className="rounded-[var(--r-section)] border border-border-subtle bg-white p-5 shadow-[var(--shadow-card)]">
+                  <UrlQrCode value={campaignUrl} sizePx={160} onDataUrl={setQrDataUrl} />
                 </div>
                 <div className="mt-3 text-[12px] leading-4 font-medium text-text-secondary">Scan to claim the offer</div>
 

@@ -41,10 +41,10 @@ const WhatsappTemplateSettingsPage: React.FC<WhatsappTemplateSettingsPageProps> 
   const navigate = useNavigate();
   const [isDiscardOpen, setIsDiscardOpen] = useState(false);
   const textareaClass =
-    'w-full rounded-[18px] border border-border-subtle bg-bg-primary px-4 py-3 text-[13px] leading-5 text-text-primary placeholder:text-text-secondary/60 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
+    'w-full rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3 text-[13px] leading-5 text-text-primary placeholder:text-text-secondary/60 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
 
   const bannerButtonClass =
-    'h-10 px-4 rounded-[14px] border border-border-subtle bg-bg-primary/50 text-[13px] font-semibold text-text-primary hover:bg-bg-primary/70 active:bg-bg-primary/80 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
+    'h-10 px-4 rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary/50 text-[13px] font-semibold text-text-primary hover:bg-bg-primary/70 active:bg-bg-primary/80 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
 
   return (
     <>
@@ -63,7 +63,7 @@ const WhatsappTemplateSettingsPage: React.FC<WhatsappTemplateSettingsPageProps> 
       <main className="mx-auto w-full max-w-3xl px-4 pt-4 pb-[calc(var(--sticky-bottom-offset)+6rem)] sm:px-6">
         <div className="space-y-4">
           {saveError && (
-            <div className="rounded-[22px] border border-border-subtle bg-bg-card p-4">
+            <div className="rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
               <div className="text-[13px] leading-5 font-semibold text-alert">Save failed</div>
               <div className="mt-1 text-[12px] leading-4 text-text-secondary">{saveError}</div>
               <div className="mt-3">
@@ -75,7 +75,7 @@ const WhatsappTemplateSettingsPage: React.FC<WhatsappTemplateSettingsPageProps> 
           )}
 
           {!isLoadingSettings && loadError && (
-            <div className="rounded-[22px] border border-border-subtle bg-bg-card p-4">
+            <div className="rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
               <div className="text-[13px] leading-5 font-semibold text-alert">Couldn’t load settings</div>
               <div className="mt-1 text-[12px] leading-4 text-text-secondary">{loadError}</div>
               <div className="mt-3">
@@ -91,14 +91,14 @@ const WhatsappTemplateSettingsPage: React.FC<WhatsappTemplateSettingsPageProps> 
           <div className="mt-4 space-y-6 animate-pulse">
             <section>
               <div className="h-3 w-16 rounded bg-border-subtle/60 mx-1" />
-              <div className="mt-2 rounded-[22px] border border-border-subtle bg-bg-card p-4">
+              <div className="mt-2 rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
                 <div>
                   <div className="h-3 w-56 rounded bg-border-subtle/60" />
-                  <div className="mt-2 h-28 rounded-[18px] bg-bg-primary/60" />
+                  <div className="mt-2 h-28 rounded-[var(--r-lg)] bg-bg-primary/60" />
                 </div>
                 <div className="mt-4">
                   <div className="h-3 w-28 rounded bg-border-subtle/60" />
-                  <div className="mt-2 h-20 rounded-[18px] bg-bg-primary/60" />
+                  <div className="mt-2 h-20 rounded-[var(--r-lg)] bg-bg-primary/60" />
                 </div>
               </div>
             </section>
@@ -107,7 +107,7 @@ const WhatsappTemplateSettingsPage: React.FC<WhatsappTemplateSettingsPageProps> 
           <div className="mt-4 space-y-6">
             <section>
               <div className="kicker px-1">Message</div>
-              <div className="mt-2 rounded-[22px] border border-border-subtle bg-bg-card p-4">
+              <div className="mt-2 rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
                 <label className="block text-[12px] leading-4 font-medium text-text-secondary mb-2">Default WhatsApp message template</label>
                 <textarea
                   value={settings.defaultWhatsappTemplate}
@@ -123,7 +123,7 @@ const WhatsappTemplateSettingsPage: React.FC<WhatsappTemplateSettingsPageProps> 
                   <span className="ml-2 font-semibold">{'{serviceType}'}</span>
                 </div>
 
-                <div className="mt-4 rounded-[18px] border border-border-subtle bg-bg-primary px-4 py-3">
+                <div className="mt-4 rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3">
                   <div className="text-[12px] leading-4 font-semibold text-text-secondary">Preview</div>
                   <div className="mt-2 whitespace-pre-wrap text-[13px] leading-5 font-medium text-text-primary">
                     {renderWhatsappTemplate(settings.defaultWhatsappTemplate, {

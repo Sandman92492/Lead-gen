@@ -11,7 +11,7 @@ const PopiaCompliance: React.FC<PopiaComplianceProps> = ({ onClose }) => {
       onClick={onClose}
     >
       <div
-        className="bg-bg-card rounded-2xl shadow-2xl p-6 sm:p-8 max-w-2xl w-full relative border border-border-subtle my-8"
+        className="bg-bg-card rounded-[var(--r-lg)] shadow-2xl p-6 sm:p-8 max-w-2xl w-full relative border border-border-subtle my-8"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -121,7 +121,7 @@ const PopiaCompliance: React.FC<PopiaComplianceProps> = ({ onClose }) => {
 
         <button
           onClick={onClose}
-          className="w-full mt-6 px-4 py-3 bg-accent-primary text-white rounded-lg hover:bg-accent-secondary transition font-semibold"
+          className="w-full mt-6 px-4 py-3 bg-accent-primary text-white rounded-[var(--r-md)] hover:bg-accent-secondary transition font-semibold"
         >
           I Understand
         </button>

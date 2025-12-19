@@ -67,7 +67,7 @@ const ContactDropdown: React.FC<ContactDropdownProps> = ({ email, phone, classNa
             {isOpen && buttonRect && createPortal(
                 <div
                     ref={dropdownRef}
-                    className="fixed w-[calc(100vw-1rem)] sm:w-72 max-w-xs bg-bg-card rounded-lg shadow-xl border border-border-subtle overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-2 duration-200"
+                    className="fixed w-[calc(100vw-1rem)] sm:w-72 max-w-xs bg-bg-card rounded-[var(--r-md)] shadow-xl border border-border-subtle overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-2 duration-200"
                     style={{
                         left: `calc(${buttonRect.left + buttonRect.width / 2}px - 50%)`,
                         top: `${buttonRect.top - 8}px`,

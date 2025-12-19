@@ -66,7 +66,7 @@ const ToastContainer: React.FC = () => {
                     key={action.label}
                     type="button"
                     onClick={action.onClick}
-                    className={`h-10 px-4 rounded-[14px] text-[13px] font-semibold transition-colors focus:outline-none focus:ring-4 focus:ring-[var(--ring)] ${actionClass(
+                    className={`h-10 px-4 rounded-[var(--r-lg)] text-[13px] font-semibold transition-colors focus:outline-none focus:ring-4 focus:ring-[var(--ring)] ${actionClass(
                       action.variant
                     )}`}
                   >

@@ -17,11 +17,11 @@ const PublicBrandHeader: React.FC<PublicBrandHeaderProps> = ({ businessName, log
             <img
               src={logoUrl}
               alt={businessName}
-              className="h-11 w-11 rounded-2xl object-cover border border-border-subtle bg-bg-card"
+              className="h-11 w-11 rounded-[var(--r-lg)] object-cover border border-border-subtle bg-bg-card"
               loading="eager"
             />
           ) : (
-            <div className="h-11 w-11 rounded-2xl bg-action-primary text-white grid place-items-center font-bold shadow-[var(--shadow-card)]">
+            <div className="h-11 w-11 rounded-[var(--r-lg)] bg-action-primary text-white grid place-items-center font-bold shadow-[var(--shadow-card)]">
               {initial}
             </div>
           )}

@@ -85,7 +85,7 @@ const CampaignWizardModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Vehicle QR, Flyer Drop, Expo…"
-              className="w-full h-12 rounded-[14px] border border-border-subtle bg-bg-primary px-4 text-[13px] font-medium text-text-primary placeholder:text-text-secondary/60 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
+              className="w-full h-12 rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 text-[13px] font-medium text-text-primary placeholder:text-text-secondary/60 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
             />
           </div>
 
@@ -95,7 +95,7 @@ const CampaignWizardModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
               <select
                 value={sourceType}
                 onChange={(e) => setSourceType(e.target.value as CampaignSourceType)}
-                className="w-full h-12 rounded-[14px] border border-border-subtle bg-bg-primary px-4 text-[13px] font-semibold text-text-primary focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
+                className="w-full h-12 rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 text-[13px] font-semibold text-text-primary focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
               >
                 {SOURCE_TYPES.map((t) => (
                   <option key={t} value={t}>
@@ -107,7 +107,7 @@ const CampaignWizardModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
 
             <div>
               <label className="block text-[12px] leading-4 font-medium text-text-secondary mb-2">Link preview</label>
-              <div className="w-full rounded-[14px] border border-border-subtle bg-bg-primary px-4 py-3 text-[12px] leading-4 font-semibold text-text-secondary break-all">
+              <div className="w-full rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3 text-[12px] leading-4 font-semibold text-text-secondary break-all">
                 {draftUrl || 'Enter a campaign name…'}
               </div>
               <div className="mt-1 text-[11px] text-text-secondary">
@@ -139,15 +139,15 @@ const CampaignWizardModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
         </div>
       ) : (
         <div className="space-y-5">
-          <div className="rounded-[18px] border border-border-subtle bg-bg-primary px-4 py-3">
+          <div className="rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3">
             <div className="text-[12px] leading-4 font-medium text-text-secondary">Public link</div>
             <div className="mt-1 text-[13px] leading-5 font-semibold text-text-primary break-all">{livePretty}</div>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:items-start">
             <div className="flex flex-col items-center">
-              <div className="rounded-[22px] border border-border-subtle bg-white p-4 shadow-[var(--shadow-card)]">
-                <UrlQrCode value={liveUrl} sizePx={260} onDataUrl={setQrDataUrl} />
+              <div className="rounded-[var(--r-section)] border border-border-subtle bg-white p-4 shadow-[var(--shadow-card)]">
+                <UrlQrCode value={liveUrl} sizePx={140} onDataUrl={setQrDataUrl} />
               </div>
               <div className="mt-3 text-[12px] leading-4 font-medium text-text-secondary">Scan to claim the offer</div>
             </div>

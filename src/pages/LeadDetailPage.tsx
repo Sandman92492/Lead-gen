@@ -216,7 +216,7 @@ const LeadDetailPage: React.FC = () => {
                       showToast('Failed to update status', 'error');
                     }
                   }}
-                  className="w-full h-12 rounded-[14px] border border-border-subtle bg-surface/30 px-3 text-[13px] font-semibold text-text-primary focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all cursor-pointer"
+                  className="w-full h-12 rounded-[var(--r-lg)] border border-border-subtle bg-surface/30 px-3 text-[13px] font-semibold text-text-primary focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all cursor-pointer"
                 >
                   {statusOptions.map((s) => (
                     <option key={s} value={s}>
@@ -230,7 +230,7 @@ const LeadDetailPage: React.FC = () => {
             <div className="mt-5 grid gap-3">
               <Button
                 variant="whatsapp"
-                className="w-full h-14 rounded-2xl shadow-lg shadow-whatsapp/20 font-bold"
+                className="w-full h-14 rounded-[var(--r-lg)] shadow-lg shadow-whatsapp/20 font-bold"
                 disabled={!whatsappLink}
                 onClick={async () => {
                   if (!lead || !whatsappLink) return;
@@ -264,7 +264,7 @@ const LeadDetailPage: React.FC = () => {
 
               <Button
                 variant="secondary"
-                className="w-full h-14 rounded-2xl bg-surface/40 border-none"
+                className="w-full h-14 rounded-[var(--r-lg)] bg-surface/40 border-none"
                 onClick={async () => {
                   try {
                     await navigator.clipboard.writeText(lead.phone || '');

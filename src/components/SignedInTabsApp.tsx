@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import LeadsPage from '../pages/LeadsPage';
 import LeadDetailPage from '../pages/LeadDetailPage';
@@ -11,6 +11,8 @@ import AppShell from './AppShell';
 import { copy } from '../copy';
 import { DealsIcon, GuestsIcon, PassIcon, ProfileIcon } from './TabIcons';
 import { haptics } from '../utils/haptics';
+import SetupWizard from './SetupWizard';
+import { useOnboardingProgress } from '../hooks/useOnboardingProgress';
 
 interface SignedInTabsAppProps {
   userEmail?: string;
@@ -23,6 +25,21 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({ userEmail, userPhotoU
   const navigate = useNavigate();
   const hasNavigatedRef = useRef(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const { shouldShowWizard, markWizardSeen, isLoading: onboardingLoading } = useOnboardingProgress();
+  const [showWizard, setShowWizard] = useState(false);
+
+  // Show wizard for new users
+  useEffect(() => {
+    if (!onboardingLoading && shouldShowWizard) {
+      setShowWizard(true);
+    }
+  }, [onboardingLoading, shouldShowWizard]);
+
+  const handleWizardComplete = () => {
+    markWizardSeen();
+    setShowWizard(false);
+    navigate('/leads', { replace: true });
+  };
 
   useEffect(() => {
     if (!hasNavigatedRef.current) {
@@ -52,6 +69,10 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({ userEmail, userPhotoU
     ],
     []
   );
+
+  if (showWizard) {
+    return <SetupWizard onComplete={handleWizardComplete} />;
+  }
 
   return (
     <AppShell

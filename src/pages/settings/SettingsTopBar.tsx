@@ -28,7 +28,7 @@ const SettingsTopBar: React.FC<SettingsTopBarProps> = ({ title, showBack = false
           {showBack && (
             <button
               type="button"
-              className="h-10 w-10 grid place-items-center rounded-[14px] text-text-primary hover:bg-bg-primary/60 active:bg-bg-primary/80 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
+              className="h-10 w-10 grid place-items-center rounded-[var(--r-lg)] text-text-primary hover:bg-bg-primary/60 active:bg-bg-primary/80 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
               onClick={() => {
                 haptics.tap();
                 if (onBack) onBack();

@@ -44,16 +44,16 @@ const BusinessSetupSettingsPage: React.FC<BusinessSetupSettingsPageProps> = ({
   const [isDiscardOpen, setIsDiscardOpen] = useState(false);
 
   const inputClass =
-    'w-full h-12 rounded-[14px] border border-border-subtle bg-bg-primary px-4 text-[13px] font-medium text-text-primary placeholder:text-text-secondary/60 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
+    'w-full h-12 rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 text-[13px] font-medium text-text-primary placeholder:text-text-secondary/60 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
 
   const textareaClass =
-    'w-full rounded-[18px] border border-border-subtle bg-bg-primary px-4 py-3 text-[13px] leading-5 text-text-primary placeholder:text-text-secondary/60 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
+    'w-full rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3 text-[13px] leading-5 text-text-primary placeholder:text-text-secondary/60 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
 
   const presetOptions = useMemo(() => Object.keys(industryPresets) as IndustryPresetKey[], []);
   const selectedPresetKey = (settings?.industryPreset || 'general') as IndustryPresetKey;
 
   const bannerButtonClass =
-    'h-10 px-4 rounded-[14px] border border-border-subtle bg-bg-primary/50 text-[13px] font-semibold text-text-primary hover:bg-bg-primary/70 active:bg-bg-primary/80 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
+    'h-10 px-4 rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary/50 text-[13px] font-semibold text-text-primary hover:bg-bg-primary/70 active:bg-bg-primary/80 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
 
   return (
     <>
@@ -72,7 +72,7 @@ const BusinessSetupSettingsPage: React.FC<BusinessSetupSettingsPageProps> = ({
       <main className="mx-auto w-full max-w-3xl px-4 pt-4 pb-[calc(var(--sticky-bottom-offset)+6rem)] sm:px-6">
         <div className="space-y-4">
           {saveError && (
-            <div className="rounded-[22px] border border-border-subtle bg-bg-card p-4">
+            <div className="rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
               <div className="text-[13px] leading-5 font-semibold text-alert">Save failed</div>
               <div className="mt-1 text-[12px] leading-4 text-text-secondary">{saveError}</div>
               <div className="mt-3">
@@ -84,7 +84,7 @@ const BusinessSetupSettingsPage: React.FC<BusinessSetupSettingsPageProps> = ({
           )}
 
           {!isLoadingSettings && loadError && (
-            <div className="rounded-[22px] border border-border-subtle bg-bg-card p-4">
+            <div className="rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
               <div className="text-[13px] leading-5 font-semibold text-alert">Couldn’t load settings</div>
               <div className="mt-1 text-[12px] leading-4 text-text-secondary">{loadError}</div>
               <div className="mt-3">
@@ -100,27 +100,27 @@ const BusinessSetupSettingsPage: React.FC<BusinessSetupSettingsPageProps> = ({
           <div className="mt-4 space-y-6 animate-pulse">
             <section>
               <div className="h-3 w-16 rounded bg-border-subtle/60 mx-1" />
-              <div className="mt-2 rounded-[22px] border border-border-subtle bg-bg-card p-4">
+              <div className="mt-2 rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
                 <div className="h-4 w-36 rounded bg-border-subtle/60" />
                 <div className="mt-2 h-3 w-72 rounded bg-border-subtle/50" />
                 <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-                  <div className="h-12 rounded-[14px] bg-bg-primary/60" />
-                  <div className="h-12 rounded-[18px] bg-bg-primary/60" />
+                  <div className="h-12 rounded-[var(--r-lg)] bg-bg-primary/60" />
+                  <div className="h-12 rounded-[var(--r-lg)] bg-bg-primary/60" />
                 </div>
               </div>
             </section>
 
             <section>
               <div className="h-3 w-20 rounded bg-border-subtle/60 mx-1" />
-              <div className="mt-2 rounded-[22px] border border-border-subtle bg-bg-card p-4">
+              <div className="mt-2 rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
                 <div className="grid gap-4">
                   <div>
                     <div className="h-3 w-28 rounded bg-border-subtle/60" />
-                    <div className="mt-2 h-12 rounded-[14px] bg-bg-primary/60" />
+                    <div className="mt-2 h-12 rounded-[var(--r-lg)] bg-bg-primary/60" />
                   </div>
                   <div>
                     <div className="h-3 w-40 rounded bg-border-subtle/60" />
-                    <div className="mt-2 h-12 rounded-[14px] bg-bg-primary/60" />
+                    <div className="mt-2 h-12 rounded-[var(--r-lg)] bg-bg-primary/60" />
                   </div>
                 </div>
               </div>
@@ -128,15 +128,15 @@ const BusinessSetupSettingsPage: React.FC<BusinessSetupSettingsPageProps> = ({
 
             <section>
               <div className="h-3 w-40 rounded bg-border-subtle/60 mx-1" />
-              <div className="mt-2 rounded-[22px] border border-border-subtle bg-bg-card p-4">
+              <div className="mt-2 rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
                 <div className="grid gap-4">
                   <div>
                     <div className="h-3 w-28 rounded bg-border-subtle/60" />
-                    <div className="mt-2 h-12 rounded-[14px] bg-bg-primary/60" />
+                    <div className="mt-2 h-12 rounded-[var(--r-lg)] bg-bg-primary/60" />
                   </div>
                   <div>
                     <div className="h-3 w-44 rounded bg-border-subtle/60" />
-                    <div className="mt-2 h-24 rounded-[18px] bg-bg-primary/60" />
+                    <div className="mt-2 h-24 rounded-[var(--r-lg)] bg-bg-primary/60" />
                   </div>
                 </div>
               </div>
@@ -146,7 +146,7 @@ const BusinessSetupSettingsPage: React.FC<BusinessSetupSettingsPageProps> = ({
           <div className="mt-4 space-y-6">
             <section>
               <div className="kicker px-1">Preset</div>
-              <div className="mt-2 rounded-[22px] border border-border-subtle bg-bg-card p-4">
+              <div className="mt-2 rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
                 <div className="text-[12px] leading-4 font-medium text-text-secondary">Industry preset</div>
                 <div className="mt-1 text-[12px] leading-4 text-text-secondary/80">
                   Apply a preset to update your offer, WhatsApp template, and form fields.
@@ -197,7 +197,7 @@ const BusinessSetupSettingsPage: React.FC<BusinessSetupSettingsPageProps> = ({
 
             <section>
               <div className="kicker px-1">Business</div>
-              <div className="mt-2 rounded-[22px] border border-border-subtle bg-bg-card p-4">
+              <div className="mt-2 rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
                 <div className="grid gap-4">
                   <div>
                     <label className="block text-[12px] leading-4 font-medium text-text-secondary mb-2">Business name</label>
@@ -225,7 +225,7 @@ const BusinessSetupSettingsPage: React.FC<BusinessSetupSettingsPageProps> = ({
 
             <section>
               <div className="kicker px-1">Capture form fields</div>
-              <div className="mt-2 rounded-[22px] border border-border-subtle bg-bg-card p-4">
+              <div className="mt-2 rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
                 <div className="grid gap-4">
                   <div>
                     <label className="block text-[12px] leading-4 font-medium text-text-secondary mb-2">Budget label</label>
@@ -274,7 +274,7 @@ const BusinessSetupSettingsPage: React.FC<BusinessSetupSettingsPageProps> = ({
                     />
                   </div>
 
-                  <div className="rounded-[18px] border border-border-subtle bg-bg-primary px-4 py-4">
+                  <div className="rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-4">
                     <label className="flex items-center justify-between gap-3 text-[13px] leading-5 font-semibold text-text-primary">
                       <span>Enable service type field</span>
                       <input

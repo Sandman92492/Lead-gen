@@ -17,21 +17,21 @@ const Button: React.FC<ButtonProps> = ({ children, className, variant = 'primary
 
   const variantStyles = {
     primary:
-      'text-white bg-[#06B6B4] hover:brightness-110 shadow-lg shadow-[#06B6B4]/20',
+      'text-white bg-primary hover:bg-primary-pressed',
     secondary:
-      'bg-surface border border-border text-text-primary hover:bg-surface/80',
+      'bg-white border border-border-subtle text-text-primary hover:border-primary hover:text-primary',
     whatsapp:
-      'text-white bg-[#25D366] hover:brightness-95',
+      'text-white bg-[#25D366] hover:bg-[#1ebe5d]',
     danger:
-      'text-white bg-red-500 hover:brightness-95',
+      'text-white bg-red-500 hover:bg-red-600',
     payment:
-      'bg-accent text-slate-900 hover:brightness-95',
+      'bg-primary text-white hover:bg-primary-pressed',
     outline:
-      'border-2 border-primary text-primary bg-transparent hover:bg-primary/5',
+      'border border-border-subtle text-text-primary bg-white hover:border-primary hover:text-primary',
     redeem:
-      'bg-primary text-white hover:brightness-110',
+      'bg-primary text-white hover:bg-primary-pressed',
     ghost:
-      'bg-transparent text-text-secondary hover:text-text-primary hover:bg-surface/50',
+      'bg-transparent text-text-secondary hover:text-primary',
   };
 
   return (

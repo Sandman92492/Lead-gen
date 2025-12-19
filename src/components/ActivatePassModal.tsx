@@ -72,7 +72,7 @@ const ActivatePassModal: React.FC<ActivatePassModalProps> = ({ isOpen, onClose, 
                 />
 
                 {error && (
-                    <p className="text-accent-secondary text-sm bg-accent-secondary/20 border border-accent-secondary/50 p-3 rounded-lg">
+                    <p className="text-accent-secondary text-sm bg-accent-secondary/20 border border-accent-secondary/50 p-3 rounded-[var(--r-md)]">
                         {error}
                     </p>
                 )}

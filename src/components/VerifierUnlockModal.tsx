@@ -34,11 +34,11 @@ const VerifierUnlockModal: React.FC<VerifierUnlockModalProps> = ({
           value={pin}
           onChange={(e) => onPinChange(e.target.value.replace(/\D/g, '').slice(0, 4))}
           placeholder="••••"
-          className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-center text-2xl font-mono text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+          className="w-full rounded-[var(--r-lg)] bg-bg-primary border border-border-subtle px-4 py-3 text-center text-2xl font-mono text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
           disabled={isUnlocking}
         />
         {error && (
-          <div className="bg-urgency-high/10 border border-urgency-high rounded-lg p-3 mt-4">
+          <div className="bg-urgency-high/10 border border-urgency-high rounded-[var(--r-md)] p-3 mt-4">
             <p className="text-sm font-semibold text-urgency-high">{error}</p>
           </div>
         )}

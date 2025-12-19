@@ -17,7 +17,7 @@ export const SkeletonLeadCard: React.FC = () => {
           <Skeleton className="h-3 w-56" />
           <Skeleton className="h-3 w-44" />
         </div>
-        <Skeleton className="h-12 w-12 rounded-[18px]" />
+        <Skeleton className="h-12 w-12 rounded-[var(--r-lg)]" />
       </div>
     </div>
   );

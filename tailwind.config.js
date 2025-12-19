@@ -13,6 +13,7 @@ export default {
         /* Lead Wallet roles */
         'primary': 'var(--primary)',
         'primary-pressed': 'var(--primary-pressed)',
+        'primary-glow': 'var(--primary-glow)',
         'accent': 'var(--accent)',
         'whatsapp': 'var(--whatsapp)',
         'info': 'var(--info)',

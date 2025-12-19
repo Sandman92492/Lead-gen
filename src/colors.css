@@ -22,9 +22,10 @@
      BUTTONS - Actions and Interactions
      ============================================ */
 
-  /* Primary CTA buttons - Lead Wallet Teal */
+  /* Primary CTA buttons - Teal, minimal */
   .btn-primary {
-    @apply bg-primary text-white hover:brightness-105 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold shadow-lg shadow-primary/20;
+    @apply bg-primary text-white hover:bg-primary-pressed active:scale-[0.98] transition-all duration-150 px-5 py-2.5 font-semibold text-sm;
+    border-radius: var(--r-md);
   }
 
   /* Subtle sheen for modern CTAs */
@@ -53,34 +54,40 @@
     opacity: 0.8;
   }
 
-  /* Secondary buttons - Outline style (Directions) */
+  /* Secondary buttons - Outline style */
   .btn-secondary {
-    @apply bg-bg-card border-2 border-action-primary text-action-primary hover:bg-action-primary/10 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold;
+    @apply bg-white border border-border-subtle text-text-primary hover:border-primary hover:text-primary transition-all duration-150 px-5 py-2.5 font-semibold text-sm;
+    border-radius: var(--r-md);
   }
 
-  /* Redeem buttons - Coral electric (Primary CTA) */
+  /* Redeem buttons */
   .btn-redeem {
-    @apply bg-action-primary text-text-primary hover:brightness-105 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base shadow-lg;
+    @apply bg-primary text-white hover:bg-primary-pressed active:scale-[0.98] transition-all duration-150 px-5 py-2.5 font-semibold text-sm;
+    border-radius: var(--r-md);
   }
 
-  /* Redeemed buttons - Emerald success background */
+  /* Redeemed buttons - Success state */
   .btn-redeemed {
-    @apply bg-success text-white hover:brightness-110 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base whitespace-nowrap;
+    @apply bg-success text-white transition-all duration-150 px-5 py-2.5 font-semibold text-sm whitespace-nowrap;
+    border-radius: var(--r-md);
   }
 
-  /* Directions button - Secondary (Outline) style */
+  /* Directions button - Secondary style */
   .btn-directions {
-    @apply bg-bg-card border-2 border-action-primary text-action-primary hover:bg-action-primary/10 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base inline-flex items-center gap-2;
+    @apply bg-white border border-border-subtle text-text-primary hover:border-primary hover:text-primary transition-all duration-150 px-5 py-2.5 font-semibold text-sm inline-flex items-center gap-2;
+    border-radius: var(--r-md);
   }
 
-  /* WhatsApp button - Brand green #25D366 */
+  /* WhatsApp button - Brand green */
   .btn-whatsapp {
-    @apply bg-[#25D366] text-white hover:brightness-110 active:scale-95 transition-all duration-300 shadow-md hover:shadow-[#25D366]/20;
+    @apply bg-[#25D366] text-white hover:bg-[#1ebe5d] active:scale-[0.98] transition-all duration-150 px-5 py-2.5 font-semibold text-sm;
+    border-radius: var(--r-md);
   }
 
-  /* Outline/secondary buttons - Neutral background with border */
+  /* Outline buttons - Neutral */
   .btn-outline {
-    @apply bg-bg-card border-2 border-border-subtle text-text-primary hover:bg-bg-primary transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base;
+    @apply bg-white border border-border-subtle text-text-primary hover:border-primary hover:text-primary transition-all duration-150 px-5 py-2.5 font-semibold text-sm;
+    border-radius: var(--r-md);
   }
 
   /* Ghost/text buttons - Minimal style (Tertiary) */
@@ -201,32 +208,37 @@
   }
 
   /* ============================================
-     CARDS & CONTAINERS - Reusable card styles
+     CARDS & CONTAINERS - Minimal, clean cards
      ============================================ */
 
   /* Base card - Standard card container */
   .card {
-    @apply bg-bg-card rounded-lg shadow-lg border-4 border-action-primary;
+    @apply bg-bg-card border border-border-subtle;
+    border-radius: var(--r-lg);
   }
 
   /* Interactive card - Card with hover effect */
   .card-interactive {
-    @apply bg-bg-card rounded-lg shadow-lg border-4 border-action-primary overflow-hidden transition-all duration-300 hover:shadow-2xl hover:brightness-105;
+    @apply bg-bg-card border border-border-subtle overflow-hidden transition-all duration-150 hover:border-primary;
+    border-radius: var(--r-lg);
   }
 
   /* Card with active state - Card that can be highlighted */
   .card-active {
-    @apply bg-bg-card rounded-lg shadow-lg border-6 border-action-primary overflow-hidden;
+    @apply bg-bg-card border-2 border-primary overflow-hidden;
+    border-radius: var(--r-lg);
   }
 
   /* Featured card - Prominent card styling */
   .card-featured {
-    @apply bg-bg-card p-6 sm:p-8 rounded-xl border-4 border-action-primary shadow-lg;
+    @apply bg-bg-card p-6 sm:p-8 border border-border-subtle;
+    border-radius: var(--r-lg);
   }
 
   /* Deal card - Specific styling for deal cards */
   .card-deal {
-    @apply bg-bg-card rounded-lg shadow-lg border-4 border-action-primary overflow-hidden transition-all duration-300 hover:shadow-2xl hover:brightness-105;
+    @apply bg-bg-card border border-border-subtle overflow-hidden transition-all duration-150 hover:border-primary;
+    border-radius: var(--r-lg);
   }
 
   /* ============================================
@@ -257,9 +269,9 @@
      BADGES & ALERTS
      ============================================ */
 
-  /* Best Value badge - Solid gold with glow */
+  /* Best Value badge - Clean, no glow */
   .badge-value {
-    @apply bg-value-highlight text-value-highlight px-3 py-1 rounded-full text-sm font-bold shadow-md animate-glow;
+    @apply bg-value-highlight text-white px-3 py-1 rounded-md text-sm font-semibold;
   }
 
   /* Countdown badge - Vibrant red urgency */
@@ -349,12 +361,13 @@
 
   /* Modal backdrop - Semi-transparent overlay */
   .modal-backdrop {
-    @apply fixed inset-0 backdrop-blur-sm bg-black/50;
+    @apply fixed inset-0 bg-black/50;
   }
 
   /* Modal content - Modal container */
   .modal-content {
-    @apply bg-bg-card rounded-2xl shadow-2xl p-6 sm:p-8 relative border border-border-subtle;
+    @apply bg-bg-card p-6 sm:p-8 relative border border-border-subtle;
+    border-radius: var(--r-lg);
   }
 
   /* Modal header - Modal title area */
@@ -373,9 +386,9 @@
 
   /* Input field - Text input styling */
   .input-field {
-    @apply w-full px-4 py-3 bg-bg-primary border-2 rounded-lg focus:outline-none focus:ring-2 transition text-text-primary;
-    border-color: color-mix(in srgb, var(--color-action-primary) 30%, transparent);
-    color: var(--color-text-primary);
+    @apply w-full px-4 py-2.5 bg-white border focus:outline-none focus:border-primary transition text-text-primary text-sm;
+    border-color: var(--border);
+    border-radius: var(--r-md);
   }
 
   .input-field::placeholder {
@@ -646,37 +659,30 @@
 
   .lw-topbar,
   .lw-bottomnav {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: var(--glass-border);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
   }
 
   .lw-card {
-    background: var(--card-gradient, var(--card));
+    background: var(--card);
     border: 1px solid var(--border);
-    border-radius: var(--r-xl);
-    box-shadow: var(--shadow-card);
-    transition: box-shadow var(--dur-base) var(--ease), transform var(--dur-fast) var(--ease);
+    border-radius: var(--r-lg);
+    transition: border-color 0.15s ease;
   }
 
   .lw-card[role="button"]:hover,
   .lw-card[role="button"]:focus-visible {
-    box-shadow: var(--shadow-float);
-    transform: translateY(-1px);
+    border-color: var(--primary);
   }
 
   .lw-card[role="button"]:active {
-    transform: translateY(0);
+    border-color: var(--primary);
   }
 
   .lw-glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: var(--glass-border);
-    border-radius: var(--r-xl);
-    box-shadow: var(--shadow-card);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
   }
 
   .lw-chip {

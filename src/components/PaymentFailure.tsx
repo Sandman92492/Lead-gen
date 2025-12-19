@@ -9,7 +9,7 @@ const PaymentFailure: React.FC<PaymentFailureProps> = ({ onClose, onRetry }) => 
 
   return (
     <div className="fixed inset-0 bg-bg-primary flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-bg-card rounded-2xl shadow-2xl p-8 sm:p-12 max-w-md w-full text-center border border-border-subtle my-8">
+      <div className="bg-bg-card rounded-[var(--r-lg)] shadow-2xl p-8 sm:p-12 max-w-md w-full text-center border border-border-subtle my-8">
         <div className="mb-6">
           <svg
             className="w-16 h-16 mx-auto text-red-500"
@@ -42,13 +42,13 @@ const PaymentFailure: React.FC<PaymentFailureProps> = ({ onClose, onRetry }) => 
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 px-6 py-3 bg-bg-primary border-2 border-border-subtle text-text-primary font-bold rounded-lg hover:bg-bg-card transition-colors"
+            className="flex-1 px-6 py-3 bg-bg-primary border-2 border-border-subtle text-text-primary font-bold rounded-[var(--r-md)] hover:bg-bg-card transition-colors"
           >
             Back to Home
           </button>
           <button
             onClick={onRetry}
-            className="flex-1 px-6 py-3 bg-accent-primary text-white font-bold rounded-lg hover:bg-accent-primary/90 transition-colors"
+            className="flex-1 px-6 py-3 bg-accent-primary text-white font-bold rounded-[var(--r-md)] hover:bg-accent-primary/90 transition-colors"
           >
             Try Again
           </button>

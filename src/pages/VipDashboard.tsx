@@ -67,7 +67,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
           <div className="max-w-3xl mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 scroll-reveal">
               {/* Deals Redeemed Card */}
-              <div className="bg-action-primary/10 rounded-xl p-4 md:p-6 border-4 border-action-primary shadow-lg">
+              <div className="bg-action-primary/10 rounded-[var(--r-lg)] p-4 md:p-6 border-4 border-action-primary shadow-lg">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-3xl">🎯</span>
                   <span className="text-4xl font-display font-black text-action-primary">
@@ -83,7 +83,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
               </div>
 
               {/* Total Savings Card */}
-              <div className="bg-value-highlight/10 rounded-xl p-4 md:p-6 border-4 border-value-highlight shadow-lg">
+              <div className="bg-value-highlight/10 rounded-[var(--r-lg)] p-4 md:p-6 border-4 border-value-highlight shadow-lg">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-3xl">💰</span>
                   <span className="text-4xl font-display font-black text-value-highlight">
@@ -110,7 +110,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
             <div className="scroll-reveal">
               <button
                 onClick={onViewPass}
-                className="w-full bg-action-primary rounded-2xl p-6 sm:p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-left group cursor-pointer"
+                className="w-full bg-action-primary rounded-[var(--r-lg)] p-6 sm:p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-left group cursor-pointer"
                 style={{
                   color: '#FFFFFF'
                 }}
@@ -170,7 +170,7 @@ const VipDashboard: React.FC<VipDashboardProps> = ({
         <section className="hidden md:block bg-bg-primary py-12 md:py-16">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-3xl mx-auto">
-              <div className="bg-bg-card rounded-2xl p-8 border-4 border-border-subtle animate-pulse">
+              <div className="bg-bg-card rounded-[var(--r-lg)] p-8 border-4 border-border-subtle animate-pulse">
                 <div className="h-8 bg-border-subtle rounded w-3/4 mb-4"></div>
                 <div className="h-4 bg-border-subtle rounded w-1/2"></div>
               </div>

@@ -42,7 +42,7 @@ const HelpSettingsPage: React.FC = () => {
         <div className="space-y-6">
           <section>
             <div className="kicker px-1">Tips</div>
-            <div className="mt-2 overflow-hidden rounded-[22px] border border-border-subtle bg-bg-card">
+            <div className="mt-2 overflow-hidden rounded-[var(--r-section)] border border-border-subtle bg-bg-card">
               {items.map((item, idx) => {
                 const open = openIndex === idx;
                 return (

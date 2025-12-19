@@ -13,7 +13,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ title, description, actionLabel
     <div className="lw-card relative p-6 text-center animate-lw-fade-up">
       {/* Decorative background pattern */}
       <div className="relative">
-        <div className="mx-auto h-12 w-12 rounded-[14px] bg-action-primary/10 text-action-primary grid place-items-center">
+        <div className="mx-auto h-12 w-12 rounded-[var(--r-lg)] bg-action-primary/10 text-action-primary grid place-items-center">
           <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
             <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" strokeDasharray="2 2" opacity="0.5" />

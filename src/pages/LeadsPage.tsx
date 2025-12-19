@@ -16,6 +16,8 @@ import Row from '../components/ui/Row';
 import { formatTimeSince, toDateMaybe } from '../utils/time';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ANIMATIONS } from '../theme/theme';
+import SetupChecklist from '../components/SetupChecklist';
+import { useOnboardingProgress } from '../hooks/useOnboardingProgress';
 
 type LeadFilter = 'NEW' | 'TODAY' | 'THIS_WEEK' | 'UNCONTACTED';
 
@@ -34,6 +36,7 @@ const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = 'h-5 w-5' 
 const LeadsPage: React.FC = () => {
   const navigate = useNavigate();
   const { showToast, removeToast } = useToast();
+  const { isComplete: onboardingComplete } = useOnboardingProgress();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<LeadFilter>('UNCONTACTED');
@@ -122,6 +125,14 @@ const LeadsPage: React.FC = () => {
     >
       <AnimatePresence>
         <div className="space-y-4">
+          {/* Setup Checklist for new users */}
+          {!onboardingComplete && (
+            <SetupChecklist
+              onCreateCampaign={() => navigate('/campaigns', { state: { openCreate: true } })}
+              className="mb-4"
+            />
+          )}
+
           {/* Smart Priority Section (Adaptive UI) */}
           {filter === 'UNCONTACTED' && priorityLeads.length > 0 && (
             <motion.div
@@ -139,7 +150,7 @@ const LeadsPage: React.FC = () => {
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate(`/leads/${lead.id}`)}
-                    className="bg-bg-card p-5 text-left rounded-2xl border-l-4 border-l-accent shadow-lg hover:shadow-xl transition-shadow"
+                    className="bg-bg-card p-5 text-left rounded-[var(--r-lg)] border-l-4 border-l-accent shadow-lg hover:shadow-xl transition-shadow"
                   >
                     <div className="flex justify-between items-start gap-3">
                       <div className="min-w-0 flex-1">
@@ -209,7 +220,7 @@ const LeadsPage: React.FC = () => {
                           <Skeleton className="h-3 w-64 rounded-md" />
                           <Skeleton className="h-3 w-44 rounded-md" />
                         </div>
-                        <Skeleton className="h-12 w-12 rounded-2xl" />
+                        <Skeleton className="h-12 w-12 rounded-[var(--r-lg)]" />
                       </div>
                     </div>
                   ))}

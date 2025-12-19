@@ -43,7 +43,7 @@ const CardModal: React.FC<CardModalProps> = ({
       title={undefined}
       contentClassName="relative"
       panelClassName="bg-transparent border-0 shadow-none p-0"
-      closeButtonClassName={`${closeButtonByVariant[variant]} rounded-xl px-2 py-2`}
+      closeButtonClassName={`${closeButtonByVariant[variant]} rounded-[var(--r-lg)] px-2 py-2`}
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className={`absolute -top-16 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full blur-3xl ${glowByVariant[variant]}`} />

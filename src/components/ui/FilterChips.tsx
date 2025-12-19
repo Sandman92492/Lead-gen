@@ -13,7 +13,7 @@ type FilterChipsProps<T extends string> = {
 const FilterChips = <T extends string>({ items, value, onChange, className }: FilterChipsProps<T>) => {
   return (
     <div
-      className={`inline-flex max-w-full overflow-x-auto scrollbar-hide rounded-full border border-border-subtle bg-surface/50 p-1.5 ${className || ''
+      className={`inline-flex max-w-full overflow-x-auto scrollbar-hide rounded-[var(--r-lg)] border border-border-subtle bg-surface/50 p-1 ${className || ''
         }`}
       role="tablist"
       aria-label="Filters"
@@ -26,8 +26,8 @@ const FilterChips = <T extends string>({ items, value, onChange, className }: Fi
               key={item.id}
               type="button"
               onClick={() => onChange(item.id)}
-              className={`h-10 px-5 rounded-full text-sm font-bold whitespace-nowrap focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--ring)] transition-all duration-200
-                ${active ? 'bg-primary text-white shadow-md' : 'text-text-secondary hover:text-text-primary hover:bg-bg-card'}`}
+              className={`h-10 px-5 rounded-[var(--r-md)] text-sm font-semibold whitespace-nowrap focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--ring)] transition-all duration-150
+                ${active ? 'bg-primary text-white' : 'text-text-secondary hover:text-text-primary hover:bg-bg-card'}`}
               role="tab"
               aria-selected={active}
             >

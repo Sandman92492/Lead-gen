@@ -80,7 +80,7 @@ const ProfileCompleteModal: React.FC<ProfileCompleteModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <p className="text-sm text-text-secondary mb-2 text-left">Email</p>
-            <p className="w-full px-4 py-3 bg-bg-primary border-2 border-border-subtle rounded-lg text-text-primary">
+            <p className="w-full px-4 py-3 bg-bg-primary border-2 border-border-subtle rounded-[var(--r-md)] text-text-primary">
               {userEmail}
             </p>
           </div>
@@ -100,7 +100,7 @@ const ProfileCompleteModal: React.FC<ProfileCompleteModalProps> = ({
               Legal Requirements
             </p>
 
-            <label className="flex items-start gap-3 p-3 rounded-lg border-2 border-accent-primary/20 hover:border-accent-primary/50 hover:bg-accent-primary/5 transition cursor-pointer group">
+            <label className="flex items-start gap-3 p-3 rounded-[var(--r-md)] border-2 border-accent-primary/20 hover:border-accent-primary/50 hover:bg-accent-primary/5 transition cursor-pointer group">
               <div className="flex-shrink-0 flex items-center h-5 pt-1">
                 <input
                   type="checkbox"
@@ -127,7 +127,7 @@ const ProfileCompleteModal: React.FC<ProfileCompleteModalProps> = ({
               </div>
             </label>
 
-            <label className="flex items-start gap-3 p-3 rounded-lg border-2 border-accent-primary/20 hover:border-accent-primary/50 hover:bg-accent-primary/5 transition cursor-pointer group">
+            <label className="flex items-start gap-3 p-3 rounded-[var(--r-md)] border-2 border-accent-primary/20 hover:border-accent-primary/50 hover:bg-accent-primary/5 transition cursor-pointer group">
               <div className="flex-shrink-0 flex items-center h-5 pt-1">
                 <input
                   type="checkbox"
@@ -154,7 +154,7 @@ const ProfileCompleteModal: React.FC<ProfileCompleteModalProps> = ({
               </div>
             </label>
 
-            <label className="flex items-start gap-3 p-3 rounded-lg border-2 border-accent-primary/20 hover:border-accent-primary/50 hover:bg-accent-primary/5 transition cursor-pointer group">
+            <label className="flex items-start gap-3 p-3 rounded-[var(--r-md)] border-2 border-accent-primary/20 hover:border-accent-primary/50 hover:bg-accent-primary/5 transition cursor-pointer group">
               <div className="flex-shrink-0 flex items-center h-5 pt-1">
                 <input
                   type="checkbox"
@@ -183,13 +183,13 @@ const ProfileCompleteModal: React.FC<ProfileCompleteModalProps> = ({
           </div>
 
           {error && (
-            <p className="text-action-primary text-sm bg-action-primary/20 border border-action-primary/50 p-3 rounded-lg">
+            <p className="text-action-primary text-sm bg-action-primary/20 border border-action-primary/50 p-3 rounded-[var(--r-md)]">
               {error}
             </p>
           )}
 
           {!agreedToTerms || !agreedToPrivacy || !agreedToPopia ? (
-            <p className="text-xs text-action-primary bg-action-primary/10 border border-action-primary/30 p-3 rounded-lg text-center">
+            <p className="text-xs text-action-primary bg-action-primary/10 border border-action-primary/30 p-3 rounded-[var(--r-md)] text-center">
               You must agree to all terms and conditions to continue
             </p>
           ) : null}

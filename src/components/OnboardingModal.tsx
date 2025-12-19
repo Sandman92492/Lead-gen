@@ -14,7 +14,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
             onClick={onClose}
         >
             <div
-                className="bg-bg-card rounded-2xl shadow-2xl p-6 sm:p-8 max-w-lg w-full relative border-4 border-action-primary my-8"
+                className="bg-bg-card rounded-[var(--r-lg)] shadow-2xl p-6 sm:p-8 max-w-lg w-full relative border-4 border-action-primary my-8"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Close button */}
@@ -66,7 +66,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
                 </div>
 
                 {/* How to use steps */}
-                <div className="bg-bg-primary rounded-xl p-6 mb-6">
+                <div className="bg-bg-primary rounded-[var(--r-lg)] p-6 mb-6">
                     <h3 className="font-bold text-lg text-action-primary mb-4">
                         How to enter raffles:
                     </h3>
@@ -111,7 +111,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
                 </div>
 
                 {/* Tips */}
-                <div className="bg-value-highlight/10 border-2 border-value-highlight/30 rounded-lg p-4 mb-6">
+                <div className="bg-value-highlight/10 border-2 border-value-highlight/30 rounded-[var(--r-md)] p-4 mb-6">
                     <div className="flex items-start gap-3">
                         <svg className="w-5 h-5 text-value-highlight flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />

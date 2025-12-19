@@ -44,10 +44,10 @@ const BrandingSettingsPage: React.FC<BrandingSettingsPageProps> = ({
   const { showToast } = useToast();
   const [isDiscardOpen, setIsDiscardOpen] = useState(false);
   const inputClass =
-    'w-full h-12 rounded-[14px] border border-border-subtle bg-bg-primary px-4 text-[13px] font-medium text-text-primary placeholder:text-text-secondary/60 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
+    'w-full h-12 rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 text-[13px] font-medium text-text-primary placeholder:text-text-secondary/60 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
 
   const bannerButtonClass =
-    'h-10 px-4 rounded-[14px] border border-border-subtle bg-bg-primary/50 text-[13px] font-semibold text-text-primary hover:bg-bg-primary/70 active:bg-bg-primary/80 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
+    'h-10 px-4 rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary/50 text-[13px] font-semibold text-text-primary hover:bg-bg-primary/70 active:bg-bg-primary/80 focus:outline-none focus:ring-4 focus:ring-[var(--ring)]';
 
   const brandedPrefixError = useMemo(() => {
     if (!settings) return null;
@@ -83,7 +83,7 @@ const BrandingSettingsPage: React.FC<BrandingSettingsPageProps> = ({
       <main className="mx-auto w-full max-w-3xl px-4 pt-4 pb-[calc(var(--sticky-bottom-offset)+6rem)] sm:px-6">
         <div className="space-y-4">
           {saveError && (
-            <div className="rounded-[22px] border border-border-subtle bg-bg-card p-4">
+            <div className="rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
               <div className="text-[13px] leading-5 font-semibold text-alert">Save failed</div>
               <div className="mt-1 text-[12px] leading-4 text-text-secondary">{saveError}</div>
               <div className="mt-3">
@@ -95,7 +95,7 @@ const BrandingSettingsPage: React.FC<BrandingSettingsPageProps> = ({
           )}
 
           {!isLoadingSettings && loadError && (
-            <div className="rounded-[22px] border border-border-subtle bg-bg-card p-4">
+            <div className="rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
               <div className="text-[13px] leading-5 font-semibold text-alert">Couldn’t load settings</div>
               <div className="mt-1 text-[12px] leading-4 text-text-secondary">{loadError}</div>
               <div className="mt-3">
@@ -111,14 +111,14 @@ const BrandingSettingsPage: React.FC<BrandingSettingsPageProps> = ({
           <div className="mt-4 space-y-6 animate-pulse">
             <section>
               <div className="h-3 w-16 rounded bg-border-subtle/60 mx-1" />
-              <div className="mt-2 rounded-[22px] border border-border-subtle bg-bg-card p-4">
+              <div className="mt-2 rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
                 <div>
                   <div className="h-3 w-44 rounded bg-border-subtle/60" />
-                  <div className="mt-2 h-12 rounded-[14px] bg-bg-primary/60" />
+                  <div className="mt-2 h-12 rounded-[var(--r-lg)] bg-bg-primary/60" />
                 </div>
                 <div className="mt-4">
                   <div className="h-3 w-28 rounded bg-border-subtle/60" />
-                  <div className="mt-2 h-20 rounded-[18px] bg-bg-primary/60" />
+                  <div className="mt-2 h-20 rounded-[var(--r-lg)] bg-bg-primary/60" />
                 </div>
               </div>
             </section>
@@ -127,7 +127,7 @@ const BrandingSettingsPage: React.FC<BrandingSettingsPageProps> = ({
           <div className="mt-4 space-y-6">
             <section>
               <div className="kicker px-1">Links</div>
-              <div className="mt-2 rounded-[22px] border border-border-subtle bg-bg-card p-4">
+              <div className="mt-2 rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
                 <label className="block text-[12px] leading-4 font-medium text-text-secondary mb-2">Link display style</label>
                 <select
                   value={settings.linkDisplayMode}
@@ -154,7 +154,7 @@ const BrandingSettingsPage: React.FC<BrandingSettingsPageProps> = ({
                   )}
                 </div>
 
-                <div className="mt-5 rounded-[18px] border border-border-subtle bg-bg-primary px-4 py-3">
+                <div className="mt-5 rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3">
                   <div className="text-[12px] leading-4 font-semibold text-text-secondary">Preview</div>
 
                   <div className="mt-3">
@@ -189,7 +189,7 @@ const BrandingSettingsPage: React.FC<BrandingSettingsPageProps> = ({
 
             <section>
               <div className="kicker px-1">Logo</div>
-              <div className="mt-2 rounded-[22px] border border-border-subtle bg-bg-card p-4">
+              <div className="mt-2 rounded-[var(--r-section)] border border-border-subtle bg-bg-card p-4">
                 <label className="block text-[12px] leading-4 font-medium text-text-secondary mb-2">Logo URL (optional)</label>
                 <input
                   value={settings.logoUrl}
@@ -199,10 +199,10 @@ const BrandingSettingsPage: React.FC<BrandingSettingsPageProps> = ({
                 />
                 <div className="mt-2 text-[12px] leading-4 text-text-secondary/80">Shown on the lead capture page and pass.</div>
                 {settings.logoUrl?.trim() && (
-                  <div className="mt-4 rounded-[18px] border border-border-subtle bg-bg-primary px-4 py-3">
+                  <div className="mt-4 rounded-[var(--r-lg)] border border-border-subtle bg-bg-primary px-4 py-3">
                     <div className="text-[12px] leading-4 font-semibold text-text-secondary">Preview</div>
                     <div className="mt-3 flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-[14px] border border-border-subtle bg-bg-card overflow-hidden">
+                      <div className="h-10 w-10 rounded-[var(--r-lg)] border border-border-subtle bg-bg-card overflow-hidden">
                         <img
                           src={settings.logoUrl}
                           alt="Logo preview"

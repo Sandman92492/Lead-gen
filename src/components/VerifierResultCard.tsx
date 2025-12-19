@@ -26,7 +26,7 @@ const VerifierResultCard: React.FC<VerifierResultCardProps> = ({ result, reason,
 
   return (
     <div
-      className={`rounded-2xl p-5 border ${
+      className={`rounded-[var(--r-lg)] p-5 border ${
         tone === 'success' ? 'bg-success/10 border-success' : 'bg-urgency-high/10 border-urgency-high'
       }`}
     >

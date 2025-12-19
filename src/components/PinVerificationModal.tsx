@@ -104,12 +104,12 @@ const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
             Please ask the staff to enter their 4-digit PIN to verify this entry.
           </p>
 
-          <div className="bg-bg-primary border border-accent-primary/30 rounded-lg p-3 mb-6">
+          <div className="bg-bg-primary border border-accent-primary/30 rounded-[var(--r-md)] p-3 mb-6">
             <p className="text-sm text-text-secondary mb-1">Entering via:</p>
             <p className="font-display font-bold text-accent-primary">{vendor?.name}</p>
           </div>
 
-          <div className="bg-bg-primary border border-accent-primary/30 rounded-lg p-3 mb-6">
+          <div className="bg-bg-primary border border-accent-primary/30 rounded-[var(--r-md)] p-3 mb-6">
             <p className="text-sm text-text-secondary mb-1">{dealName}</p>
             <p className="font-display font-bold text-accent-primary">{dealOffer}</p>
           </div>
@@ -125,13 +125,13 @@ const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
               onChange={handlePinChange}
               placeholder="••••"
               maxLength={4}
-              className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-center text-2xl font-mono text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+              className="w-full rounded-[var(--r-lg)] bg-bg-primary border border-border-subtle px-4 py-3 text-center text-2xl font-mono text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
               disabled={isLoading}
             />
           </div>
 
           {error && (
-            <div className="bg-urgency-high/10 border border-urgency-high rounded-lg p-3 mb-6">
+            <div className="bg-urgency-high/10 border border-urgency-high rounded-[var(--r-md)] p-3 mb-6">
               <p className="text-sm font-medium text-urgency-high">{error}</p>
             </div>
           )}

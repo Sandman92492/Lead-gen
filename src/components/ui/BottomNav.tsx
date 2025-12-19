@@ -22,7 +22,7 @@ import { motion } from 'framer-motion';
 
 const BottomNav: React.FC<BottomNavProps> = ({ items, currentPath, onNavigate }) => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden pb-[env(safe-area-inset-bottom)] bg-card border-t border-border shadow-[0_-8px_30px_rgb(0,0,0,0.12)]" aria-label="Primary">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden pb-[env(safe-area-inset-bottom)] bg-bg-card border-t border-border-subtle" aria-label="Primary">
       <div className="mx-auto max-w-md px-6">
         <div className="flex justify-between items-center h-16">
           {items.map((item) => {
@@ -48,7 +48,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ items, currentPath, onNavigate })
                 {active && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute -inset-x-4 -inset-y-1 bg-primary/10 rounded-xl z-0"
+                    className="absolute -inset-x-4 -inset-y-1 bg-primary/10 rounded-[var(--r-lg)] z-0"
                     transition={{ type: 'spring', bounce: 0.35, duration: 0.5 }}
                   />
                 )}

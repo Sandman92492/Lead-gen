@@ -12,7 +12,7 @@ const CookiePolicy: React.FC<CookiePolicyProps> = ({ onClose }) => {
       onClick={onClose}
     >
       <div 
-        className="bg-bg-card rounded-2xl shadow-2xl p-6 sm:p-8 max-w-2xl w-full relative border border-border-subtle my-8"
+        className="bg-bg-card rounded-[var(--r-lg)] shadow-2xl p-6 sm:p-8 max-w-2xl w-full relative border border-border-subtle my-8"
         onClick={(e) => e.stopPropagation()}
       >
         <button

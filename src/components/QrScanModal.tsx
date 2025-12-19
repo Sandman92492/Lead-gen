@@ -116,7 +116,7 @@ const QrScanModal: React.FC<QrScanModalProps> = ({ isOpen, onClose, onDetected }
       </p>
 
       <div className="mt-5">
-        <div className="relative overflow-hidden rounded-2xl border border-border-subtle bg-black">
+        <div className="relative overflow-hidden rounded-[var(--r-lg)] border border-border-subtle bg-black">
           <video ref={videoRef} className="w-full aspect-square object-cover" playsInline muted />
           <div
             aria-hidden="true"
@@ -125,7 +125,7 @@ const QrScanModal: React.FC<QrScanModalProps> = ({ isOpen, onClose, onDetected }
         </div>
 
         {error && (
-          <div className="mt-4 rounded-xl border border-urgency-high bg-urgency-high/10 p-3">
+          <div className="mt-4 rounded-[var(--r-lg)] border border-urgency-high bg-urgency-high/10 p-3">
             <p className="text-sm font-semibold text-urgency-high">{error}</p>
           </div>
         )}

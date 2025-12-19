@@ -189,14 +189,14 @@ const VerifierPage: React.FC = () => {
         </div>
 
         {!user && isFirebaseMode && (
-          <div className="bg-bg-card border border-border-subtle rounded-2xl p-5">
+          <div className="bg-bg-card border border-border-subtle rounded-[var(--r-lg)] p-5">
             <p className="text-text-primary font-semibold">Sign in required</p>
             <p className="text-text-secondary text-sm mt-1"><span className="font-mono">/verify</span></p>
           </div>
         )}
 
         {(!isFirebaseMode || user) && (
-          <div className="bg-bg-card border border-border-subtle rounded-2xl shadow-[var(--shadow)] p-5">
+          <div className="bg-bg-card border border-border-subtle rounded-[var(--r-lg)] shadow-[var(--shadow)] p-5">
             {locked ? (
               <div className="space-y-3">
                 <Button variant="primary" className="w-full" onClick={() => setShowUnlockModal(true)}>
@@ -229,7 +229,7 @@ const VerifierPage: React.FC = () => {
                       <select
                         value={checkpointId}
                         onChange={(e) => setCheckpointId(e.target.value)}
-                        className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-sm text-text-primary transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+                        className="w-full rounded-[var(--r-lg)] bg-bg-primary border border-border-subtle px-4 py-3 text-sm text-text-primary transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                       >
                         {checkpoints.map((c) => (
                           <option key={c.checkpointId} value={c.checkpointId}>
@@ -242,7 +242,7 @@ const VerifierPage: React.FC = () => {
                         value={checkpointId}
                         onChange={(e) => setCheckpointId(e.target.value)}
                         placeholder="checkpointId"
-                        className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-sm text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+                        className="w-full rounded-[var(--r-lg)] bg-bg-primary border border-border-subtle px-4 py-3 text-sm text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                       />
                     )}
                   </div>
@@ -254,7 +254,7 @@ const VerifierPage: React.FC = () => {
                       value={code}
                       onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 4))}
                       placeholder="1234"
-                      className="w-full rounded-xl bg-bg-primary border border-border-subtle px-4 py-3 text-center text-2xl font-mono text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+                      className="w-full rounded-[var(--r-lg)] bg-bg-primary border border-border-subtle px-4 py-3 text-center text-2xl font-mono text-text-primary placeholder:text-text-secondary/60 transition focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
                       disabled={isVerifying}
                     />
                   </div>

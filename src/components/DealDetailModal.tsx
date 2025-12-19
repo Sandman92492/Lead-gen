@@ -51,7 +51,7 @@ const DealDetailModal: React.FC<DealDetailModalProps> = ({
           </div>
 
           {/* Offer - Bold Primary Headline */}
-          <div className="bg-action-primary/10 rounded-lg p-3 sm:p-4 border border-action-primary/30">
+          <div className="bg-action-primary/10 rounded-[var(--r-md)] p-3 sm:p-4 border border-action-primary/30">
             <p className="text-lg sm:text-xl font-bold text-action-primary">
               {deal.offer}
             </p>
@@ -71,7 +71,7 @@ const DealDetailModal: React.FC<DealDetailModalProps> = ({
 
           {/* Terms */}
           {deal.terms && (
-            <div className="bg-bg-primary rounded-lg p-3 sm:p-4 border border-border-subtle">
+            <div className="bg-bg-primary rounded-[var(--r-md)] p-3 sm:p-4 border border-border-subtle">
               <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">
                 Terms & Conditions
               </p>

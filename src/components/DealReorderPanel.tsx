@@ -157,7 +157,7 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
   const hasUnorderedDeals = deals.some(d => d.sortOrder === undefined || d.sortOrder === 999);
 
   return (
-    <div className="bg-bg-card rounded-xl border border-border-subtle p-6">
+    <div className="bg-bg-card rounded-[var(--r-lg)] border border-border-subtle p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
           🔄 Reorder Prizes
@@ -168,7 +168,7 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
       </div>
 
       {hasUnorderedDeals && (
-        <div className="mb-4 p-3 bg-urgency-high/10 border border-urgency-high rounded-lg">
+        <div className="mb-4 p-3 bg-urgency-high/10 border border-urgency-high rounded-[var(--r-md)]">
           <p className="text-xs text-urgency-high font-medium mb-2">⚠️ Some prizes are missing sort order</p>
           <button
             onClick={initializeAllSortOrders}
@@ -187,7 +187,7 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
           {sortedDeals.map((deal, index) => (
             <div
               key={deal.id}
-              className={`flex items-center justify-between gap-3 p-3 bg-bg-primary rounded-lg border border-border-subtle transition-opacity ${
+              className={`flex items-center justify-between gap-3 p-3 bg-bg-primary rounded-[var(--r-md)] border border-border-subtle transition-opacity ${
                 reorderingDealId === deal.id ? 'opacity-50' : ''
               }`}
             >
@@ -249,7 +249,7 @@ const DealReorderPanel: React.FC<DealReorderPanelProps> = ({ deals, onReorderCom
         </div>
       )}
 
-      <div className="mt-4 p-3 bg-action-primary/10 rounded-lg text-xs text-action-primary">
+      <div className="mt-4 p-3 bg-action-primary/10 rounded-[var(--r-md)] text-xs text-action-primary">
         <p className="font-semibold mb-1">💡 How to use:</p>
         <ul className="space-y-1 text-action-primary/80">
           <li>• Click ⭐ to mark a deal as featured (shows in featured section)</li>

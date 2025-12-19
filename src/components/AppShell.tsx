@@ -140,7 +140,7 @@ const AppShell: React.FC<AppShellProps> = ({
                         }`}
                     >
                       <span
-                        className={`flex h-11 w-11 items-center justify-center rounded-2xl border border-border-subtle transition ${active ? 'border-transparent text-slate-900' : 'border-border-subtle text-text-secondary'
+                        className={`flex h-11 w-11 items-center justify-center rounded-[var(--r-lg)] border border-border-subtle transition ${active ? 'border-transparent text-slate-900' : 'border-border-subtle text-text-secondary'
                           }`}
                       >
                         {item.icon}
@@ -154,7 +154,7 @@ const AppShell: React.FC<AppShellProps> = ({
           )}
 
           <div className="mt-auto p-4">
-            <div className="rounded-[14px] border border-border-subtle bg-bg-card p-4">
+            <div className="rounded-[var(--r-lg)] border border-border-subtle bg-bg-card p-4">
               <div className="flex items-center gap-3">
                 <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border-subtle bg-bg-card">
                   {userPhotoURL ? (

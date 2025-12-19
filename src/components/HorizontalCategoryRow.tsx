@@ -95,7 +95,7 @@ const HorizontalCategoryRow: React.FC<HorizontalCategoryRowProps> = ({
               <button
                 onClick={() => scroll('left')}
                 disabled={!canScrollLeft}
-                className="p-2 rounded-lg bg-border-subtle hover:bg-border-subtle/70 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="p-2 rounded-[var(--r-md)] bg-border-subtle hover:bg-border-subtle/70 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                 aria-label="Scroll left"
               >
                 <svg
@@ -115,7 +115,7 @@ const HorizontalCategoryRow: React.FC<HorizontalCategoryRowProps> = ({
               <button
                 onClick={() => scroll('right')}
                 disabled={!canScrollRight}
-                className="p-2 rounded-lg bg-border-subtle hover:bg-border-subtle/70 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="p-2 rounded-[var(--r-md)] bg-border-subtle hover:bg-border-subtle/70 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                 aria-label="Scroll right"
               >
                 <svg

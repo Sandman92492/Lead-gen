@@ -36,7 +36,7 @@ const GuestCredentialPage: React.FC<GuestCredentialPageProps> = ({ token }) => {
         </div>
 
         {error && (
-          <div className="bg-urgency-high/10 border border-urgency-high rounded-lg p-3 mb-4">
+          <div className="bg-urgency-high/10 border border-urgency-high rounded-[var(--r-md)] p-3 mb-4">
             <p className="text-sm font-semibold text-urgency-high">{error}</p>
           </div>
         )}

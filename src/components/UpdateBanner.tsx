@@ -51,7 +51,7 @@ export function UpdateBanner() {
         <div className="flex items-center gap-2">
           <button
             onClick={handleUpdate}
-            className="px-4 py-2 bg-bg-card text-action-primary font-semibold text-sm rounded-lg hover:bg-bg-primary transition cursor-pointer whitespace-nowrap"
+            className="px-4 py-2 bg-bg-card text-action-primary font-semibold text-sm rounded-[var(--r-md)] hover:bg-bg-primary transition cursor-pointer whitespace-nowrap"
           >
             Update
           </button>

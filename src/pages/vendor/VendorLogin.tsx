@@ -44,7 +44,7 @@ const VendorLogin: React.FC = () => {
 
   return (
     <main className="min-h-screen bg-bg-primary flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md bg-bg-card rounded-2xl border border-border-subtle shadow-xl p-6">
+      <div className="w-full max-w-md bg-bg-card rounded-[var(--r-lg)] border border-border-subtle shadow-xl p-6">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-display font-black text-action-primary">Vendor Portal</h1>
           <p className="text-text-secondary mt-2">
@@ -63,7 +63,7 @@ const VendorLogin: React.FC = () => {
                 setError('');
               }}
               placeholder="e.g. kakklein-collective"
-              className="w-full px-4 py-3 bg-bg-primary border-2 border-accent-primary/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-secondary transition text-text-primary"
+              className="w-full px-4 py-3 bg-bg-primary border-2 border-accent-primary/30 rounded-[var(--r-md)] focus:outline-none focus:ring-2 focus:ring-accent-secondary transition text-text-primary"
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
@@ -80,13 +80,13 @@ const VendorLogin: React.FC = () => {
               onChange={handlePinChange}
               placeholder="••••"
               maxLength={4}
-              className="w-full px-4 py-3 text-center text-2xl font-mono bg-bg-primary border-2 border-accent-primary/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-secondary transition text-text-primary"
+              className="w-full px-4 py-3 text-center text-2xl font-mono bg-bg-primary border-2 border-accent-primary/30 rounded-[var(--r-md)] focus:outline-none focus:ring-2 focus:ring-accent-secondary transition text-text-primary"
               disabled={isSubmitting}
             />
           </div>
 
           {error && (
-            <div className="bg-urgency-high/10 border border-urgency-high rounded-lg p-3">
+            <div className="bg-urgency-high/10 border border-urgency-high rounded-[var(--r-md)] p-3">
               <p className="text-sm font-medium text-urgency-high">{error}</p>
             </div>
           )}
