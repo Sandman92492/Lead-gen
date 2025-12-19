@@ -26,7 +26,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ title, description, actionLabel
         {description && <p className="mt-2 text-base leading-6 text-text-secondary max-w-[320px] mx-auto">{description}</p>}
         {actionLabel && onAction && (
           <div className="mt-5">
-            <PrimaryButton className="w-full" onClick={onAction}>
+            <PrimaryButton className="w-full" size="lg" onClick={onAction}>
               {actionLabel}
             </PrimaryButton>
           </div>

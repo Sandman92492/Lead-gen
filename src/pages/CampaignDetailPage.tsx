@@ -1,8 +1,9 @@
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import UrlQrCode from '../components/UrlQrCode';
 import { useToast } from '../context/ToastContext';
-import { getCampaignById } from '../services/leadWallet';
+import { getCampaignById, deleteCampaign } from '../services/leadWallet';
 import type { Campaign } from '../types/leadWallet';
 import Card from '../components/ui/Card';
 import BottomSheet from '../components/ui/BottomSheet';
@@ -67,18 +68,32 @@ const CampaignDetailPage: React.FC = () => {
       className="lw-page-container max-w-2xl mx-auto px-4 pt-6 pb-32"
     >
       <div className="space-y-6">
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="group flex items-center gap-2 text-xs font-black uppercase tracking-widest text-text-secondary hover:text-text-primary transition-colors"
-        >
-          <div className="h-8 w-8 rounded-full border border-border-subtle bg-bg-card flex items-center justify-center group-hover:bg-bg-primary transition-colors">
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-              <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          Back
-        </button>
+        <div className="flex items-center">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="group flex items-center gap-2 text-xs font-black uppercase tracking-widest text-text-secondary hover:text-text-primary transition-colors"
+          >
+            <div className="h-8 w-8 rounded-full border border-border-subtle bg-bg-card flex items-center justify-center group-hover:bg-bg-primary transition-colors">
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            Back
+          </button>
+          <button
+            type="button"
+            onClick={async () => {
+              if (window.confirm('Delete this campaign? This cannot be undone.')) {
+                await deleteCampaign(campaignId!);
+                navigate('/campaigns');
+              }
+            }}
+            className="ml-4 group flex items-center gap-2 text-xs font-black uppercase tracking-widest text-red-600 hover:text-red-800 transition-colors"
+          >
+            Delete
+          </button>
+        </div>
 
         {campaign === undefined && (
           <div className="p-12 text-center text-text-secondary animate-pulse font-bold">Loading campaign details…</div>
@@ -160,11 +175,11 @@ const CampaignDetailPage: React.FC = () => {
           </div>
         )}
 
-        <BottomSheet isOpen={shareOpen} onClose={() => setShareOpen(false)} title={`Share • ${campaign?.name || ''}`}>
+        <BottomSheet isOpen={shareOpen} onClose={() => setShareOpen(false)} title={`Share • ${campaign?.name || ''} `}>
           <div className="space-y-4 pt-2">
             <button
               onClick={() => {
-                const text = `Claim the offer: ${campaignUrl}`;
+                const text = `Claim the offer: ${campaignUrl} `;
                 window.open(buildWhatsAppShareLink(text), '_blank', 'noopener,noreferrer');
                 setShareOpen(false);
               }}

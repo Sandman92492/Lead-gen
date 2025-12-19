@@ -183,7 +183,7 @@ const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-bg-primary flex flex-col md:flex-row h-full w-full overflow-hidden">
+    <div className="fixed inset-0 z-[100] bg-bg-primary flex flex-col md:flex-row h-[100dvh] w-full overflow-hidden supports-[height:100dvh]:h-[100dvh]">
       {/* Sidebar / Preview (Desktop only) */}
       <div className="hidden lg:flex flex-[0.85] bg-bg-primary items-center justify-center border-r border-border-subtle/30 overflow-hidden relative">
         <WizardPreview
@@ -207,7 +207,7 @@ const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden relative pb-44 md:pb-0">
           <AnimatePresence initial={false} custom={direction} mode="wait">
             <motion.div
               key={step}
@@ -220,7 +220,7 @@ const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
                 x: { type: "spring", stiffness: 300, damping: 32 },
                 opacity: { duration: 0.2 }
               }}
-              className="max-w-xl mx-auto px-6 py-10 md:py-16 w-full"
+              className="max-w-xl mx-auto px-6 py-6 md:py-16 w-full"
             >
               {/* Welcome */}
               {step === 'welcome' && (
@@ -228,16 +228,16 @@ const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="w-20 h-20 bg-action-primary/10 rounded-[var(--r-xl)] flex items-center justify-center mx-auto mb-8"
+                    className="w-16 h-16 md:w-20 md:h-20 bg-action-primary/10 rounded-[var(--r-xl)] flex items-center justify-center mx-auto mb-6 md:mb-8"
                   >
-                    <svg className="w-10 h-10 text-action-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <svg className="w-8 h-8 md:w-10 md:h-10 text-action-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </motion.div>
-                  <h1 className="text-4xl font-display font-black text-text-primary mb-4 leading-tight">
+                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-black text-text-primary mb-3 md:mb-4 leading-tight">
                     Get your first lead in 3 minutes
                   </h1>
-                  <p className="text-lg text-text-secondary mb-10 font-medium">
+                  <p className="text-base md:text-lg text-text-secondary mb-6 md:mb-10 font-medium">
                     We'll help you set up everything you need to start capturing and converting leads today.
                   </p>
                   <div className="grid gap-3 text-left mb-10">
@@ -565,11 +565,11 @@ const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-6 md:p-10 border-t border-border-subtle/50 bg-bg-card shadow-[0_-10px_40px_rgba(0,0,0,0.02)]">
+        <div className="fixed bottom-0 left-0 right-0 md:static w-full p-3 md:p-10 border-t border-border-subtle/50 bg-bg-card shadow-[0_-10px_40px_rgba(0,0,0,0.02)] shrink-0 z-50 transition-all safe-area-bottom">
           <div className="max-w-xl mx-auto flex flex-col items-center">
             <Button
               variant="primary"
-              className="w-full h-14 md:h-16 text-xl font-black rounded-[var(--r-xl)] shadow-lg shadow-action-primary/25 active:scale-[0.97]"
+              className="w-full h-12 md:h-16 text-lg md:text-xl font-black rounded-[var(--r-xl)] shadow-lg shadow-action-primary/25 active:scale-[0.97]"
               onClick={handleNext}
               disabled={!canProceed || isSubmitting}
             >
@@ -590,14 +590,14 @@ const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
                   const prev = steps[currentIndex - 1];
                   if (prev) navigateTo(prev);
                 }}
-                className="mt-4 text-sm font-black text-text-secondary/50 hover:text-text-secondary uppercase tracking-widest transition-colors"
+                className="mt-2 md:mt-4 text-xs md:text-sm font-black text-text-secondary/50 hover:text-text-secondary uppercase tracking-widest transition-colors p-2"
               >
                 Go Back
               </button>
             )}
 
             {step !== 'welcome' && step !== 'complete' && (
-              <p className="text-center text-[10px] font-black text-text-secondary/40 uppercase tracking-[0.2em] mt-6">
+              <p className="hidden md:block text-center text-[10px] font-black text-text-secondary/40 uppercase tracking-[0.2em] mt-6">
                 Step {currentIndex} of {steps.length - 2}
               </p>
             )}

@@ -150,32 +150,34 @@ const CampaignsPage: React.FC = () => {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.1 }}
-                  onClick={() => navigate(`/campaigns/${c.id}`)}
                   className="w-full text-left group flex items-center gap-4 bg-bg-card border border-border-subtle rounded-[24px] p-5 shadow-sm hover:shadow-md hover:border-slate-400 transition-all active:scale-[0.98]"
                 >
-                  <div className="h-14 w-14 rounded-2xl bg-bg-primary border border-border-subtle flex items-center justify-center shrink-0">
-                    {getSourceIcon(c.sourceType)}
-                  </div>
+                  <div className="flex-1 flex items-center gap-4" onClick={() => navigate(`/campaigns/${c.id}`)}>
+                    <div className="h-14 w-14 rounded-2xl bg-bg-primary border border-border-subtle flex items-center justify-center shrink-0">
+                      {getSourceIcon(c.sourceType)}
+                    </div>
 
-                  <div className="flex-1 min-w-0 space-y-1">
-                    <h3 className="text-lg font-black text-text-primary uppercase tracking-tight truncate pr-1 py-1">
-                      {c.name}
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface border border-border-subtle">
-                        <div className="w-5 h-5 rounded-full bg-slate-900 text-[10px] font-black text-white flex items-center justify-center">
-                          {leadCount}
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <h3 className="text-lg font-black text-text-primary uppercase tracking-tight truncate pr-1 py-1">
+                        {c.name}
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface border border-border-subtle">
+                          <div className="w-5 h-5 rounded-full bg-slate-900 text-[10px] font-black text-white flex items-center justify-center">
+                            {leadCount}
+                          </div>
+                          <span className="text-[11px] font-bold text-text-secondary uppercase tracking-wider">leads</span>
                         </div>
-                        <span className="text-[11px] font-bold text-text-secondary uppercase tracking-wider">leads</span>
                       </div>
+                    </div>
+
+                    <div className="h-10 w-10 flex items-center justify-center text-text-secondary opacity-20 group-hover:opacity-100 group-hover:text-action-primary transition-all">
+                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
                     </div>
                   </div>
 
-                  <div className="h-10 w-10 flex items-center justify-center text-text-secondary opacity-20 group-hover:opacity-100 group-hover:text-action-primary transition-all">
-                    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </div>
                 </motion.button>
               );
             })}

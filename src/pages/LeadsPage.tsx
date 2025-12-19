@@ -15,7 +15,7 @@ import IconButton from '../components/ui/IconButton';
 import Row from '../components/ui/Row';
 import { formatTimeSince, toDateMaybe } from '../utils/time';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ANIMATIONS } from '../theme/theme';
+
 import SetupChecklist from '../components/SetupChecklist';
 import { useOnboardingProgress } from '../hooks/useOnboardingProgress';
 import { WhatsAppIcon } from '../components/ui/Icons';
@@ -26,7 +26,7 @@ type LeadFilter = 'NEW' | 'TODAY' | 'THIS_WEEK' | 'UNCONTACTED';
 const LeadsPage: React.FC = () => {
   const navigate = useNavigate();
   const { showToast, removeToast } = useToast();
-  const { isComplete: onboardingComplete } = useOnboardingProgress();
+  const { isComplete: onboardingComplete, updateProgress } = useOnboardingProgress();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<LeadFilter>('UNCONTACTED');
@@ -198,15 +198,15 @@ const LeadsPage: React.FC = () => {
             leads.length === 0 ? (
               <EmptyState
                 title="No leads yet"
-                description="Create a campaign QR to start receiving leads."
-                actionLabel="Create a campaign QR"
+                description="Create a campaign to start receiving leads."
+                actionLabel="CREATE CAMPAIGN"
                 onAction={() => navigate('/campaigns', { state: { openCreate: true } })}
               />
             ) : filter === 'UNCONTACTED' ? (
               <EmptyState
                 title="No uncontacted leads"
-                description="Create a campaign QR and share it to bring new leads into your inbox."
-                actionLabel="Create a campaign QR"
+                description="Create a campaign and share it to bring new leads into your inbox."
+                actionLabel="CREATE CAMPAIGN"
                 onAction={() => navigate('/campaigns', { state: { openCreate: true } })}
               />
             ) : (
@@ -304,6 +304,7 @@ const LeadsPage: React.FC = () => {
                                         optimisticallyMarkContacted(lead);
                                         if (lead.status === 'NEW') await setLeadStatus(lead.id, 'CONTACTED');
                                         else if (!lead.contactedAt) await markLeadContacted(lead.id);
+                                        await updateProgress({ firstLeadHandled: true });
                                       } finally {
                                         removeToast(id);
                                       }
@@ -400,21 +401,6 @@ const LeadsPage: React.FC = () => {
         </div>
       </AnimatePresence>
 
-      {/* Floating Action Button - Thumb-First Design */}
-      <motion.button
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        transition={ANIMATIONS.bounce}
-        onClick={() => navigate('/campaigns', { state: { openCreate: true } })}
-        className="fixed bottom-24 right-6 w-16 h-16 bg-action-primary text-white rounded-full shadow-2xl flex items-center justify-center z-50 border-2 border-action-primary hover:scale-110 active:scale-95 transition-transform"
-        aria-label="Create Campaign"
-      >
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-        </svg>
-      </motion.button>
 
       <BottomSheet
         isOpen={Boolean(statusSheetLead)}

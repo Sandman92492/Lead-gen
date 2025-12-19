@@ -137,7 +137,7 @@ const sortByCreatedAtDesc = <T extends { createdAt: StoredTimestamp }>(items: T[
 
 const subscribeToState = (onChange: () => void): (() => void) => {
   onChange();
-  if (!isBrowser()) return () => {};
+  if (!isBrowser()) return () => { };
 
   const onStorage = (e: StorageEvent) => {
     if (e.key !== LEAD_WALLET_MOCK_KEY) return;
@@ -371,4 +371,12 @@ export const fetchLeads = async (opts?: { limit?: number }): Promise<Lead[]> => 
   const state = readState();
   const sorted = sortByCreatedAtDesc(state.leads);
   return sorted.slice(0, opts?.limit ?? 5000).map(normalizeLead);
+};
+
+// Delete a campaign by ID
+export const deleteCampaign = async (campaignId: string) => {
+  const state = readState();
+  const updated = state.campaigns.filter((c) => c.id !== campaignId);
+  writeState({ ...state, campaigns: updated });
+  notify();
 };

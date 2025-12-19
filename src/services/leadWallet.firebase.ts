@@ -17,6 +17,7 @@ import {
   type DocumentData,
   type Unsubscribe,
   getCountFromServer,
+  deleteDoc,
 } from 'firebase/firestore';
 
 import type { AppSettings, Campaign, CampaignSourceType, Lead, LeadStatus, PublicPass, PublicSettings } from '../types/leadWallet';
@@ -203,6 +204,12 @@ export const getCampaignBySlug = async (campaignSlug: string): Promise<Campaign 
   const docSnap = snap.docs[0];
   if (!docSnap) return null;
   return normalizeCampaign(docSnap.id, docSnap.data());
+};
+
+export const deleteCampaign = async (campaignId: string) => {
+  const database = requireDb();
+  const ref = doc(database, 'campaigns', campaignId);
+  await deleteDoc(ref);
 };
 
 const randomSuffix = () => Math.random().toString(36).slice(2, 6);

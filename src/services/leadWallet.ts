@@ -1,6 +1,7 @@
 import * as firebaseService from './leadWallet.firebase';
 import * as mockService from './leadWallet.mock';
 
+
 type LeadWalletService = typeof firebaseService;
 
 const mode = ((import.meta as any).env.VITE_DATA_MODE ?? 'mock') as string;
@@ -29,4 +30,5 @@ export const markLeadContacted = service.markLeadContacted;
 export const setLeadStatus = service.setLeadStatus;
 
 export const createLeadAndPublicPass = service.createLeadAndPublicPass;
+export const deleteCampaign = service.deleteCampaign;
 export const getPublicPassByLeadId = service.getPublicPassByLeadId;
