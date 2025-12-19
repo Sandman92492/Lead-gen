@@ -90,7 +90,7 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
       <div className={`relative ${className}`}>
         <section
           className="relative overflow-hidden rounded-[28px] bg-bg-card text-text-primary shadow-[0_22px_70px_rgba(15,23,42,0.14)] ring-1 ring-border-subtle/70"
-          aria-label={variant === 'guest' ? copy.credential.guestTitle : copy.nav.credential}
+          aria-label={variant === 'guest' ? copy.credential.guestTitle : copy.credential.title}
         >
           <div
             className="pointer-events-none absolute inset-0 bg-gradient-to-b from-bg-primary/50 via-transparent to-transparent"
@@ -205,123 +205,123 @@ const CredentialCard: React.FC<CredentialCardProps> = ({
               <StatusPill label={status.label} tone={status.tone} />
             </div>
 
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-6 items-start">
-            <div>
-              <div className="flex items-center gap-4">
-                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[var(--r-lg)] border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] backdrop-blur-sm">
-                  {photoUrl ? (
-                    <img
-                      src={photoUrl}
-                      alt={displayName || 'Member'}
-                      className="h-full w-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div className="h-full w-full grid place-items-center text-lg font-bold text-[var(--credential-card-muted)]">
-                      {(displayName || '?').charAt(0).toUpperCase()}
-                    </div>
-                  )}
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-6 items-start">
+              <div>
+                <div className="flex items-center gap-4">
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[var(--r-lg)] border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] backdrop-blur-sm">
+                    {photoUrl ? (
+                      <img
+                        src={photoUrl}
+                        alt={displayName || 'Member'}
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="h-full w-full grid place-items-center text-lg font-bold text-[var(--credential-card-muted)]">
+                        {(displayName || '?').charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="text-xl font-display font-black leading-tight truncate">{displayName || '—'}</div>
+                    {variant === 'member' && (
+                      <div className="mt-1 text-sm text-[var(--credential-card-muted)] truncate">
+                        {memberOrUnit || copy.productShortName}
+                      </div>
+                    )}
+                    {variant === 'member' && tierLabel && (
+                      <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] px-3 py-1 text-xs font-semibold text-[var(--credential-card-ink)]">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" aria-hidden="true" />
+                        <span>{tierLabel}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div className="min-w-0">
-                  <div className="text-xl font-display font-black leading-tight truncate">{displayName || '—'}</div>
-                  {variant === 'member' && (
-                    <div className="mt-1 text-sm text-[var(--credential-card-muted)] truncate">
-                      {memberOrUnit || copy.productShortName}
+                <div className="mt-6 rounded-3xl border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] p-5 backdrop-blur-sm">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-[11px] font-medium tracking-[0.12em] text-[var(--credential-card-muted)]">
+                      {copy.credential.codeLabel}
                     </div>
-                  )}
-                  {variant === 'member' && tierLabel && (
-                    <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] px-3 py-1 text-xs font-semibold text-[var(--credential-card-ink)]">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" aria-hidden="true" />
-                      <span>{tierLabel}</span>
+                    <div className="flex items-center gap-2 text-xs text-[var(--credential-card-muted)]">
+                      <span
+                        className={`h-2 w-2 rounded-full ${status.tone === 'green' ? 'bg-success' : status.tone === 'red' ? 'bg-urgency-high' : 'bg-brand-yellow'} ${canShowCode ? 'animate-live-pulse' : ''}`}
+                        aria-hidden="true"
+                      />
+                      <span className="tabular-nums">{secondsRemaining !== null ? `${secondsRemaining}s` : `Every ${cadence}s`}</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-3 flex items-end justify-between gap-3">
+                    <div className="font-mono text-5xl sm:text-6xl font-black tracking-[0.12em] whitespace-pre">
+                      {isLoading ? '• • • •' : groupedCode}
+                    </div>
+                    <div className="text-right text-xs text-[var(--credential-card-muted)]">
+                      <div className="font-semibold text-[var(--credential-card-ink)]">
+                        Scan at gate <span className="font-normal text-[var(--credential-card-muted)]">• every {cadence}s</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {!canShowCode && !isLoading && (
+                    <div className="mt-3 text-xs text-[var(--credential-card-muted)]">
+                      Code unavailable for this pass status.
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="mt-6 rounded-3xl border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] p-5 backdrop-blur-sm">
+              <div className="rounded-3xl bg-[var(--credential-card-panel-strong)] p-4 border border-[var(--credential-card-border-strong)] shadow-lg backdrop-blur-sm">
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-[11px] font-medium tracking-[0.12em] text-[var(--credential-card-muted)]">
-                    {copy.credential.codeLabel}
+                    QR code
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-[var(--credential-card-muted)]">
-                    <span
-                      className={`h-2 w-2 rounded-full ${status.tone === 'green' ? 'bg-success' : status.tone === 'red' ? 'bg-urgency-high' : 'bg-brand-yellow'} ${canShowCode ? 'animate-live-pulse' : ''}`}
-                      aria-hidden="true"
-                    />
-                    <span className="tabular-nums">{secondsRemaining !== null ? `${secondsRemaining}s` : `Every ${cadence}s`}</span>
+                  <div className="text-[11px] font-semibold text-[var(--credential-card-ink)] tabular-nums">
+                    {secondsRemaining !== null ? `Refresh ${secondsRemaining}s` : 'Live'}
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-end justify-between gap-3">
-                  <div className="font-mono text-5xl sm:text-6xl font-black tracking-[0.12em] whitespace-pre">
-                    {isLoading ? '• • • •' : groupedCode}
-                  </div>
-                  <div className="text-right text-xs text-[var(--credential-card-muted)]">
-                    <div className="font-semibold text-[var(--credential-card-ink)]">
-                      Scan at gate <span className="font-normal text-[var(--credential-card-muted)]">• every {cadence}s</span>
-                    </div>
-                  </div>
+                <div className="mt-3 grid place-items-center">
+                  {canShowCode ? (
+                    <QrCode value={normalizedCode} sizePx={120} className="h-32 w-32" label="Access QR code" />
+                  ) : (
+                    <div className="h-44 w-44 rounded-[var(--r-lg)] bg-black/10 dark:bg-white/10 animate-pulse" aria-label="QR code loading" />
+                  )}
                 </div>
 
-                {!canShowCode && !isLoading && (
-                  <div className="mt-3 text-xs text-[var(--credential-card-muted)]">
-                    Code unavailable for this pass status.
-                  </div>
-                )}
+                <div className="mt-3 hidden sm:block text-center text-xs text-[var(--credential-card-muted)]">Show this to staff</div>
               </div>
             </div>
 
-            <div className="rounded-3xl bg-[var(--credential-card-panel-strong)] p-4 border border-[var(--credential-card-border-strong)] shadow-lg backdrop-blur-sm">
-              <div className="flex items-center justify-between gap-3">
-                <div className="text-[11px] font-medium tracking-[0.12em] text-[var(--credential-card-muted)]">
-                  QR code
+            <div className="mt-6 pt-6 border-t border-[var(--credential-card-border-strong)] grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              {validFrom && (
+                <div className="hidden sm:flex items-center justify-between gap-3 rounded-[var(--r-lg)] border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] px-4 py-3">
+                  <span className="text-[var(--credential-card-muted)] font-medium">{copy.credential.validFromLabel}</span>
+                  <span className="font-semibold text-[var(--credential-card-ink)]">{formatDateTime(validFrom)}</span>
                 </div>
-                <div className="text-[11px] font-semibold text-[var(--credential-card-ink)] tabular-nums">
-                  {secondsRemaining !== null ? `Refresh ${secondsRemaining}s` : 'Live'}
+              )}
+              {validTo && (
+                <div className="flex items-center justify-between gap-3 rounded-[var(--r-lg)] border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] px-4 py-3">
+                  <span className="text-[var(--credential-card-muted)] font-medium">{copy.credential.validToLabel}</span>
+                  <span className="font-semibold text-[var(--credential-card-ink)]">{formatDateTime(validTo)}</span>
                 </div>
-              </div>
-
-              <div className="mt-3 grid place-items-center">
-                {canShowCode ? (
-                  <QrCode value={normalizedCode} sizePx={120} className="h-32 w-32" label="Access QR code" />
-                ) : (
-                  <div className="h-44 w-44 rounded-[var(--r-lg)] bg-black/10 dark:bg-white/10 animate-pulse" aria-label="QR code loading" />
-                )}
-              </div>
-
-              <div className="mt-3 hidden sm:block text-center text-xs text-[var(--credential-card-muted)]">Show this to staff</div>
+              )}
+              {variant === 'member' && (
+                <div className="flex items-center justify-between gap-3 rounded-[var(--r-lg)] border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] px-4 py-3">
+                  <span className="text-[var(--credential-card-muted)] font-medium">{copy.credential.memberLabel}</span>
+                  <span className="font-semibold text-[var(--accent)]">{memberOrUnit || '—'}</span>
+                </div>
+              )}
+              {lastVerifiedAt && (
+                <div className="flex items-center justify-between gap-3 rounded-[var(--r-lg)] border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] px-4 py-3">
+                  <span className="text-[var(--credential-card-muted)] font-medium">{copy.credential.lastVerifiedLabel}</span>
+                  <span className="font-semibold text-[var(--credential-card-ink)]">{formatDateTime(lastVerifiedAt)}</span>
+                </div>
+              )}
             </div>
-          </div>
-
-          <div className="mt-6 pt-6 border-t border-[var(--credential-card-border-strong)] grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            {validFrom && (
-              <div className="hidden sm:flex items-center justify-between gap-3 rounded-[var(--r-lg)] border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] px-4 py-3">
-                <span className="text-[var(--credential-card-muted)] font-medium">{copy.credential.validFromLabel}</span>
-                <span className="font-semibold text-[var(--credential-card-ink)]">{formatDateTime(validFrom)}</span>
-              </div>
-            )}
-            {validTo && (
-              <div className="flex items-center justify-between gap-3 rounded-[var(--r-lg)] border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] px-4 py-3">
-                <span className="text-[var(--credential-card-muted)] font-medium">{copy.credential.validToLabel}</span>
-                <span className="font-semibold text-[var(--credential-card-ink)]">{formatDateTime(validTo)}</span>
-              </div>
-            )}
-            {variant === 'member' && (
-              <div className="flex items-center justify-between gap-3 rounded-[var(--r-lg)] border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] px-4 py-3">
-                <span className="text-[var(--credential-card-muted)] font-medium">{copy.credential.memberLabel}</span>
-                <span className="font-semibold text-[var(--accent)]">{memberOrUnit || '—'}</span>
-              </div>
-            )}
-            {lastVerifiedAt && (
-              <div className="flex items-center justify-between gap-3 rounded-[var(--r-lg)] border border-[var(--credential-card-border-strong)] bg-[var(--credential-card-panel)] px-4 py-3">
-                <span className="text-[var(--credential-card-muted)] font-medium">{copy.credential.lastVerifiedLabel}</span>
-                <span className="font-semibold text-[var(--credential-card-ink)]">{formatDateTime(lastVerifiedAt)}</span>
-              </div>
-            )}
-          </div>
           </div>
         </div>
       </section>

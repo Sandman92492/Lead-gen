@@ -18,8 +18,8 @@ const variantClasses: Record<BadgeVariant, string> = {
 };
 
 const sizeClasses: Record<BadgeSize, string> = {
-  sm: 'px-2.5 py-1 text-xs',
-  md: 'px-3 py-1.5 text-sm',
+  sm: 'px-2.5 py-1 text-[10px]',
+  md: 'px-3.5 py-1.5 text-xs',
 };
 
 const Badge: React.FC<BadgeProps> = ({
@@ -30,7 +30,7 @@ const Badge: React.FC<BadgeProps> = ({
 }) => {
   return (
     <span
-      className={`inline-flex items-center justify-center rounded-full font-semibold tracking-tight ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-full font-black uppercase tracking-widest ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       {...props}
     />
   );

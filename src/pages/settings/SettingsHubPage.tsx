@@ -5,6 +5,8 @@ import { haptics } from '../../utils/haptics';
 import type { AppSettings } from '../../types/leadWallet';
 import SettingsTopBar from './SettingsTopBar';
 
+import { useOnboardingProgress } from '../../hooks/useOnboardingProgress';
+
 const IconBag: React.FC<{ className?: string }> = ({ className = 'h-5 w-5' }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
     <path d="M7 7h10l1 13H6L7 7Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
@@ -73,10 +75,19 @@ const IconHelp: React.FC<{ className?: string }> = ({ className = 'h-5 w-5' }) =
 );
 
 const IconLogout: React.FC<{ className?: string }> = ({ className = 'h-5 w-5' }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M10 7V6a2 2 0 0 1 2-2h7v16h-7a2 2 0 0 1-2-2v-1" stroke="currentColor" strokeWidth="1.8" />
-    <path d="M3 12h11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    <path d="M7 8l-4 4 4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    <polyline points="16 17 21 12 16 7" />
+    <line x1="21" y1="12" x2="9" y2="12" />
+  </svg>
+);
+
+const IconRefresh: React.FC<{ className?: string }> = ({ className = 'h-5 w-5' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+    <path d="M3 3v5h5" />
+    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+    <path d="M16 16h5v5" />
   </svg>
 );
 
@@ -91,6 +102,7 @@ import { motion } from 'framer-motion';
 
 const SettingsHubPage: React.FC<SettingsHubPageProps> = ({ settings, onSignOut, userEmail, userPhotoURL }) => {
   const navigate = useNavigate();
+  const { resetWizard } = useOnboardingProgress();
 
   return (
     <>
@@ -189,6 +201,22 @@ const SettingsHubPage: React.FC<SettingsHubPageProps> = ({ settings, onSignOut, 
                 onClick={() => {
                   haptics.tap();
                   navigate('help');
+                }}
+              />
+            </div>
+          </section>
+
+          <section>
+            <div className="kicker px-1 text-action-primary">Diagnostics (Dev)</div>
+            <div className="mt-2 overflow-hidden rounded-[var(--r-section)] border border-border-subtle bg-bg-card divide-y divide-border-subtle/70">
+              <ListRow
+                title="Reset Onboarding"
+                subtitle="Restart the Setup Wizard"
+                icon={<IconRefresh />}
+                onClick={() => {
+                  haptics.success();
+                  resetWizard();
+                  window.location.reload();
                 }}
               />
             </div>

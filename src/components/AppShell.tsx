@@ -79,7 +79,6 @@ const AppShell: React.FC<AppShellProps> = ({
   const pageSubtitle = useMemo(() => {
     if (currentPath.startsWith('/leads')) return 'Inbox';
     if (currentPath.startsWith('/campaigns')) return 'Track sources';
-    if (currentPath.startsWith('/qr')) return 'Print-ready';
     if (currentPath.startsWith('/settings')) return 'Business setup';
     return undefined;
   }, [currentPath]);
@@ -135,8 +134,8 @@ const AppShell: React.FC<AppShellProps> = ({
                       type="button"
                       onClick={() => onNavigate(item.path)}
                       className={`group flex w-full items-center gap-3 rounded-3xl px-4 py-3 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--ring)] ${active
-                          ? 'bg-value-highlight text-slate-900 shadow-[0_12px_40px_rgba(15,23,42,0.35)]'
-                          : 'bg-bg-card/70 text-text-secondary hover:bg-bg-primary/60 hover:text-text-primary'
+                        ? 'bg-value-highlight text-slate-900 shadow-[0_12px_40px_rgba(15,23,42,0.35)]'
+                        : 'bg-bg-card/70 text-text-secondary hover:bg-bg-primary/60 hover:text-text-primary'
                         }`}
                     >
                       <span

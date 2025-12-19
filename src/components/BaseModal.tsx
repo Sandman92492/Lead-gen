@@ -42,43 +42,39 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-black/50 flex items-center justify-center p-4 overflow-y-auto transition-opacity duration-200 ${backdropClassName}`}
+      className={`fixed inset-0 bg-black/60 flex items-center justify-center p-4 overflow-y-auto transition-opacity duration-200 backdrop-blur-sm ${backdropClassName}`}
       style={{ zIndex }}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className={`bg-bg-card rounded-[var(--r-lg)] p-4 sm:p-6 md:p-8 ${maxWidthClasses[maxWidth]} w-full relative border border-border-subtle my-3 sm:my-8 ${panelClassName}`}
+        className={`bg-bg-card rounded-[var(--r-xl)] p-6 sm:p-8 ${maxWidthClasses[maxWidth]} w-full relative border-2 border-action-primary shadow-2xl my-3 sm:my-8 ${panelClassName}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button - Top Right (default) */}
         {showCloseButton && closeButtonPosition === 'top-right' && (
           <button
             onClick={onClose}
-            className={`absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:ring-offset-2 focus:ring-offset-[var(--card)] rounded-md p-1 ${closeButtonClassName}`}
+            className={`absolute top-5 right-5 text-text-secondary hover:text-text-primary transition-colors focus:outline-none focus:ring-4 focus:ring-action-primary/10 rounded-full p-2 bg-bg-primary/50 border border-border-subtle ${closeButtonClassName}`}
             aria-label="Close modal"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
+              className="h-5 w-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              strokeWidth={3}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         )}
 
         {/* Title (optional) */}
         {title && (
-          <h2 className={`text-2xl sm:text-3xl font-display font-black text-text-primary mb-4 tracking-tight ${titleClassName}`}>
+          <h2 className={`text-2xl sm:text-3xl font-black text-text-primary mb-6 tracking-tighter uppercase italic px-1 ${titleClassName}`}>
             {title}
           </h2>
         )}
@@ -92,7 +88,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
         {showCloseButton && closeButtonPosition === 'bottom' && (
           <button
             onClick={onClose}
-            className="w-full mt-6 px-4 py-2 rounded-[var(--r-md)] bg-bg-primary text-text-primary font-medium hover:bg-bg-primary/80 transition-colors"
+            className="w-full h-14 mt-8 rounded-[var(--r-md)] bg-slate-900 text-white font-black uppercase tracking-widest text-sm hover:bg-slate-800 transition-colors shadow-lg active:scale-[0.98]"
           >
             Close
           </button>

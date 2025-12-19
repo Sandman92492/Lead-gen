@@ -18,20 +18,24 @@ body {
      LEAD WALLET 2025 - PRIVYR-INSPIRED
      Teal accent, pink/purple gradients, clean white
      ============================================ */
-  --primary: #00BCD4;
-  --primary-pressed: #00ACC1;
-  --primary-glow: transparent;
-  --accent: #00BCD4;
-  --accent-secondary: #00BCD4;
+  --primary: #0f172a;
+  --primary-pressed: #1e293b;
+  --primary-glow: rgba(15, 23, 42, 0.1);
+  --accent: #0f172a;
+  --accent-secondary: #2563EB;
   --whatsapp: #25D366;
 
   /* No gradients - solid colors only */
   --gradient-hero: #00BCD4;
   --gradient-banner: #00BCD4;
 
-  --bg: #FFFFFF;
-  --surface: #FAFAFA;
+  /* Light mode - Darkened background for card visibility */
+  --bg: #F1F5F9;
+  /* Slate 100 - Provides contrast for white cards */
+  --surface: #F8FAFC;
+  /* Slate 50 */
   --card: #FFFFFF;
+  /* Pure White */
   --border: #E5E5E5;
   --text: #111111;
   --muted: #666666;
@@ -48,14 +52,14 @@ body {
   --lh-base: 1.5;
 
   /* Consistent radii - 8px base unit */
-  --r-sm: 6px;
-  --r-md: 8px;
-  --r-lg: 12px;
-  --r-card: 12px;
-  --r-btn: 8px;
-  --r-xl: 12px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --r-card: 32px;
+  --r-btn: 16px;
+  --r-xl: 32px;
   --r-pill: 9999px;
-  --r-section: 16px;
+  --r-section: 32px;
 
   /* Spacing scale - 4px base unit */
   --space-1: 4px;
@@ -69,14 +73,22 @@ body {
   --space-12: 48px;
 
   /* Typography scale */
-  --text-xs: 0.75rem;    /* 12px */
-  --text-sm: 0.875rem;   /* 14px */
-  --text-base: 1rem;     /* 16px */
-  --text-lg: 1.125rem;   /* 18px */
-  --text-xl: 1.25rem;    /* 20px */
-  --text-2xl: 1.5rem;    /* 24px */
-  --text-3xl: 1.875rem;  /* 30px */
-  --text-4xl: 2.25rem;   /* 36px */
+  --text-xs: 0.75rem;
+  /* 12px */
+  --text-sm: 0.875rem;
+  /* 14px */
+  --text-base: 1rem;
+  /* 16px */
+  --text-lg: 1.125rem;
+  /* 18px */
+  --text-xl: 1.25rem;
+  /* 20px */
+  --text-2xl: 1.5rem;
+  /* 24px */
+  --text-3xl: 1.875rem;
+  /* 30px */
+  --text-4xl: 2.25rem;
+  /* 36px */
 
   /* Font weights */
   --font-normal: 400;
@@ -129,6 +141,7 @@ body {
   --color-urgency-high: var(--danger);
   --color-value-highlight: var(--warning);
   --color-alert: var(--danger);
+  /* Brand-section removed as per user request */
 }
 
 :root.dark,
@@ -146,24 +159,30 @@ body {
   --gradient-hero: #2DD4BF;
   --gradient-banner: #2DD4BF;
 
-  --bg: #18181B;
-  --surface: #27272A;
-  --card: #27272A;
-  --border: rgba(255, 255, 255, 0.08);
-  --text: #FAFAFA;
-  --muted: #A1A1AA;
+  --bg: #1E293B;
+  /* Slate 800 - Much lighter/softer background */
+  --surface: #334155;
+  /* Slate 700 */
+  --card: #334155;
+  /* Slate 700 */
+  --border: #475569;
+  /* Slate 600 */
+  --text: #E2E8F0;
+  /* Slate 200 - Softer white, less harsh contrast */
+  --muted: #94A3B8;
+  /* Slate 400 */
 
   /* Functional colors */
   --success: #4ADE80;
   --warning: #FBBF24;
   --danger: #F87171;
-  --info: #42A5F5;
+  --info: #38BDF8;
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
   --shadow-tactile: 0 12px 32px rgba(0, 0, 0, 0.6);
-  --glass-bg: rgba(30, 30, 30, 0.95);
+  --glass-bg: rgba(15, 23, 42, 0.95);
   --glass-blur: 12px;
   --glass-border: 1px solid rgba(255, 255, 255, 0.08);
 
@@ -372,14 +391,20 @@ body {
      SOLAR NIGHTFALL - DARK MODE
      "Midnight Jade" - Deep jade surfaces
      ============================================ */
-  --bg: #070B0A;
-  --surface: #0D1514;
-  --card: #0A1211;
+  /* Solar theme softened to match requested Slate 800/700 palette */
+  --bg: #1E293B;
+  /* Slate 800 */
+  --surface: #334155;
+  /* Slate 700 */
+  --card: #334155;
+  /* Slate 700 */
   --surface2: var(--card);
-  --text: #E8F0EE;
-  --muted: #9FAEA9;
+  --text: #E2E8F0;
+  /* Slate 200 */
+  --muted: #94A3B8;
   --muted-2: #7A8D87;
-  --border: #1E2E2A;
+  --border: #475569;
+  /* Slate 600 */
 
   --shadow-card: 0 6px 18px rgba(0, 0, 0, 0.5);
   --shadow-float: 0 10px 28px rgba(0, 0, 0, 0.6);
@@ -429,13 +454,14 @@ body {
   /* ============================================
      RAFFLE THEME - DARK MODE
      ============================================ */
-  --bg: #0B1220;
-  --surface: #0F172A;
-  --card: #111C33;
+  /* Raffle theme softened */
+  --bg: #1E293B;
+  --surface: #334155;
+  --card: #334155;
   --surface2: var(--card);
   --text: #E2E8F0;
   --muted: #94A3B8;
-  --border: rgba(226, 232, 240, 0.12);
+  --border: #475569;
 
   --brand: #60A5FA;
   --accent: #FBBF24;
@@ -494,8 +520,10 @@ body {
   /* ============================================
      ESTATE THEME - DARK MODE
      ============================================ */
-  --surface-primary: #0F172A;
-  --surface-card: #111C33;
+  --surface-primary: #1E293B;
+  /* Slate 800 */
+  --surface-card: #334155;
+  /* Slate 700 */
   --text-main: #E2E8F0;
   --text-muted: #94A3B8;
   --brand: #2563EB;
@@ -503,12 +531,12 @@ body {
   --brand-accent: var(--brand);
   --radius-standard: 12px;
 
-  --bg: #0B1220;
+  --bg: #1E293B;
   --surface: var(--surface-primary);
   --card: var(--surface-card);
   --text: var(--text-main);
   --muted: var(--text-muted);
-  --border: rgba(226, 232, 240, 0.12);
+  --border: #475569;
 
   --success: #34D399;
   --danger: #F87171;
@@ -858,10 +886,10 @@ body {
 
 .lw-card {
   background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--r-section, var(--r-xl));
-  box-shadow: none;
-  transition: background-color var(--dur-slow) var(--ease), color var(--dur-slow) var(--ease), border-color var(--dur-slow) var(--ease);
+  border: 2px solid #0f172a;
+  border-radius: var(--r-card);
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.1), 0 8px 15px -6px rgba(15, 23, 42, 0.05);
+  transition: all var(--dur-base) var(--ease);
 }
 
 .lw-card::before {

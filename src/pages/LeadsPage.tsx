@@ -18,20 +18,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ANIMATIONS } from '../theme/theme';
 import SetupChecklist from '../components/SetupChecklist';
 import { useOnboardingProgress } from '../hooks/useOnboardingProgress';
+import { WhatsAppIcon } from '../components/ui/Icons';
 
 type LeadFilter = 'NEW' | 'TODAY' | 'THIS_WEEK' | 'UNCONTACTED';
 
-const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = 'h-5 w-5' }) => {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 3a9 9 0 0 0-9 9c0 1.3.3 2.5.8 3.6L3 21l5.4-1.4A9.02 9.02 0 0 0 21 12c0-5-4-9-9-9Z" />
-      <path
-        d="M16.5 14.5c-.2.6-1.2 1.4-2 1.1-.4-.2-.8-.3-1.1-.6-.2-.2-.4-.5-.6-.7-.2-.3-.4-.3-.7-.2-.4.1-.9.3-1.4.2-.4-.1-.7-.5-1-1s-.6-1.7-.9-2.3c-.3-.6-.1-.9.1-1.1.2-.2.4-.5.6-.8.2-.3.3-.4.4-.7.1-.3 0-.5-.1-.6-.1-.2-.9-2.3-1.2-2.5-.3-.2-.6-.2-.9-.2-.3 0-.6 0-.9 0-.3 0-.7.2-.9.6-.1.4-.5 1.1-.5 2s.6 1.9.7 2.1c.2.3.3.7.7 1.2.4.5 1.1 1.2 2.2 1.9.8.5 1.3.7 1.9.7.6 0 1.3-.3 1.6-.6.3-.3.6-.5.9-.4.3 0 .8.2 1.1.5.2.3.2.7.1.9Z"
-        fill="#ffffff"
-      />
-    </svg>
-  );
-};
 
 const LeadsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -110,11 +100,29 @@ const LeadsPage: React.FC = () => {
     ).slice(0, 3);
   }, [leads]);
 
+  const [expandedLeadId, setExpandedLeadId] = useState<string | null>(null);
+
   const filterLabel: Record<LeadFilter, string> = {
     UNCONTACTED: 'Uncontacted',
     NEW: 'New',
     TODAY: 'Today',
     THIS_WEEK: 'This week',
+  };
+
+  const optimisticallyMarkContacted = (lead: Lead): void => {
+    const nowIso = new Date().toISOString();
+    setLeads((prev) =>
+      prev.map((l) => {
+        if (l.id !== lead.id) return l;
+        const next: Lead = {
+          ...l,
+          status: l.status === 'NEW' ? 'CONTACTED' : l.status,
+          contactedAt: l.contactedAt ?? ({ toDate: () => new Date(nowIso) } as any),
+          updatedAt: ({ toDate: () => new Date(nowIso) } as any),
+        };
+        return next;
+      })
+    );
   };
 
   return (
@@ -140,8 +148,8 @@ const LeadsPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-4 mb-2"
             >
-              <h2 className="text-lg font-bold text-accent flex items-center gap-2">
-                <span className="text-xl">🔥</span> Priority Leads
+              <h2 className="text-lg font-bold text-action-primary flex items-center gap-2">
+                <span className="text-xl">🔥</span> <span className="italic uppercase tracking-tighter font-black">Priority Leads</span>
               </h2>
               <div className="grid gap-3">
                 {priorityLeads.map((lead) => (
@@ -150,17 +158,17 @@ const LeadsPage: React.FC = () => {
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate(`/leads/${lead.id}`)}
-                    className="bg-bg-card p-5 text-left rounded-[var(--r-lg)] border-l-4 border-l-accent shadow-lg hover:shadow-xl transition-shadow"
+                    className="bg-bg-card p-5 text-left rounded-[var(--r-lg)] border-2 border-slate-900 border-l-8 border-l-action-primary shadow-lg hover:shadow-xl transition-all"
                   >
                     <div className="flex justify-between items-start gap-3">
                       <div className="min-w-0 flex-1">
-                        <div className="font-bold text-xl text-text-primary truncate">{lead.fullName || '—'}</div>
-                        <div className="text-base text-text-secondary mt-2">
+                        <div className="font-bold text-lg text-text-primary truncate">{lead.fullName || '—'}</div>
+                        <div className="text-sm text-text-secondary mt-1">
                           {lead.suburb} · {lead.timeline}
                         </div>
                       </div>
-                      <span className="bg-accent text-white text-xs px-3 py-1.5 rounded-full font-bold">
-                        ASAP
+                      <span className="bg-action-primary/10 text-action-primary text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider mt-1">
+                        URGENT
                       </span>
                     </div>
                   </motion.button>
@@ -169,9 +177,9 @@ const LeadsPage: React.FC = () => {
             </motion.div>
           )}
 
-          <div className="py-3">
-            <h1 className="text-2xl font-bold text-text-primary tracking-tight">
-              {filterLabel[filter]} <span className="text-text-secondary font-medium">({filtered.length})</span>
+          <div className="py-2">
+            <h1 className="text-2xl font-black text-text-primary tracking-tighter uppercase italic px-1">
+              {filterLabel[filter]} <span className="text-text-secondary font-medium tracking-normal normal-case italic">({filtered.length})</span>
             </h1>
           </div>
 
@@ -208,8 +216,7 @@ const LeadsPage: React.FC = () => {
               />
             )
           ) : (
-            <Section padded={false} className="lw-tactile-card overflow-hidden border-none shadow-tactile">
-
+            <div className="lw-card overflow-hidden border-2 border-slate-900 shadow-xl bg-bg-card rounded-[var(--r-xl)]">
               {isLoading ? (
                 <div className="divide-y divide-border-subtle">
                   {Array.from({ length: 6 }).map((_, idx) => (
@@ -220,7 +227,7 @@ const LeadsPage: React.FC = () => {
                           <Skeleton className="h-3 w-64 rounded-md" />
                           <Skeleton className="h-3 w-44 rounded-md" />
                         </div>
-                        <Skeleton className="h-12 w-12 rounded-[var(--r-lg)]" />
+                        <Skeleton className="h-10 w-10 rounded-[var(--r-lg)]" />
                       </div>
                     </div>
                   ))}
@@ -231,97 +238,164 @@ const LeadsPage: React.FC = () => {
                     const created = toDateMaybe(lead.createdAt);
                     const waLink = buildWhatsAppLinkForLead(lead);
                     const isNextUp = idx === 0 && filter === 'UNCONTACTED';
+                    const isExpanded = expandedLeadId === lead.id;
 
                     return (
-                      <motion.button
+                      <motion.div
                         layout
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.05 }}
+                        transition={{ delay: idx * 0.03 }}
                         key={lead.id}
-                        type="button"
-                        className="w-full px-4 py-4 text-left bg-bg-card hover:bg-surface/20 transition-colors focus:outline-none focus-visible:bg-surface/40 active:bg-surface/60"
-                        onClick={() => navigate(`/leads/${lead.id}`)}
+                        className={`w-full overflow-hidden bg-bg-card transition-colors ${isExpanded ? 'bg-action-primary/5' : 'hover:bg-surface/5'
+                          }`}
                       >
-                        <div className="flex items-start justify-between gap-4">
+                        <div
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => setExpandedLeadId(isExpanded ? null : lead.id)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setExpandedLeadId(isExpanded ? null : lead.id);
+                            }
+                          }}
+                          className="px-4 py-4 flex items-start justify-between gap-4 cursor-pointer focus:outline-none focus-visible:bg-surface/40"
+                        >
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
-                              <div className="text-lg leading-tight font-bold text-text-primary truncate">
+                              <div className={`text-lg leading-tight font-bold text-text-primary truncate ${isExpanded ? 'text-action-primary' : ''}`}>
                                 {lead.fullName || '—'}
                               </div>
                               {isNextUp && (
-                                <span className="bg-primary/10 text-primary text-xs font-bold px-2 py-0.5 rounded-full">
-                                  Next
+                                <span className="bg-action-primary text-white text-[10px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter">
+                                  Up Next
                                 </span>
                               )}
+                              {lead.status === 'NEW' && !isNextUp && (
+                                <div className="w-1.5 h-1.5 rounded-full bg-action-primary animate-pulse" />
+                              )}
                             </div>
-                            <div className="mt-2 text-base leading-5 text-text-secondary truncate">
-                              {lead.suburb || '—'} · {lead.monthlyBillRange} · {lead.timeline}
-                              {(lead as any).serviceType ? ` · ${(lead as any).serviceType}` : ''}
+                            <div className="mt-1 flex items-center gap-2 text-sm font-medium text-text-secondary">
+                              <span>{created ? formatTimeSince(created) : '—'}</span>
+                              <span className="opacity-30">•</span>
+                              <StatusPill status={lead.status} />
                             </div>
                           </div>
 
-                          <IconButton
-                            variant="primary"
-                            size="md"
-                            disabled={!waLink}
-                            onClick={async (e) => {
-                              e.stopPropagation();
-                              if (!waLink) {
-                                showToast('Missing phone number for this lead', 'error');
-                                return;
-                              }
-                              window.open(waLink, '_blank', 'noopener,noreferrer');
-                              const id = showToast('Mark as contacted?', 'info', 0, [
-                                {
-                                  label: 'Mark',
-                                  variant: 'primary',
-                                  onClick: async () => {
-                                    try {
-                                      if (lead.status === 'NEW') await setLeadStatus(lead.id, 'CONTACTED');
-                                      else if (!lead.contactedAt) await markLeadContacted(lead.id);
-                                    } finally {
-                                      removeToast(id);
-                                    }
+                          <div className="flex items-center gap-2">
+                            <IconButton
+                              variant="primary"
+                              size="md"
+                              disabled={!waLink}
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                if (!waLink) {
+                                  showToast('Missing phone number', 'error');
+                                  return;
+                                }
+                                window.open(waLink, '_blank', 'noopener,noreferrer');
+                                const id = showToast('Mark as contacted?', 'info', 0, [
+                                  {
+                                    label: 'Mark',
+                                    variant: 'primary',
+                                    onClick: async () => {
+                                      try {
+                                        optimisticallyMarkContacted(lead);
+                                        if (lead.status === 'NEW') await setLeadStatus(lead.id, 'CONTACTED');
+                                        else if (!lead.contactedAt) await markLeadContacted(lead.id);
+                                      } finally {
+                                        removeToast(id);
+                                      }
+                                    },
                                   },
-                                },
-                                { label: 'Dismiss', onClick: () => removeToast(id) },
-                              ]);
-                            }}
-                            aria-label="WhatsApp"
-                          >
-                            <span className="text-whatsapp">
-                              <WhatsAppIcon className="h-5 w-5" />
-                            </span>
-                          </IconButton>
-                        </div>
-
-                        <div className="mt-4 flex items-center justify-between gap-4">
-                          <div className="min-w-0 flex items-center gap-3">
-                            <Chip>{lead.sourceTypeSnapshot}</Chip>
-                            <span className="text-sm font-medium text-text-secondary truncate">
-                              {created ? formatTimeSince(created) : '—'}
-                            </span>
+                                  { label: 'Dismiss', onClick: () => removeToast(id) },
+                                ]);
+                              }}
+                              aria-label="WhatsApp"
+                            >
+                              <span className="text-white">
+                                <WhatsAppIcon className="h-5 w-5" />
+                              </span>
+                            </IconButton>
+                            <motion.div
+                              animate={{ rotate: isExpanded ? 180 : 0 }}
+                              className="text-text-secondary/50 p-1"
+                            >
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                              </svg>
+                            </motion.div>
                           </div>
-
-                          <button
-                            type="button"
-                            className="rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--ring)]"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setStatusSheetLead(lead);
-                            }}
-                            aria-label="Change status"
-                          >
-                            <StatusPill status={lead.status} />
-                          </button>
                         </div>
-                      </motion.button>
+
+                        <AnimatePresence>
+                          {isExpanded && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.25, ease: 'easeOut' }}
+                            >
+                              <div className="px-4 pb-4 border-t border-border-subtle/30 pt-4 space-y-4 bg-action-primary/[0.02]">
+                                <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+                                  <div>
+                                    <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.1em] mb-1 opacity-60">Suburb</p>
+                                    <p className="text-sm font-bold text-text-primary">{lead.suburb || '—'}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.1em] mb-1 opacity-60">Timeline</p>
+                                    <p className="text-sm font-bold text-text-primary">{lead.timeline || '—'}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.1em] mb-1 opacity-60">Monthly Bill</p>
+                                    <p className="text-sm font-bold text-text-primary">{lead.monthlyBillRange || '—'}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.1em] mb-1 opacity-60">Source</p>
+                                    <Chip>{lead.sourceTypeSnapshot}</Chip>
+                                  </div>
+                                </div>
+
+                                {(lead as any).serviceType && (
+                                  <div>
+                                    <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.1em] mb-1 opacity-60">Service Type</p>
+                                    <p className="text-sm font-bold text-text-primary">{(lead as any).serviceType}</p>
+                                  </div>
+                                )}
+
+                                <div className="pt-2 flex gap-3">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigate(`/leads/${lead.id}`);
+                                    }}
+                                    className="flex-1 h-11 rounded-[var(--r-lg)] border border-border-subtle bg-white text-sm font-bold text-text-primary hover:border-action-primary transition-all active:scale-[0.98]"
+                                  >
+                                    View Details
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setStatusSheetLead(lead);
+                                    }}
+                                    className="flex-1 h-11 rounded-[var(--r-lg)] border border-border-subtle bg-white text-sm font-bold text-text-primary hover:border-action-primary transition-all active:scale-[0.98]"
+                                  >
+                                    Update Status
+                                  </button>
+                                </div>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
                     );
                   })}
                 </div>
               )}
-            </Section>
+            </div>
           )}
         </div>
       </AnimatePresence>
@@ -334,7 +408,7 @@ const LeadsPage: React.FC = () => {
         whileTap={{ scale: 0.9 }}
         transition={ANIMATIONS.bounce}
         onClick={() => navigate('/campaigns', { state: { openCreate: true } })}
-        className="fixed bottom-24 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg lw-glow-primary flex items-center justify-center z-50"
+        className="fixed bottom-24 right-6 w-16 h-16 bg-action-primary text-white rounded-full shadow-2xl flex items-center justify-center z-50 border-2 border-action-primary hover:scale-110 active:scale-95 transition-transform"
         aria-label="Create Campaign"
       >
         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

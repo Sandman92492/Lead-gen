@@ -54,25 +54,25 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, title, onClose, child
 
         <div className="absolute inset-0 flex items-end md:items-stretch md:justify-end pointer-events-none">
           <div
-            className={`pointer-events-auto w-full md:w-[420px] md:max-w-[92vw] lw-card bg-bg-card border-t border-border-subtle md:border-l md:border-t-0 rounded-t-[28px] md:rounded-t-none md:rounded-l-[28px] shadow-[var(--shadow-float)]
-              ${visible ? 'translate-y-0 md:translate-x-0' : 'translate-y-6 md:translate-x-6'}
-              transition-transform`}
+            className={`pointer-events-auto w-full md:w-[420px] md:max-w-[92vw] lw-card bg-bg-card border-none rounded-t-[32px] md:rounded-t-none md:rounded-l-[32px] shadow-2xl
+               ${visible ? 'translate-y-0 md:translate-x-0' : 'translate-y-6 md:translate-x-6'}
+               transition-transform`}
             style={{ maxHeight: '86vh', transitionDuration: `${EXIT_MS}ms` }}
           >
-            <div className="px-5 pt-3 pb-2 md:pt-5 md:pb-3 border-b border-border-subtle">
-              <div className="mx-auto mb-2 h-1.5 w-12 rounded-full bg-border-subtle md:hidden opacity-70" />
+            <div className="px-6 pt-4 pb-3 border-b-2 border-slate-900/10">
+              <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-slate-900/10 md:hidden" />
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  {title && <div className="text-[18px] leading-6 font-semibold text-text-primary truncate">{title}</div>}
+                  {title && <div className="text-xl font-black text-text-primary uppercase tracking-tighter italic px-1">{title}</div>}
                 </div>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="h-10 w-10 grid place-items-center rounded-[var(--r-lg)] border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary hover:bg-bg-primary focus:outline-none focus:ring-4 focus:ring-[var(--ring)]"
+                  className="h-10 w-10 grid place-items-center rounded-full border border-border-subtle bg-bg-primary/50 text-text-secondary hover:text-text-primary hover:bg-bg-primary focus:outline-none focus:ring-4 focus:ring-action-primary/10 transition-colors"
                   aria-label="Close"
                 >
-                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                    <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </button>
               </div>

@@ -257,7 +257,7 @@ export const subscribeLeads = (onValue: (leads: Lead[]) => void, opts?: { limit?
   const database = requireDb();
   const q = query(collection(database, 'leads'), orderBy('createdAt', 'desc'), limit(opts?.limit ?? 200));
   return onSnapshot(q, (snap) => {
-    onValue(snap.docs.map((d) => normalizeLead(d.id, d.data())));
+    onValue(snap.docs.map((d) => normalizeLead(d.id, d.data({ serverTimestamps: 'estimate' }))));
   });
 };
 
@@ -266,7 +266,7 @@ export const subscribeLead = (leadId: string, onValue: (lead: Lead | null) => vo
   const ref = doc(database, 'leads', leadId);
   return onSnapshot(ref, (snap) => {
     if (!snap.exists()) onValue(null);
-    else onValue(normalizeLead(snap.id, snap.data()));
+    else onValue(normalizeLead(snap.id, snap.data({ serverTimestamps: 'estimate' })));
   });
 };
 

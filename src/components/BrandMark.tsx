@@ -33,6 +33,8 @@ const BrandMark: React.FC<BrandMarkProps> = ({ className = 'w-9 h-9', title = 'E
         strokeWidth="2.6"
         strokeLinecap="round"
       />
+      <circle cx="38" cy="10" r="7" fill="var(--color-alert)" />
+      <text x="38" y="13" fontSize="8" fontWeight="900" textAnchor="middle" fill="white" fontFamily="sans-serif">V2</text>
     </svg>
   );
 };

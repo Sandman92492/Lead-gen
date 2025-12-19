@@ -5,10 +5,8 @@ export const copy = {
   nav: {
     leads: 'Leads',
     campaigns: 'Campaigns',
-    qr: 'QR',
     settings: 'Settings',
     // Backward-compat (legacy keys)
-    credential: 'QR',
     guests: 'Campaigns',
     offers: 'Leads',
     help: 'Settings',
