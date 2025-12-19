@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
-import { useTheme } from './ThemeContext.tsx';
+import { useTheme } from '../theme/ThemeProvider';
 import { PassType } from '../types.ts';
 import { isPassExpired, getExpiryStatus } from '../utils/passExpiry';
 import CardModal from './CardModal';

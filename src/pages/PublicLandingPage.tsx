@@ -38,10 +38,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onSignIn }) => {
                 {copy.landing.signIn}
               </Button>
             </div>
-
-            <div className="mt-4 text-xs text-text-secondary">
-              Staff: <span className="font-mono">/verify</span>
-            </div>
           </div>
         </div>
       </div>

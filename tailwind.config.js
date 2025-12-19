@@ -10,6 +10,15 @@ export default {
       colors: {
         'background': 'var(--color-background)',
         'background-alt': 'var(--color-background-alt)',
+        /* Lead Wallet roles */
+        'primary': 'var(--primary)',
+        'primary-pressed': 'var(--primary-pressed)',
+        'accent': 'var(--accent)',
+        'whatsapp': 'var(--whatsapp)',
+        'info': 'var(--info)',
+        'warning': 'var(--warning)',
+        'error': 'var(--danger)',
+        'surface-2': 'var(--surface)',
         /* Semantic UI tokens */
         'surface-primary': 'var(--surface-primary)',
         'surface-card': 'var(--surface-card)',
@@ -55,8 +64,19 @@ export default {
         'button-text-dark': 'var(--color-text-primary)',
       },
       fontFamily: {
-        display: ['ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+        display: [
+          'Inter',
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif',
+        ],
         body: [
+          'Inter',
           'ui-sans-serif',
           'system-ui',
           '-apple-system',

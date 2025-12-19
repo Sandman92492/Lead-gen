@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from './ThemeContext';
+import { useTheme } from '../theme/ThemeProvider';
 
 const LoadingScreen: React.FC = () => {
   const { theme } = useTheme();

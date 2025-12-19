@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Button from './Button.tsx';
-import { useTheme } from './ThemeContext.tsx';
+import ThemeToggle from './ThemeToggle';
 import { haptics } from '../utils/haptics';
 import { copy } from '../copy';
 
@@ -25,34 +25,6 @@ interface HeaderProps {
     currentPath?: string;
     onTabClick?: (path: string) => void;
 }
-
-const ThemeToggleButton = () => {
-    const { theme, toggleTheme } = useTheme();
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
-    if (!isMounted) {
-        return <div className="w-10 h-10" />; // Placeholder to prevent layout shift
-    }
-
-    return (
-        <button
-            onClick={toggleTheme}
-            className="p-2 rounded-full text-action-primary hover:bg-bg-card transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:ring-offset-2 focus:ring-offset-[var(--bg)]"
-            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        >
-            {theme === 'light' ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
-            ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-            )}
-        </button>
-    );
-};
-
 
 const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick, onSignOutClick, onActivateClick: _onActivateClick, isAuthenticated, userEmail, userPhotoURL, isSignedIn, tabs, currentPath, onTabClick }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -102,13 +74,14 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                         {/* Logo Area - Text based for Premium Feel */}
                         <div className="flex items-center gap-2 cursor-pointer" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
                             <div className="w-8 h-8 rounded-lg bg-action-primary flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-action-primary/20">
-                                E
+                                {copy.productShortName.charAt(0).toUpperCase()}
                             </div>
                             <div className="flex flex-col leading-none">
                                 <span className="font-display font-bold text-lg tracking-tight text-text-primary">
-                                    Estate<span className="text-action-primary">Pass</span>
+                                    {copy.productShortName.split(' ')[0]}
+                                    <span className="text-action-primary">{copy.productShortName.split(' ').slice(1).join(' ')}</span>
                                 </span>
-                                <span className="text-[10px] uppercase tracking-[0.2em] text-text-secondary font-semibold">Access</span>
+                                <span className="text-[10px] uppercase tracking-[0.2em] text-text-secondary font-semibold">Lead capture</span>
                             </div>
                         </div>
 
@@ -136,32 +109,32 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                         {/* Right Actions */}
                         <div className="flex items-center gap-4">
                             <div className="hidden md:block">
-                                <ThemeToggleButton />
+                                <ThemeToggle />
                             </div>
 
-                            {isAuthenticated ? (
-                                <div className="flex items-center gap-3 pl-4 border-l border-border-subtle/50">
-                                    <div className="text-right hidden lg:block">
-                                        <div className="text-xs font-bold text-text-primary truncate max-w-[100px]">{userEmail?.split('@')[0]}</div>
-                                        <div className="text-[10px] text-text-secondary uppercase tracking-wider">Resident</div>
-                                    </div>
-                                    <button
-                                        onClick={onSignOutClick}
-                                        className="relative w-9 h-9 rounded-full bg-bg-card border border-border-subtle shadow-sm flex items-center justify-center text-text-secondary hover:text-alert hover:border-alert hover:bg-alert/10 transition-all focus:outline-none focus:ring-2 focus:ring-action-primary/20"
-                                        aria-label="Sign out"
-                                    >
-                                        {userPhotoURL ? (
-                                            <img src={userPhotoURL} alt="User" className="w-full h-full rounded-full object-cover" />
-                                        ) : (
-                                            <span className="font-bold text-xs">{userEmail?.charAt(0).toUpperCase()}</span>
-                                        )}
-                                    </button>
+                            {isSignedIn ? (
+                            <div className="flex items-center gap-3 pl-4 border-l border-border-subtle/50">
+                                <div className="text-right hidden lg:block">
+                                    <div className="text-[12px] font-bold text-action-primary truncate max-w-[120px]">{userEmail?.split('@')[0]}</div>
+                                    <div className="text-[11px] font-bold text-text-secondary uppercase tracking-widest mt-0.5">Admin</div>
                                 </div>
+                                <button
+                                    onClick={onSignOutClick}
+                                    className="relative w-10 h-10 rounded-full bg-bg-card border border-border-subtle shadow-sm flex items-center justify-center text-text-secondary hover:text-alert hover:border-alert hover:bg-alert/10 transition-all focus:outline-none focus:ring-2 focus:ring-action-primary/20"
+                                    aria-label="Sign out"
+                                >
+                                    {userPhotoURL ? (
+                                        <img src={userPhotoURL} alt="User" className="w-full h-full rounded-full object-cover" />
+                                    ) : (
+                                        <span className="font-bold text-[13px]">{userEmail?.charAt(0).toUpperCase()}</span>
+                                    )}
+                                </button>
+                            </div>
                             ) : (
-                                <div className="flex items-center gap-3">
-                                    <Button onClick={onAuthClick} variant="outline" size="sm" className="hidden sm:flex">Sign In</Button>
-                                    <Button onClick={onButtonClick} variant="primary" size="sm">{buttonText}</Button>
-                                </div>
+                            <div className="flex items-center gap-3">
+                                <Button onClick={onAuthClick} variant="outline" size="sm" className="hidden sm:flex">Sign In</Button>
+                                <Button onClick={onButtonClick} variant="primary" size="sm">{buttonText}</Button>
+                            </div>
                             )}
 
                             {/* Mobile Menu Toggle */}
@@ -179,30 +152,32 @@ const Header: React.FC<HeaderProps> = ({ onButtonClick, buttonText, onAuthClick,
                         </div>
                     </div>
                 </div>
-            </header>
+            </header >
 
             {/* Mobile Menu Overlay */}
-            {isMenuOpen && !isSignedIn && (
-                <div className="fixed inset-0 z-30 bg-bg-primary/95 backdrop-blur-xl md:hidden flex flex-col pt-24 px-6 animate-fade-in">
-                    <nav className="flex flex-col space-y-6 text-center">
-                        <Button onClick={() => { onAuthClick?.(); setIsMenuOpen(false); }} variant="outline" size="lg" className="w-full justify-center">
-                            Sign In
-                        </Button>
-                        <Button onClick={() => { onButtonClick?.(); setIsMenuOpen(false); }} variant="primary" size="lg" className="w-full justify-center">
-                            {buttonText}
-                        </Button>
+            {
+                isMenuOpen && !isSignedIn && (
+                    <div className="fixed inset-0 z-30 bg-bg-primary/95 backdrop-blur-xl md:hidden flex flex-col pt-24 px-6 animate-fade-in">
+                        <nav className="flex flex-col space-y-6 text-center">
+                            <Button onClick={() => { onAuthClick?.(); setIsMenuOpen(false); }} variant="outline" size="lg" className="w-full justify-center">
+                                Sign In
+                            </Button>
+                            <Button onClick={() => { onButtonClick?.(); setIsMenuOpen(false); }} variant="primary" size="lg" className="w-full justify-center">
+                                {buttonText}
+                            </Button>
 
-                        <div className="pt-8 border-t border-border-subtle/30 mt-4">
-                            <div className="flex justify-center mb-6">
-                                <ThemeToggleButton />
+                            <div className="pt-8 border-t border-border-subtle/30 mt-4">
+                                <div className="flex justify-center mb-6">
+                                    <ThemeToggle />
+                                </div>
+                                <a href={`https://wa.me/${copy.support.whatsappNumberE164}`} className="text-sm font-semibold text-text-secondary flex items-center justify-center gap-2">
+                                    <span>Need help? Chat on WhatsApp</span>
+                                </a>
                             </div>
-                            <a href={`https://wa.me/${copy.support.whatsappNumberE164}`} className="text-sm font-semibold text-text-secondary flex items-center justify-center gap-2">
-                                <span>Need help? Chat on WhatsApp</span>
-                            </a>
-                        </div>
-                    </nav>
-                </div>
-            )}
+                        </nav>
+                    </div>
+                )
+            }
         </>
     );
 };

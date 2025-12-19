@@ -5,11 +5,18 @@ export interface Toast {
   message: string;
   type: 'success' | 'error' | 'info';
   duration?: number;
+  actions?: ToastAction[];
+}
+
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+  variant?: 'primary' | 'secondary';
 }
 
 interface ToastContextType {
   toasts: Toast[];
-  showToast: (message: string, type?: 'success' | 'error' | 'info', duration?: number) => void;
+  showToast: (message: string, type?: 'success' | 'error' | 'info', duration?: number, actions?: ToastAction[]) => string;
   removeToast: (id: string) => void;
 }
 
@@ -37,9 +44,10 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setToasts(prev => prev.filter(t => t.id !== id));
   }, []);
 
-  const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'info', duration = 3000) => {
+  const showToast = useCallback(
+    (message: string, type: 'success' | 'error' | 'info' = 'info', duration = 3000, actions?: ToastAction[]) => {
     const id = Date.now().toString();
-    const newToast: Toast = { id, message, type, duration };
+    const newToast: Toast = { id, message, type, duration, actions };
     
     setToasts(prev => [...prev, newToast]);
 
@@ -50,6 +58,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }, duration);
       timeoutRefs.current.set(id, timeout);
     }
+    return id;
   }, []);
 
   return (

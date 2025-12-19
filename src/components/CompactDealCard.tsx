@@ -102,21 +102,21 @@ const CompactDealCard: React.FC<CompactDealCardProps> = ({
         </div>
 
         {/* Text Content - White Box Below Image (Uniform Height) */}
-         <div className="mt-2 bg-bg-card rounded-lg p-3 border border-border-subtle shadow-sm group-hover:border-action-primary/30 transition-colors min-h-32 flex flex-col">
+         <div className="mt-2 bg-bg-card rounded-xl p-4 border border-border-subtle shadow-md group-hover:border-primary/40 group-hover:shadow-lg transition-all min-h-32 flex flex-col">
            {/* Deal Name */}
-           <h3 className="text-sm font-bold text-text-primary line-clamp-2 mb-1">
+           <h3 className="text-base font-bold text-text-primary line-clamp-2 mb-1.5">
              {deal.name}
            </h3>
 
            {/* Offer */}
-           <p className="text-xs text-text-secondary font-semibold line-clamp-2 flex-grow">
+           <p className="text-sm text-text-secondary font-medium line-clamp-2 flex-grow">
              {deal.offer}
            </p>
 
            {/* Savings Badge */}
            {deal.savings && deal.savings > 0 && (
-             <span className="inline-block bg-success/10 text-success px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap mt-2">
-               Prize Value R{deal.savings}
+             <span className="inline-block bg-success/15 text-success px-3 py-1.5 rounded-full text-sm font-bold whitespace-nowrap mt-3">
+               R{deal.savings} prize
              </span>
            )}
          </div>

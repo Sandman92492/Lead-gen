@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useMatch, useNavigate } from 'react-router-dom';
 
 import Header from './components/Header';
@@ -11,9 +11,9 @@ import CookieConsentBanner from './components/CookieConsentBanner';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import { UpdateBanner } from './components/UpdateBanner';
 
-import GuestCredentialPage from './pages/GuestCredentialPage';
+import PublicLeadCapturePage from './pages/PublicLeadCapturePage';
+import PublicPassPage from './pages/PublicPassPage';
 import PublicLandingPage from './pages/PublicLandingPage';
-import VerifierPage from './pages/VerifierPage';
 
 import { useAuth } from './context/AuthContext';
 import { signOut } from './services/authService';
@@ -23,38 +23,18 @@ const App: React.FC = () => {
   const { user, userState, isLoading, userPhotoURL } = useAuth();
   const navigate = useNavigate();
 
-  const guestMatch = useMatch('/guest/:token');
-  const verifyMatch = useMatch('/verify') || useMatch('/verifier');
+  const captureMatch = useMatch('/c/:campaignSlug');
+  const passMatch = useMatch('/p/:leadId');
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isSignOutConfirmationOpen, setIsSignOutConfirmationOpen] = useState(false);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const adminParam = params.get('admin');
-    if (adminParam === 'true') {
-      sessionStorage.setItem('adminParamDetected', 'true');
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!user) return;
-    const adminEmail = (import.meta as any).env.VITE_ADMIN_EMAIL;
-    if (!adminEmail) return;
-
-    const adminParamDetected = sessionStorage.getItem('adminParamDetected') === 'true';
-    if (adminParamDetected && user.email === adminEmail) {
-      sessionStorage.removeItem('adminParamDetected');
-      navigate('/admin', { replace: true });
-    }
-  }, [navigate, user]);
 
   const handleMainCta = () => {
     if (!user) {
       setIsAuthModalOpen(true);
       return;
     }
-    navigate('/credential');
+    navigate('/leads');
   };
 
   const handleConfirmSignOut = async () => {
@@ -64,14 +44,14 @@ const App: React.FC = () => {
     }
   };
 
-  const buttonText = user ? 'Open credential' : copy.landing.signIn;
+  const buttonText = user ? 'Open dashboard' : copy.landing.signIn;
 
-  if (guestMatch) {
-    return <GuestCredentialPage token={guestMatch.params.token || ''} />;
+  if (captureMatch) {
+    return <PublicLeadCapturePage campaignSlug={captureMatch.params.campaignSlug || ''} />;
   }
 
-  if (verifyMatch) {
-    return <VerifierPage />;
+  if (passMatch) {
+    return <PublicPassPage leadId={passMatch.params.leadId || ''} />;
   }
 
   return (
@@ -110,7 +90,7 @@ const App: React.FC = () => {
         onClose={() => setIsAuthModalOpen(false)}
         onAuthSuccess={() => {
           setIsAuthModalOpen(false);
-          navigate('/credential');
+          navigate('/leads');
         }}
       />
 

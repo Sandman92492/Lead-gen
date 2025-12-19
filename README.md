@@ -26,6 +26,8 @@ These must be set in Netlify (they are baked in at build time):
 - `VITE_FIREBASE_MEASUREMENT_ID`
 - `VITE_ADMIN_EMAIL`
 
+When `VITE_DATA_MODE=mock`, Lead Wallet data (campaigns/leads/passes) is stored in `localStorage` under `lead_wallet_mock_v1` (clear site data to reset).
+
 ### Netlify Functions (server-side)
 
 - `SITE_URL` (your deployed site URL, e.g. `https://your-site.netlify.app`)
@@ -43,4 +45,3 @@ These must be set in Netlify (they are baked in at build time):
 
 - Create a local `.env` (or `.env.local`) based on `.env.staging.example`.
 - Run `npm install` then `npm run dev`.
-

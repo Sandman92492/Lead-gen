@@ -1,13 +1,13 @@
 {
-  "name": "Estate Pass",
-  "short_name": "Estate Pass",
-  "description": "Secure digital membership credential and guest passes for estate and club access.",
+  "name": "Solar Lead Wallet",
+  "short_name": "Lead Wallet",
+  "description": "Self-serve lead wallet for solar businesses: campaigns, QR codes, WhatsApp follow-up, and outcomes.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#ffffff",
-  "theme_color": "#0F172A",
+  "background_color": "#F6F8FB",
+  "theme_color": "#0EA5A4",
   "icons": [
     {
       "src": "/Images/HOLIDAY-PASS-APP-ICON.svg?v=3",
@@ -22,10 +22,10 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["lifestyle"],
+  "categories": ["business", "productivity"],
   "screenshots": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23f5f5f5' width='540' height='720'/><text x='270' y='360' font-size='48' text-anchor='middle' fill='%23333'>Estate Pass</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23F6F8FB' width='540' height='720'/><text x='270' y='360' font-size='44' text-anchor='middle' fill='%230B1220'>Solar Lead Wallet</text></svg>",
       "sizes": "540x720",
       "type": "image/svg+xml",
       "form_factor": "narrow"

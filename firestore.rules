@@ -1,0 +1,81 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidLeadStatus(status) {
+      return status in ['NEW', 'CONTACTED', 'BOOKED', 'QUOTED', 'WON', 'LOST'];
+    }
+
+    match /settings/{docId} {
+      // Public branding/settings read (single doc).
+      allow get: if isSignedIn() || docId == 'public';
+      allow list: if false;
+
+      // Dashboard editing.
+      allow create, update, delete: if isSignedIn();
+    }
+
+    match /campaigns/{campaignId} {
+      // Public can read live campaigns (needed for /c/:campaignSlug lookup via query).
+      allow get, list: if isSignedIn() || resource.data.isLive == true;
+
+      // Dashboard manages campaigns.
+      allow create, update, delete: if isSignedIn();
+    }
+
+    match /leads/{leadId} {
+      // Dashboard has full access.
+      allow get, list, update, delete: if isSignedIn();
+
+      // Public lead capture can create a single lead (no reads/lists).
+      allow create: if !isSignedIn()
+        && request.resource.data.keys().hasOnly([
+          'campaignId',
+          'campaignSlugSnapshot',
+          'campaignNameSnapshot',
+          'sourceTypeSnapshot',
+          'fullName',
+          'phone',
+          'suburb',
+          'monthlyBillRange',
+          'timeline',
+          'serviceType',
+          'status',
+          'notes',
+          'createdAt',
+          'updatedAt',
+          'contactedAt'
+        ])
+        && isValidLeadStatus(request.resource.data.status)
+        && request.resource.data.status == 'NEW'
+        && request.resource.data.notes == ''
+        && request.resource.data.contactedAt == null;
+    }
+
+    match /publicPasses/{passId} {
+      // Public can fetch only a single pass (no listing).
+      allow get: if true;
+      allow list: if false;
+
+      // Public lead capture can create a public-safe pass view.
+      allow create: if !isSignedIn()
+        && request.resource.data.keys().hasOnly([
+          'businessName',
+          'logoUrl',
+          'whatsappNumber',
+          'offerTitle',
+          'offerBullets',
+          'validUntil',
+          'firstName',
+          'campaignName'
+        ]);
+
+      // Dashboard can clean up if needed.
+      allow update, delete: if isSignedIn();
+    }
+  }
+}

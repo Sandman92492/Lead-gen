@@ -22,34 +22,60 @@
      BUTTONS - Actions and Interactions
      ============================================ */
 
-  /* Primary CTA buttons - Ocean blue (Buy/Redeem) */
-   .btn-primary {
-     @apply bg-action-primary text-text-primary hover:brightness-105 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold shadow-lg;
-   }
+  /* Primary CTA buttons - Lead Wallet Teal */
+  .btn-primary {
+    @apply bg-primary text-white hover:brightness-105 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold shadow-lg shadow-primary/20;
+  }
 
-   /* Secondary buttons - Outline style (Directions) */
-   .btn-secondary {
-     @apply bg-bg-card border-2 border-action-primary text-action-primary hover:bg-action-primary/10 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold;
-   }
+  /* Subtle sheen for modern CTAs */
+  .lw-btn-sheen {
+    isolation: isolate;
+  }
 
-   /* Redeem buttons - Coral electric (Primary CTA) */
-   .btn-redeem {
-     @apply bg-action-primary text-text-primary hover:brightness-105 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base shadow-lg;
-   }
+  .lw-btn-sheen::after {
+    content: '';
+    position: absolute;
+    inset: -40% auto -40% -140%;
+    width: 70%;
+    transform: skewX(-20deg);
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.26), transparent);
+    opacity: 0.9;
+    transition: left var(--dur-slow) var(--ease);
+    pointer-events: none;
+  }
 
-   /* Redeemed buttons - Emerald success background */
-   .btn-redeemed {
-     @apply bg-success text-white hover:brightness-110 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base whitespace-nowrap;
-   }
+  .lw-btn-sheen:hover::after {
+    left: 160%;
+  }
 
-   /* Directions button - Secondary (Outline) style */
-   .btn-directions {
-     @apply bg-bg-card border-2 border-action-primary text-action-primary hover:bg-action-primary/10 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base inline-flex items-center gap-2;
-   }
+  .dark .lw-btn-sheen::after {
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+    opacity: 0.8;
+  }
+
+  /* Secondary buttons - Outline style (Directions) */
+  .btn-secondary {
+    @apply bg-bg-card border-2 border-action-primary text-action-primary hover:bg-action-primary/10 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold;
+  }
+
+  /* Redeem buttons - Coral electric (Primary CTA) */
+  .btn-redeem {
+    @apply bg-action-primary text-text-primary hover:brightness-105 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base shadow-lg;
+  }
+
+  /* Redeemed buttons - Emerald success background */
+  .btn-redeemed {
+    @apply bg-success text-white hover:brightness-110 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base whitespace-nowrap;
+  }
+
+  /* Directions button - Secondary (Outline) style */
+  .btn-directions {
+    @apply bg-bg-card border-2 border-action-primary text-action-primary hover:bg-action-primary/10 transition-all duration-300 px-6 py-3 md:py-2.5 rounded-xl font-bold text-base inline-flex items-center gap-2;
+  }
 
   /* WhatsApp button - Brand green #25D366 */
   .btn-whatsapp {
-    @apply bg-[#25D366] text-white hover:brightness-110 transition-all duration-300;
+    @apply bg-[#25D366] text-white hover:brightness-110 active:scale-95 transition-all duration-300 shadow-md hover:shadow-[#25D366]/20;
   }
 
   /* Outline/secondary buttons - Neutral background with border */
@@ -116,12 +142,12 @@
      ============================================ */
 
   /* Default background - Main page background */
-  .bg-primary {
+  .lw-bg-main {
     @apply bg-bg-primary;
   }
 
   /* Card background - Cards, sections, navigation bars */
-  .bg-card {
+  .lw-bg-card {
     @apply bg-bg-card;
   }
 
@@ -233,17 +259,17 @@
 
   /* Best Value badge - Solid gold with glow */
   .badge-value {
-   @apply bg-value-highlight text-value-highlight px-3 py-1 rounded-full text-sm font-bold shadow-md animate-glow;
+    @apply bg-value-highlight text-value-highlight px-3 py-1 rounded-full text-sm font-bold shadow-md animate-glow;
   }
 
   /* Countdown badge - Vibrant red urgency */
   .badge-countdown {
-   @apply bg-urgency-high text-white px-3 py-1 rounded-full text-sm font-bold;
+    @apply bg-urgency-high text-white px-3 py-1 rounded-full text-sm font-bold;
   }
 
   /* Scarcity alert - Vibrant red */
   .badge-scarcity {
-   @apply text-alert font-bold;
+    @apply text-alert font-bold;
   }
 
   /* ============================================
@@ -293,7 +319,7 @@
     color: #1F2937 !important;
   }
 
-   /* ============================================
+  /* ============================================
       STATES - Semantic state colors
       ============================================ */
 
@@ -389,6 +415,7 @@
    ============================================ */
 
 @layer utilities {
+
   /* Legacy semantic colors for backward compatibility */
   .text-accent-primary {
     @apply text-[var(--color-accent-primary)];
@@ -552,13 +579,13 @@
   }
 
   .filter-pill {
-    @apply inline-flex items-center gap-2 rounded-full border border-transparent px-4 py-2 text-[13px] font-semibold transition-all duration-300;
-    background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+    @apply inline-flex items-center gap-2 rounded-full border border-transparent px-5 py-2.5 text-[15px] font-semibold transition-all duration-300;
+    background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
     color: var(--color-text-secondary);
   }
 
   .filter-pill.active {
-    @apply border-action-primary bg-action-primary text-white shadow-[0_18px_35px_rgba(29,78,216,0.35)];
+    @apply border-primary bg-primary text-white shadow-[0_12px_24px_var(--primary-glow)];
     color: white;
   }
 
@@ -590,7 +617,7 @@
   }
 
   .kicker {
-    @apply text-[11px] font-medium uppercase tracking-[0.22em] text-text-secondary;
+    @apply text-[13px] font-bold uppercase tracking-[0.18em] text-text-secondary;
   }
 
   @keyframes float-hero {
@@ -611,5 +638,144 @@
     @apply absolute inset-0;
     animation: float-hero 6s ease-in-out infinite alternate;
     pointer-events: none;
+  }
+
+  /* ============================================
+     LEAD WALLET (2026) - Design System Helpers
+     ============================================ */
+
+  .lw-topbar,
+  .lw-bottomnav {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: var(--glass-border);
+  }
+
+  .lw-card {
+    background: var(--card-gradient, var(--card));
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--dur-base) var(--ease), transform var(--dur-fast) var(--ease);
+  }
+
+  .lw-card[role="button"]:hover,
+  .lw-card[role="button"]:focus-visible {
+    box-shadow: var(--shadow-float);
+    transform: translateY(-1px);
+  }
+
+  .lw-card[role="button"]:active {
+    transform: translateY(0);
+  }
+
+  .lw-glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: var(--glass-border);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-card);
+  }
+
+  .lw-chip {
+    @apply inline-flex items-center justify-center whitespace-nowrap select-none;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: var(--r-pill);
+    border: 1px solid transparent;
+    background: color-mix(in srgb, var(--text) 6%, transparent);
+    color: var(--muted);
+    transition: transform var(--dur-fast) var(--ease), background-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease);
+  }
+
+  .lw-chip:active {
+    transform: scale(0.98);
+  }
+
+  .lw-chip--active {
+    border-color: color-mix(in srgb, var(--primary) 28%, transparent);
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    color: var(--primary);
+  }
+
+  .lw-status-pill {
+    @apply inline-flex items-center;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: var(--r-pill);
+    font-size: var(--fs-tiny);
+    line-height: var(--lh-micro);
+    font-weight: 700;
+    border: 1px solid transparent;
+    letter-spacing: 0.01em;
+  }
+
+  .lw-status--new {
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 24%, transparent);
+    color: color-mix(in srgb, var(--accent) 90%, black);
+  }
+
+  .lw-status--contacted {
+    background: color-mix(in srgb, var(--primary) 14%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 22%, transparent);
+    color: var(--primary);
+  }
+
+  .lw-status--booked,
+  .lw-status--quoted {
+    background: color-mix(in srgb, var(--info) 14%, transparent);
+    border-color: color-mix(in srgb, var(--info) 22%, transparent);
+    color: var(--info);
+  }
+
+  .lw-status--won {
+    background: color-mix(in srgb, var(--success) 14%, transparent);
+    border-color: color-mix(in srgb, var(--success) 22%, transparent);
+    color: var(--success);
+  }
+
+  .lw-status--lost {
+    background: color-mix(in srgb, var(--danger) 12%, transparent);
+    border-color: color-mix(in srgb, var(--danger) 20%, transparent);
+    color: var(--danger);
+  }
+
+  @keyframes lw-shimmer {
+    0% {
+      transform: translateX(-40%);
+    }
+
+    100% {
+      transform: translateX(140%);
+    }
+  }
+
+  .lw-skeleton {
+    position: relative;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--text) 7%, transparent);
+  }
+
+  .lw-skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+        transparent,
+        color-mix(in srgb, white 30%, transparent),
+        transparent);
+    opacity: 0.6;
+    animation: lw-shimmer 1.1s linear infinite;
+  }
+
+  :root.dark .lw-skeleton::after {
+    background: linear-gradient(90deg,
+        transparent,
+        color-mix(in srgb, white 14%, transparent),
+        transparent);
+    opacity: 0.55;
   }
 }

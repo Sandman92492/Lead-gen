@@ -3,72 +3,158 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  font-size: var(--base-font-size, 17px);
+}
+
+body {
+  line-height: var(--lh-body, 1.375);
+}
+
 :root,
-:root[data-theme='raffle'] {
+:root[data-theme='raffle'],
+:root[data-theme='solar'] {
   /* ============================================
-     RAFFLE THEME (default)
+     LEAD WALLET 2025/2026 - TEAL PRIMACY
      ============================================ */
-  --bg: #F5F7FB;
-  --surface: #EEF3FB;
+  --primary: #06B6B4;
+  --primary-pressed: #048A89;
+  --primary-glow: rgba(6, 182, 180, 0.3);
+  --accent: #F59E0B;
+  --whatsapp: #25D366;
+
+  --bg: #F1F5F9;
+  --surface: #E2E8F0;
   --card: #FFFFFF;
+  --border: rgba(15, 23, 42, 0.12);
   --text: #0F172A;
   --muted: #475569;
-  --border: rgba(15, 23, 42, 0.12);
 
-  --brand: #1D4ED8;
-  --accent: #F59E0B;
-  --success: #16A34A;
-  --danger: #DC2626;
+  /* Typographic Scale for Legibility */
+  --fs-micro: 0.75rem;
+  /* ~12.75px */
+  --fs-tiny: 0.825rem;
+  /* ~14px */
+  --fs-small: 0.9rem;
+  /* ~15.3px */
+  --fs-base: 1rem;
+  /* 17px */
+  --fs-lg: 1.125rem;
+  /* ~19px */
+  --fs-xl: 1.25rem;
+  /* ~21px */
 
-  --radius: 18px;
-  --shadow: 0 14px 34px rgba(15, 23, 42, 0.12);
-  --ring: rgba(29, 78, 216, 0.35);
-  --credential-card-bg: #EEF2FF;
-  --credential-card-ink: var(--text);
-  --credential-card-muted: var(--muted);
-  --credential-card-panel: rgba(255, 255, 255, 0.9);
-  --credential-card-panel-strong: #FFFFFF;
-  --credential-card-border-strong: rgba(15, 23, 42, 0.12);
+  --lh-tight: 1.2;
+  --lh-base: 1.5;
 
-  /* Map existing semantic vars to tokens (backward compatible) */
-  --color-background: var(--bg);
-  --color-bg-primary: var(--surface);
-  --color-bg-card: var(--card);
+  --r-card: 24px;
+  --r-btn: 14px;
+  --r-xl: 24px;
+  --r-pill: 9999px;
+
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.08);
+  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.12), 0 2px 6px -2px rgb(0 0 0 / 0.08);
+  --shadow-lg: 0 12px 28px -4px rgb(0 0 0 / 0.15), 0 4px 8px -4px rgb(0 0 0 / 0.1);
+  --shadow-tactile: 0 25px 40px -5px rgb(0 0 0 / 0.18), 0 12px 20px -8px rgb(0 0 0 / 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-blur: 16px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.4);
+
+  /* Global Semantic Mappings */
+  --brand: var(--primary);
+  --color-action-primary: var(--primary);
+  --color-accent-primary: var(--primary);
   --color-text-primary: var(--text);
   --color-text-secondary: var(--muted);
+  --color-bg-primary: var(--bg);
+  --color-bg-card: var(--card);
   --color-border-subtle: var(--border);
-  --color-action-primary: var(--brand);
-  --color-value-highlight: var(--accent);
-  --color-success: var(--success);
-  --color-urgency-high: var(--accent);
-  --color-alert: var(--danger);
-
-  /* Brand/Pass-specific (kept for existing UI) */
-  --color-brand-dark-blue: var(--brand);
-  --color-brand-yellow: var(--accent);
-  --color-brand-red: var(--danger);
-  --color-brand-white: #FFFFFF;
-  --color-brand-light-text: #EAF2FF;
-
-  /* Accent colors (legacy) */
-  --color-accent-primary: var(--brand);
+  --color-turquoise: var(--primary);
+  --color-brand-dark-blue: var(--primary);
   --color-accent-secondary: var(--accent);
+  --ring: var(--primary-glow);
 
-  /* Legacy variables used by Tailwind config */
+  --color-background: var(--bg);
   --color-background-alt: var(--card);
   --color-text-inverted: #FFFFFF;
   --color-button-text: #FFFFFF;
-  --color-redemption-green: #34D399;
-  --color-deep-teal: var(--danger);
-  --color-warm-coral: var(--danger);
-  --color-turquoise: var(--brand);
+  --color-redemption-green: #10B981;
+  --color-deep-teal: var(--primary);
+  --color-warm-coral: #F43F5E;
   --color-light-turquoise: #34D399;
   --color-warm-gold: var(--accent);
   --color-fresh-green: #34D399;
   --color-cream: var(--bg);
   --color-light-cream: var(--card);
+}
 
-  --color-heading-dark-mode: var(--card);
+:root.dark,
+:root.dark[data-theme='solar'],
+:root.dark[data-theme='raffle'] {
+  /* Solar Theme - Deep Jungle / Midnight Jade */
+  --bg: #03120E;
+  /* Deep distinct green-black, not generic black */
+  --surface: #061F1A;
+  --card: rgba(6, 31, 26, 0.85);
+  /* Translucent jungle card */
+  --border: rgba(6, 182, 180, 0.25);
+  /* Teal border, more visible */
+  --text: #F0FDF4;
+  /* Minty white text */
+  --muted: #94A3B8;
+
+  --shadow-tactile: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(6, 182, 180, 0.1);
+  --glass-bg: rgba(3, 18, 14, 0.8);
+
+  /* Legacy Semantic Mappings (Dark Override) */
+  --color-action-primary: var(--primary);
+  --color-accent-primary: var(--primary);
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--muted);
+  --color-bg-primary: var(--bg);
+  --color-bg-card: var(--card);
+  --color-border-subtle: var(--border);
+}
+
+/* PREMIUM UTILITIES 2025 */
+.lw-glass-premium {
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-tactile);
+}
+
+.lw-tactile-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lw-tactile-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.lw-glow-primary {
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.lw-gradient-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, #0891B2 100%);
+}
+
+.lw-page-container {
+  @apply mx-auto w-full max-w-4xl px-4 py-6 sm:px-6;
+}
+
+.lw-sticky-top-bar {
+  @apply sticky top-0 z-40 border-b border-border-subtle transition-all duration-300;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 :root[data-theme='estate'] {
@@ -141,18 +227,23 @@
   --color-warm-gold: var(--accent);
   --color-fresh-green: var(--success);
   --color-cream: var(--bg);
-  --color-light-cream: var(--surface);
+  --color-light-cream: var(--card);
 
   --color-heading-dark-mode: var(--text);
 }
 
 :root {
   --bottom-ui-offset: calc(env(safe-area-inset-bottom) + 6.5rem);
+  --keyboard-offset: 0px;
+  --sticky-bottom-offset: max(var(--bottom-ui-offset),
+      calc(env(safe-area-inset-bottom) + 0.75rem + var(--keyboard-offset)));
 }
 
 @media (min-width: 768px) {
   :root {
     --bottom-ui-offset: 2.5rem;
+    --sticky-bottom-offset: max(var(--bottom-ui-offset),
+        calc(env(safe-area-inset-bottom) + 0.75rem + var(--keyboard-offset)));
   }
 }
 
@@ -218,6 +309,63 @@
   --color-heading-dark-mode: var(--surface);
 }
 
+:root.dark[data-theme='solar'] {
+  /* ============================================
+     SOLAR NIGHTFALL - DARK MODE
+     "Midnight Jade" - Deep jade surfaces
+     ============================================ */
+  --bg: #070B0A;
+  --surface: #0D1514;
+  --card: #0A1211;
+  --surface2: var(--card);
+  --text: #E8F0EE;
+  --muted: #9FAEA9;
+  --muted-2: #7A8D87;
+  --border: #1E2E2A;
+
+  --shadow-card: 0 6px 18px rgba(0, 0, 0, 0.5);
+  --shadow-float: 0 10px 28px rgba(0, 0, 0, 0.6);
+  --shadow-primary: 0 22px 56px rgba(13, 148, 136, 0.2);
+
+  --glass-bg: color-mix(in srgb, color-mix(in srgb, var(--card) 86%, var(--primary)) 70%, transparent);
+  --glass-border: 1px solid color-mix(in srgb, var(--primary) 18%, rgba(159, 174, 169, 0.12));
+
+  --app-bg-gradient:
+    radial-gradient(1000px circle at 10% -5%, color-mix(in srgb, var(--primary) 18%, transparent), transparent 70%),
+    radial-gradient(900px circle at 90% 5%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 66%),
+    radial-gradient(1100px circle at 60% 110%, color-mix(in srgb, var(--primary) 15%, transparent), transparent 60%);
+
+  --ring: rgba(13, 148, 136, 0.45);
+
+  /* Badge/Tag semantic tokens - dark mode harmonized */
+  --badge-muted-bg: #152220;
+  --badge-muted-text: #8A9E98;
+  --badge-muted-border: #243632;
+
+  /* Enhanced card depth - dark mode */
+  --card-gradient: linear-gradient(180deg, var(--card) 0%, color-mix(in srgb, var(--card) 92%, var(--bg)) 100%);
+
+  --surface-primary: var(--bg);
+  --surface-card: var(--card);
+  --text-main: var(--text);
+  --text-muted: var(--muted);
+
+  --color-background: var(--bg);
+  --color-bg-primary: var(--bg);
+  --color-bg-card: var(--card);
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--muted);
+  --color-border-subtle: var(--border);
+  --color-action-primary: var(--primary);
+  --color-value-highlight: var(--accent);
+  --color-success: var(--success);
+  --color-urgency-high: var(--warning);
+  --color-alert: var(--danger);
+
+  --color-background-alt: var(--surface);
+  --color-heading-dark-mode: var(--text);
+}
+
 :root.dark,
 :root.dark[data-theme='raffle'] {
   /* ============================================
@@ -226,6 +374,7 @@
   --bg: #0B1220;
   --surface: #0F172A;
   --card: #111C33;
+  --surface2: var(--card);
   --text: #E2E8F0;
   --muted: #94A3B8;
   --border: rgba(226, 232, 240, 0.12);
@@ -412,11 +561,12 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-bottom: calc(var(--sticky-bottom-offset) + 6rem);
 }
 
 body {
   background-color: var(--bg);
-  background-image: none;
+  background-image: var(--app-bg-gradient, none);
   color: var(--text);
   font-family: 'Inter', 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   min-height: 100vh;
@@ -447,6 +597,12 @@ body::before {
 .scroll-reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.lw-card[role="button"]:hover,
+.lw-card[role="button"]:focus-visible {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transform: none;
 }
 
 @keyframes subtle-pulse {
@@ -586,6 +742,38 @@ body::before {
   animation: slide-down 0.3s ease-out;
 }
 
+@keyframes lw-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lw-toast {
+  animation: lw-toast-in var(--dur-base) var(--ease);
+}
+
+@keyframes lw-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-lw-fade-up {
+  animation: lw-fade-up var(--dur-slow) var(--ease);
+}
+
 @keyframes glow {
 
   0%,
@@ -602,9 +790,31 @@ body::before {
   animation: glow 2s infinite;
 }
 
-/* Color transition for theme switching */
-* {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+/* Theme transition (avoid global transitions for perf) */
+body {
+  transition: background-color var(--dur-slow) var(--ease), color var(--dur-slow) var(--ease);
+}
+
+.lw-surface,
+.lw-card,
+.lw-glass {
+  transition: background-color var(--dur-slow) var(--ease), color var(--dur-slow) var(--ease), border-color var(--dur-slow) var(--ease);
+}
+
+.lw-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-section, var(--r-xl));
+  box-shadow: none;
+  transition: background-color var(--dur-slow) var(--ease), color var(--dur-slow) var(--ease), border-color var(--dur-slow) var(--ease);
+}
+
+.lw-card::before {
+  content: none;
+}
+
+:root.dark .lw-card::before {
+  background: linear-gradient(180deg, color-mix(in srgb, white 3%, transparent) 0%, transparent 30%);
 }
 
 /* Hide scrollbar for horizontal scrollers */
@@ -626,4 +836,18 @@ body::before {
   background: var(--card);
   border: 1px solid var(--border);
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0ms !important;
+  }
 }

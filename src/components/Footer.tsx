@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from './Button.tsx';
-import { useTheme } from './ThemeContext.tsx';
+import { useTheme } from '../theme/ThemeProvider';
 
 interface FooterProps {
   onButtonClick: () => void;

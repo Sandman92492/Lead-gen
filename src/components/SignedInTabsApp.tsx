@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import CredentialPage from '../pages/CredentialPage';
-import GuestsPage from '../pages/GuestsPage';
-import OffersPage from '../pages/OffersPage';
-import ProfilePage from '../pages/ProfilePage';
-import AdminDashboard from './AdminDashboard';
+import LeadsPage from '../pages/LeadsPage';
+import LeadDetailPage from '../pages/LeadDetailPage';
+import CampaignsPage from '../pages/CampaignsPage';
+import CampaignDetailPage from '../pages/CampaignDetailPage';
+import QrPage from '../pages/QrPage';
+import SettingsPage from '../pages/SettingsPage';
+import UiDemoPage from '../pages/UiDemoPage';
 import AppShell from './AppShell';
 import { copy } from '../copy';
 import { DealsIcon, GuestsIcon, PassIcon, ProfileIcon } from './TabIcons';
@@ -26,7 +28,7 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({ userEmail, userPhotoU
     if (!hasNavigatedRef.current) {
       hasNavigatedRef.current = true;
       if (location.pathname === '/' || location.pathname === '') {
-        navigate('/credential', { replace: true });
+        navigate('/leads', { replace: true });
       }
     }
   }, [navigate, location.pathname]);
@@ -43,10 +45,10 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({ userEmail, userPhotoU
 
   const tabs = useMemo(
     () => [
-      { id: 'credential', label: copy.nav.credential, path: '/credential', icon: <PassIcon /> },
-      { id: 'guests', label: copy.nav.guests, path: '/guests', icon: <GuestsIcon /> },
-      { id: 'offers', label: copy.nav.offers, path: '/offers', icon: <DealsIcon /> },
-      { id: 'help', label: copy.nav.help, path: '/profile', icon: <ProfileIcon /> },
+      { id: 'leads', label: copy.nav.leads, path: '/leads', icon: <DealsIcon /> },
+      { id: 'campaigns', label: copy.nav.campaigns, path: '/campaigns', icon: <GuestsIcon /> },
+      { id: 'qr', label: copy.nav.qr, path: '/qr', icon: <PassIcon /> },
+      { id: 'settings', label: copy.nav.settings, path: '/settings', icon: <ProfileIcon /> },
     ],
     []
   );
@@ -65,17 +67,20 @@ const SignedInTabsApp: React.FC<SignedInTabsAppProps> = ({ userEmail, userPhotoU
     >
       <div ref={contentRef} className="bg-bg-primary">
         <Routes>
-          <Route path="/credential" element={<CredentialPage />} />
-          <Route path="/guests" element={<GuestsPage />} />
-          <Route path="/offers" element={<OffersPage />} />
-          <Route path="/profile" element={<ProfilePage userEmail={userEmail} userPhotoURL={userPhotoURL} onSignOut={onSignOut} />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/leads" element={<LeadsPage />} />
+          <Route path="/leads/:leadId" element={<LeadDetailPage />} />
+          <Route path="/campaigns" element={<CampaignsPage />} />
+          <Route path="/campaigns/:campaignId" element={<CampaignDetailPage />} />
+          <Route path="/qr" element={<QrPage />} />
+          <Route path="/settings/*" element={<SettingsPage userEmail={userEmail} userPhotoURL={userPhotoURL} onSignOut={onSignOut} />} />
+          <Route path="/ui" element={<UiDemoPage />} />
 
           {/* Backward-compat redirects */}
-          <Route path="/home" element={<Navigate to="/credential" replace />} />
-          <Route path="/deals" element={<Navigate to="/offers" replace />} />
-          <Route path="/all-deals" element={<Navigate to="/offers" replace />} />
-          <Route path="*" element={<Navigate to="/credential" replace />} />
+          <Route path="/credential" element={<Navigate to="/qr" replace />} />
+          <Route path="/guests" element={<Navigate to="/campaigns" replace />} />
+          <Route path="/offers" element={<Navigate to="/leads" replace />} />
+          <Route path="/profile" element={<Navigate to="/settings" replace />} />
+          <Route path="*" element={<Navigate to="/leads" replace />} />
         </Routes>
       </div>
     </AppShell>

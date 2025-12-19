@@ -1,38 +1,27 @@
 import React from 'react';
 
-type CardVariant = 'card' | 'surface';
 type CardPadding = 'none' | 'sm' | 'md' | 'lg';
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: CardVariant;
+type CardProps = React.HTMLAttributes<HTMLDivElement> & {
+  padded?: boolean;
   padding?: CardPadding;
-}
+};
 
-const paddingClasses: Record<CardPadding, string> = {
+const PADDING_CLASS: Record<CardPadding, string> = {
   none: '',
-  sm: 'p-3 sm:p-4',
-  md: 'p-4 sm:p-6',
-  lg: 'p-6 sm:p-8',
+  sm: 'p-4',
+  md: 'p-5',
+  lg: 'p-6',
 };
 
-const variantClasses: Record<CardVariant, string> = {
-  card: 'bg-bg-card',
-  surface: 'bg-bg-primary',
-};
-
-const Card: React.FC<CardProps> = ({
-  variant = 'card',
-  padding = 'md',
-  className = '',
-  ...props
-}) => {
+const Card: React.FC<CardProps> = ({ className, padded = true, padding, ...props }) => {
+  const paddingClass = padding ? PADDING_CLASS[padding] : padded ? 'p-5' : '';
   return (
     <div
-      className={`border border-border-subtle rounded-[var(--radius)] shadow-[var(--shadow)] ${variantClasses[variant]} ${paddingClasses[padding]} ${className}`}
+      className={`lw-card relative ${paddingClass} ${className || ''}`}
       {...props}
     />
   );
 };
 
 export default Card;
-

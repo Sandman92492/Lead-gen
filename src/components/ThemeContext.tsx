@@ -49,8 +49,8 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
       if (bg) themeColorMeta.setAttribute('content', bg);
     }
-    // Enforce the 'estate' theme flavor
-    document.documentElement.setAttribute('data-theme', 'estate');
+    // Enforce the Solar Nightfall theme flavor
+    document.documentElement.setAttribute('data-theme', 'solar');
   }, [theme]);
 
   useEffect(() => {
